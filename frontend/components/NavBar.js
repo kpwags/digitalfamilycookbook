@@ -1,5 +1,8 @@
 import Link from 'next/link';
+import { Query } from 'react-apollo';
 import styled from 'styled-components';
+import { ALL_CATEGORIES_QUERY } from '../queries/Categories';
+import { ALL_MEATS_QUERY } from '../queries/Meats';
 
 const StyledNavBar = styled.ul`
     float: left;
@@ -64,6 +67,13 @@ const StyledNavBar = styled.ul`
                         background: #43ab5e;
                     }
                 }
+                em {
+                    float: none;
+                    border: none;
+                    color: #ffffff;
+                    padding: 0 10px;
+                    font-size: -2;
+                }
             }
         }
 
@@ -86,28 +96,29 @@ const NavBar = () => (
                     Categories <i className="fa fa-caret-down" />
                 </a>
             </Link>
-            <ul className="child-list">
-                <li>
-                    <Link href="/">
-                        <a>Asian</a>
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/">
-                        <a>Italian</a>
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/">
-                        <a>Mexican</a>
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/">
-                        <a>Slow Cooker</a>
-                    </Link>
-                </li>
-            </ul>
+            <Query query={ALL_CATEGORIES_QUERY}>
+                {({ data, error, loading }) => {
+                    if (loading) return <p>Loading...</p>;
+                    if (error) return <p>Error: {error.message}</p>;
+                    return (
+                        <ul className="child-list">
+                            {data.categories.length > 0 ? (
+                                data.categories.map(category => (
+                                    <li key={category.id}>
+                                        <Link href="/">
+                                            <a>{category.name}</a>
+                                        </Link>
+                                    </li>
+                                ))
+                            ) : (
+                                <li>
+                                    <em>No Categories Defined</em>
+                                </li>
+                            )}
+                        </ul>
+                    );
+                }}
+            </Query>
         </li>
         <li>
             <Link href="/">
@@ -115,33 +126,29 @@ const NavBar = () => (
                     Meats <i className="fa fa-caret-down" />
                 </a>
             </Link>
-            <ul className="child-list">
-                <li>
-                    <Link href="/">
-                        <a>Chicken</a>
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/">
-                        <a>Beef</a>
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/">
-                        <a>Pork</a>
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/">
-                        <a>Seafood</a>
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/">
-                        <a>Vegetarian</a>
-                    </Link>
-                </li>
-            </ul>
+            <Query query={ALL_MEATS_QUERY}>
+                {({ data, error, loading }) => {
+                    if (loading) return <p>Loading...</p>;
+                    if (error) return <p>Error: {error.message}</p>;
+                    return (
+                        <ul className="child-list">
+                            {data.meats.length > 0 ? (
+                                data.meats.map(meat => (
+                                    <li key={meat.id}>
+                                        <Link href="/">
+                                            <a>{meat.name}</a>
+                                        </Link>
+                                    </li>
+                                ))
+                            ) : (
+                                <li>
+                                    <em>No Meats Defined</em>
+                                </li>
+                            )}
+                        </ul>
+                    );
+                }}
+            </Query>
         </li>
     </StyledNavBar>
 );

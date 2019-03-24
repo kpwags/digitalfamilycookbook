@@ -1,4 +1,60 @@
+enum Permission {
+  ADMIN
+  USER
+}
+
 type User {
   id: ID! @unique
   name: String!
+  email: String! @unique
+  password: String!
+  resetToken: String
+  resetTokenExpiry: Float
+  permissions: [Permission]
+}
+
+type Meat {
+  id: ID! @unique
+  name: String!
+}
+
+type Category {
+  id: ID! @unique
+  name: String!
+}
+
+type Ingredient {
+  id: ID! @unique
+  name: String!
+}
+
+type Direction {
+  id: ID! @unique
+  direction: String!
+  sortOrder: Int
+}
+
+type Recipe {
+  id: ID! @unique
+  name: String!
+  public: Boolean!
+  source: String
+  sourceUrl: String
+  time: Int
+  activeTime: Int
+  servings: Float
+  calories: Float
+  carbohydrates: Float
+  protein: Float
+  fat: Float
+  sugar: Float
+  cholesterol: Float
+  fiber: Float
+  image: String
+  largeImage: String
+  ingredients: [Ingredient]
+  directions: [Direction]
+  meats: [Meat]
+  categories: [Category]
+  user: User!
 }

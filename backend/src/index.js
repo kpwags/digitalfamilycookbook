@@ -21,17 +21,17 @@ server.express.use((req, res, next) => {
 });
 
 // middleware for populating user
-server.express.use(async (req, res, next) => {
-  if (!req.userId) return next();
+// server.express.use(async (req, res, next) => {
+//   if (!req.userId) return next();
 
-  const user = await db.query.user(
-    { where: { id: req.userId } },
-    '{ id, permissions, email, name }',
-  );
-  req.user = user;
+//   const user = await db.query.user(
+//     { where: { id: req.userId } },
+//     '{ id, permissions, email, name }',
+//   );
+//   req.user = user;
 
-  return next();
-});
+//   return next();
+// });
 
 server.start(
   {

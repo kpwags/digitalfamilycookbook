@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import styled from 'styled-components';
+import { User } from './User';
 
 const UserMenu = styled.ul`
     float: right;
@@ -60,28 +61,43 @@ const UserMenu = styled.ul`
 `;
 
 const UserHeaderMenu = () => (
-    <UserMenu>
-        <li>
-            <img src="/static/images/profile-picture.jpg" alt="user" /> Keith <i className="fa fa-caret-down" />
-            <ul className="child-list">
-                <li>
-                    <Link href="/">
-                        <a>Profile</a>
+    <User>
+        {({ data: { me } }) => (
+            <UserMenu>
+                {me && (
+                    <>
+                        <li>
+                            <img src="/static/images/profile-picture.jpg" alt="user" /> Keith{' '}
+                            <i className="fa fa-caret-down" />
+                            <ul className="child-list">
+                                <li>
+                                    <Link href="/">
+                                        <a>Profile</a>
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href="/">
+                                        <a>Settings</a>
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href="/">
+                                        <a>Log Out</a>
+                                    </Link>
+                                </li>
+                            </ul>
+                        </li>
+                    </>
+                )}
+
+                {!me && (
+                    <Link href="/signin">
+                        <a>Sign In</a>
                     </Link>
-                </li>
-                <li>
-                    <Link href="/">
-                        <a>Settings</a>
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/">
-                        <a>Log Out</a>
-                    </Link>
-                </li>
-            </ul>
-        </li>
-    </UserMenu>
+                )}
+            </UserMenu>
+        )}
+    </User>
 );
 
 export default UserHeaderMenu;
