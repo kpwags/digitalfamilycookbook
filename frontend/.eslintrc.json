@@ -19,6 +19,7 @@
     "linebreak-style": ["error", "unix"],
     "quotes": ["error", "single"],
     "semi": ["error", "always"],
+    "import/prefer-default-export": 0,
     "react/display-name": 1,
     "react/no-array-index-key": 0,
     "react/react-in-jsx-scope": 0,
@@ -34,6 +35,12 @@
         "extensions": [".js", ".jsx"]
       }
     ],
-    "no-unused-expressions": 0
+    "no-unused-expressions": 0,
+    "jsx-a11y/anchor-is-valid": [
+      "warn",
+      {
+        "aspects": ["invalidHref"]
+      }
+    ]
   }
 }

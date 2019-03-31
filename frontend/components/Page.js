@@ -6,6 +6,7 @@ import Header from './Header';
 
 const theme = {
     black: '#393939',
+    green: '#00802b',
     maxWidth: '1000px',
     bs: '0 12px 24px 0 rgba(0, 0, 0, 0.09)'
 };
@@ -25,6 +26,7 @@ injectGlobal`
   html {
     box-sizing: border-box;
     font-size: 10px;
+    font-family: 'Helvetica-Neue', Arial, Helvetica, sans-serif
   }
   *, *:before, *:after {
     box-sizing:inherit;
@@ -37,6 +39,7 @@ injectGlobal`
   }
   a {
     text-decoration:none;
+    cursor:pointer;
     color: ${theme.black};
   }
 `;
