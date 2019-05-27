@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import styled from 'styled-components';
 import { User } from './User';
+import { Logout } from './Logout';
 
 const UserMenu = styled.ul`
     float: right;
@@ -16,6 +17,19 @@ const UserMenu = styled.ul`
         font-size: 20px;
         float: left;
         position: relative;
+
+        a {
+            display: block;
+            color: #ffffff;
+            float: none;
+            border: none;
+            padding: 0 10px;
+            :hover {
+                background-image: none;
+                background: #43ab5e;
+            }
+        }
+
         img {
             width: 40px;
             height: 40px;
@@ -81,9 +95,7 @@ const UserHeaderMenu = () => (
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link href="/">
-                                        <a>Log Out</a>
-                                    </Link>
+                                    <Logout />
                                 </li>
                             </ul>
                         </li>
@@ -91,9 +103,11 @@ const UserHeaderMenu = () => (
                 )}
 
                 {!me && (
-                    <Link href="/signin">
-                        <a>Sign In</a>
-                    </Link>
+                    <li>
+                        <Link href="/login">
+                            <a>Sign In</a>
+                        </Link>
+                    </li>
                 )}
             </UserMenu>
         )}
