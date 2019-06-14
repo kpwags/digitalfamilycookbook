@@ -20,7 +20,7 @@ const Form = styled.form`
     line-height: 1.5;
     font-weight: 600;
     width: 500px;
-    margin: 75px auto 0;
+    margin: 0 auto 0;
     label {
         display: block;
         margin-bottom: 1rem;
@@ -46,7 +46,14 @@ const Form = styled.form`
         font-size: 2rem;
         font-weight: 600;
         padding: 0.5rem 1.2rem;
+        cursor: pointer;
     }
+
+    button[type='button'] {
+        margin-left: 10px;
+        cursor: pointer;
+    }
+
     fieldset {
         border: 0;
         padding: 0;

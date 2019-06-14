@@ -7,6 +7,12 @@ const Mutations = {
       throw new Error('You must be logged in to create a meat');
     }
 
+    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+
+    if (!hasPermissions) {
+      throw new Error('You do not have the proper permissions to delete');
+    }
+
     const meat = ctx.db.mutation.createMeat(
       {
         data: {
@@ -17,6 +23,22 @@ const Mutations = {
     );
 
     return meat;
+  },
+
+  async deleteMeat(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    const where = { id: args.id };
+
+    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+
+    if (!hasPermissions) {
+      throw new Error('You do not have the proper permissions to delete');
+    }
+
+    return ctx.db.mutation.deleteMeat({ where }, info);
   },
 
   async login(parent, { email, password }, ctx) {
@@ -70,6 +92,22 @@ const Mutations = {
     });
 
     return user;
+  },
+
+  updateMeat(parent, args, ctx, info) {
+    const updates = { ...args };
+
+    delete updates.id;
+
+    return ctx.db.mutation.updateMeat(
+      {
+        data: updates,
+        where: {
+          id: args.id,
+        },
+      },
+      info,
+    );
   },
 };
 

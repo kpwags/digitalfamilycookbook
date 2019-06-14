@@ -6,9 +6,11 @@ type SuccessMessage {
 
 type Mutation {
   createMeat(name: String!): Meat!
+  deleteMeat(id: ID!): Meat
   login(email: String!, password: String!): User!
   logout: SuccessMessage
   signup(email: String!, password: String!, name: String!): User!
+  updateMeat(id: ID!, name: String): Meat!
 }
 
 type Query {

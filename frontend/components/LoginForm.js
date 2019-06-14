@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import PropTypes from 'prop-types';
+import Router from 'next/router';
 import { LOGIN_MUTATION } from '../mutations/Login';
 import { CURRENT_USER_QUERY } from '../queries/CurrentUser';
 import { Form } from './styles/Form';
@@ -39,7 +40,9 @@ class LoginForm extends Component {
                                 email: '',
                                 password: ''
                             });
-                            window.location.href = redirectUrl;
+                            Router.push({
+                                pathname: redirectUrl
+                            });
                         }}
                     >
                         <fieldset disabled={loading} aria-busy={loading}>
