@@ -51,7 +51,7 @@ class CreateMeat extends Component {
                                 Name
                                 <input
                                     type="text"
-                                    id="name"
+                                    id="add-meat-name"
                                     name="name"
                                     placeholder="Name"
                                     required

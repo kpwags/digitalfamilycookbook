@@ -18,6 +18,7 @@ class MeatsGrid extends Component {
     showEditMeatForm(meat) {
         document.getElementById('page-overlay').style.display = 'block';
         document.getElementById('edit-meat-window').style.display = 'block';
+        document.getElementById('edit-meat-name').focus();
 
         this.setState({ selected: { id: meat.id, name: meat.name } });
     }

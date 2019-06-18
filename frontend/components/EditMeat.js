@@ -72,7 +72,7 @@ class EditMeat extends Component {
                                 Name
                                 <input
                                     type="text"
-                                    id="name"
+                                    id="edit-meat-name"
                                     name="name"
                                     placeholder="Name"
                                     required

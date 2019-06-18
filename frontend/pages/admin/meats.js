@@ -12,6 +12,7 @@ class AdminMeats extends Component {
 
         document.getElementById('page-overlay').style.display = 'block';
         document.getElementById('add-meat-window').style.display = 'block';
+        document.getElementById('add-meat-name').focus();
     }
 
     render() {
