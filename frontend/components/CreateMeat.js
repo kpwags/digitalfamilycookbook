@@ -20,6 +20,7 @@ class CreateMeat extends Component {
         document.getElementById('add-meat-window').style.display = 'none';
         document.getElementById('page-overlay').style.display = 'none';
         this.setState({ name: '' });
+        document.getElementById('create-meat-form').reset();
     };
 
     cancelAddMeat = e => {
@@ -37,6 +38,7 @@ class CreateMeat extends Component {
                 {(createMeat, { loading, error }) => (
                     <Form
                         data-test="form"
+                        id="create-meat-form"
                         onSubmit={async e => {
                             e.preventDefault();
                             await createMeat();
