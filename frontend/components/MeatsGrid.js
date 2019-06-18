@@ -28,6 +28,7 @@ class MeatsGrid extends Component {
                 <ModalWindow id="edit-meat-window" width="500" height="215">
                     <EditMeat id={this.state.selected.id} name={this.state.selected.name} />
                 </ModalWindow>
+
                 <AdminGrid cellPadding="0" cellSpacing="0" id="meatadmingrid">
                     <thead>
                         <tr>
@@ -68,7 +69,9 @@ class MeatsGrid extends Component {
                                                 </button>
                                             </td>
                                             <td align="center">
-                                                <DeleteMeat id={meat.id}>Delete</DeleteMeat>
+                                                <DeleteMeat id={meat.id} name={meat.name}>
+                                                    Delete
+                                                </DeleteMeat>
                                             </td>
                                         </tr>
                                     ))
