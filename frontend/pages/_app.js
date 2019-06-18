@@ -1,6 +1,7 @@
 import App, { Container } from 'next/app';
 import { ApolloProvider } from 'react-apollo';
 import Page from '../components/Page';
+import { Overlay } from '../components/styles/Overlay';
 import withData from '../lib/withData';
 
 class MyApp extends App {
@@ -21,6 +22,7 @@ class MyApp extends App {
         return (
             <Container>
                 <ApolloProvider client={apollo}>
+                    <Overlay id="page-overlay" />
                     <Page>
                         <Component {...pageProps} />
                     </Page>
