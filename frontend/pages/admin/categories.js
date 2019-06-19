@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { CategoriesGrid } from '../../components/admin/categories/CategoriesGrid';
+import { CategoryGrid } from '../../components/admin/category/CategoryGrid';
 import { AddButton } from '../../components/styles/AddButton';
-import { CreateCategory } from '../../components/admin/categories/CreateCategory';
+import { CreateCategory } from '../../components/admin/category/CreateCategory';
 import { AuthGateway } from '../../components/AuthGateway';
 import { ModalWindow } from '../../components/ModalWindow';
 
@@ -27,7 +27,7 @@ class AdminCategories extends Component {
                     <ModalWindow id="add-category-window" width="500" height="215">
                         <CreateCategory />
                     </ModalWindow>
-                    <CategoriesGrid />
+                    <CategoryGrid />
                 </AuthGateway>
             </>
         );

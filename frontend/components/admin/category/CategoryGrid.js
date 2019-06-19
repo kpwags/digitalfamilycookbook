@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
-import { ALL_MEATS_QUERY } from '../queries/Meats';
-import { AdminGrid } from './styles/AdminGrid';
-import { DeleteMeat } from './DeleteMeat';
-import { EditMeat } from './EditMeat';
-import { ModalWindow } from './ModalWindow';
+import { ALL_CATEGORIES_QUERY } from '../../../queries/Category';
+import { AdminGrid } from '../../styles/AdminGrid';
+import { ModalWindow } from '../../ModalWindow';
+import { EditCategory } from './EditCategory';
+import { DeleteCategory } from './DeleteCategory';
 
-class MeatsGrid extends Component {
+class CategoryGrid extends Component {
     state = {
         selected: {
             id: '',
@@ -14,13 +14,12 @@ class MeatsGrid extends Component {
         }
     };
 
-    // eslint-disable-next-line class-methods-use-this
-    showEditMeatForm(meat) {
+    showEditForm(category) {
         document.getElementById('page-overlay').style.display = 'block';
-        document.getElementById('edit-meat-window').style.display = 'block';
-        document.getElementById('edit-meat-name').focus();
+        document.getElementById('edit-category-window').style.display = 'block';
+        document.getElementById('edit-category-name').focus();
 
-        this.setState({ selected: { id: meat.id, name: meat.name } });
+        this.setState({ selected: { id: category.id, name: category.name } });
     }
 
     render() {
@@ -29,8 +28,8 @@ class MeatsGrid extends Component {
         };
         return (
             <>
-                <ModalWindow id="edit-meat-window" width="500" height="215">
-                    <EditMeat id={this.state.selected.id} name={this.state.selected.name} />
+                <ModalWindow id="edit-category-window" width="500" height="215">
+                    <EditCategory id={this.state.selected.id} name={this.state.selected.name} />
                 </ModalWindow>
 
                 <AdminGrid cellPadding="0" cellSpacing="0" id="meatadmingrid" style={gridStyle}>
@@ -46,7 +45,7 @@ class MeatsGrid extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        <Query query={ALL_MEATS_QUERY}>
+                        <Query query={ALL_CATEGORIES_QUERY}>
                             {({ data, error, loading }) => {
                                 if (loading)
                                     return (
@@ -60,33 +59,33 @@ class MeatsGrid extends Component {
                                             <td colSpan="3">Error: {error.message}</td>
                                         </tr>
                                     );
-                                return data.meats.length > 0 ? (
-                                    data.meats.map(meat => (
-                                        <tr key={meat.id} id={meat.id}>
-                                            <td>{meat.name}</td>
+                                return data.categories.length > 0 ? (
+                                    data.categories.map(category => (
+                                        <tr key={category.id} id={category.id}>
+                                            <td>{category.name}</td>
                                             <td align="center">
                                                 <button
                                                     type="button"
-                                                    data-id={meat.id}
+                                                    data-id={category.id}
                                                     onClick={e => {
                                                         e.preventDefault();
-                                                        this.showEditMeatForm(meat);
+                                                        this.showEditForm(category);
                                                     }}
                                                 >
                                                     Edit
                                                 </button>
                                             </td>
                                             <td align="center">
-                                                <DeleteMeat id={meat.id} name={meat.name}>
+                                                <DeleteCategory id={category.id} name={category.name}>
                                                     Delete
-                                                </DeleteMeat>
+                                                </DeleteCategory>
                                             </td>
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
                                         <td colSpan="3">
-                                            <em>No Meats Defined</em>
+                                            <em>No Categories Defined</em>
                                         </td>
                                     </tr>
                                 );
@@ -99,4 +98,4 @@ class MeatsGrid extends Component {
     }
 }
 
-export { MeatsGrid };
+export { CategoryGrid };
