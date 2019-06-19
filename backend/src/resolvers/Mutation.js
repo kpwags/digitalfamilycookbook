@@ -2,6 +2,29 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const Mutations = {
+  async createCategory(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in to create a category');
+    }
+
+    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+
+    if (!hasPermissions) {
+      throw new Error('You do not have the proper permissions to delete');
+    }
+
+    const category = ctx.db.mutation.createCategory(
+      {
+        data: {
+          ...args,
+        },
+      },
+      info,
+    );
+
+    return category;
+  },
+
   async createMeat(parent, args, ctx, info) {
     if (!ctx.request.userId) {
       throw new Error('You must be logged in to create a meat');
@@ -23,6 +46,22 @@ const Mutations = {
     );
 
     return meat;
+  },
+
+  async deleteCategory(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    const where = { id: args.id };
+
+    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+
+    if (!hasPermissions) {
+      throw new Error('You do not have the proper permissions to delete');
+    }
+
+    return ctx.db.mutation.deleteCategory({ where }, info);
   },
 
   async deleteMeat(parent, args, ctx, info) {
@@ -94,7 +133,43 @@ const Mutations = {
     return user;
   },
 
+  updateCategory(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+
+    if (!hasPermissions) {
+      throw new Error('You do not have the proper permissions to delete');
+    }
+
+    const updates = { ...args };
+
+    delete updates.id;
+
+    return ctx.db.mutation.updateCategory(
+      {
+        data: updates,
+        where: {
+          id: args.id,
+        },
+      },
+      info,
+    );
+  },
+
   updateMeat(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+
+    if (!hasPermissions) {
+      throw new Error('You do not have the proper permissions to delete');
+    }
+
     const updates = { ...args };
 
     delete updates.id;
