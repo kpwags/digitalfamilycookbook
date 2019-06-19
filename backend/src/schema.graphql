@@ -5,11 +5,14 @@ type SuccessMessage {
 }
 
 type Mutation {
+  createCategory(name: String!): Category!
   createMeat(name: String!): Meat!
+  deleteCategory(id: ID!): Category
   deleteMeat(id: ID!): Meat
   login(email: String!, password: String!): User!
   logout: SuccessMessage
   signup(email: String!, password: String!, name: String!): User!
+  updateCategory(id: ID!, name: String): Category!
   updateMeat(id: ID!, name: String): Meat!
 }
 
