@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Query } from 'react-apollo';
 import styled from 'styled-components';
 import { ALL_CATEGORIES_QUERY } from '../queries/Category';
-import { ALL_MEATS_QUERY } from '../queries/Meats';
+import { ALL_MEATS_QUERY } from '../queries/Meat';
 
 const StyledNavBar = styled.ul`
     float: left;

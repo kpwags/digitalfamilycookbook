@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { MeatsGrid } from '../../components/MeatsGrid';
+import { MeatGrid } from '../../components/admin/meat/MeatGrid';
 import { AddButton } from '../../components/styles/AddButton';
-import { CreateMeat } from '../../components/CreateMeat';
+import { CreateMeat } from '../../components/admin/meat/CreateMeat';
 import { AuthGateway } from '../../components/AuthGateway';
 import { ModalWindow } from '../../components/ModalWindow';
 
@@ -28,7 +28,7 @@ class AdminMeats extends Component {
                     <ModalWindow id="add-meat-window" width="500" height="215">
                         <CreateMeat />
                     </ModalWindow>
-                    <MeatsGrid />
+                    <MeatGrid />
                 </AuthGateway>
             </>
         );
