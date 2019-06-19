@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import PropTypes from 'prop-types';
-import { DELETE_MEAT_MUTATION } from '../mutations/Meat';
-import { ALL_MEATS_QUERY } from '../queries/Meats';
-import { ConfirmDialog } from './styles/ConfirmDialog';
-import { ErrorAlert } from './ErrorAlert';
+import { DELETE_MEAT_MUTATION } from '../../../mutations/Meat';
+import { ALL_MEATS_QUERY } from '../../../queries/Meat';
+import { ConfirmDialog } from '../../styles/ConfirmDialog';
+import { ErrorAlert } from '../../ErrorAlert';
 
 class DeleteMeat extends Component {
     static propTypes = {
