@@ -24,17 +24,24 @@ class MeatsGrid extends Component {
     }
 
     render() {
+        const gridStyle = {
+            width: '500px'
+        };
         return (
             <>
                 <ModalWindow id="edit-meat-window" width="500" height="215">
                     <EditMeat id={this.state.selected.id} name={this.state.selected.name} />
                 </ModalWindow>
 
-                <AdminGrid cellPadding="0" cellSpacing="0" id="meatadmingrid">
+                <AdminGrid cellPadding="0" cellSpacing="0" id="meatadmingrid" style={gridStyle}>
                     <thead>
                         <tr>
-                            <th width="70%">Name</th>
-                            <th width="15%">&nbsp;</th>
+                            <th width="70%" className="no-border">
+                                Name
+                            </th>
+                            <th width="15%" className="no-border">
+                                &nbsp;
+                            </th>
                             <th width="15%">&nbsp;</th>
                         </tr>
                     </thead>
@@ -55,9 +62,9 @@ class MeatsGrid extends Component {
                                     );
                                 return data.meats.length > 0 ? (
                                     data.meats.map(meat => (
-                                        <tr key={meat.id}>
+                                        <tr key={meat.id} id={meat.id}>
                                             <td>{meat.name}</td>
-                                            <td align="right">
+                                            <td align="center">
                                                 <button
                                                     type="button"
                                                     data-id={meat.id}
