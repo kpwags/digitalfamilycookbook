@@ -81,7 +81,7 @@ const UserHeaderMenu = () => (
                 {me && (
                     <>
                         <li>
-                            <img src="/static/images/profile-picture.jpg" alt="user" /> Keith{' '}
+                            <img src="/static/images/profile-picture.jpg" alt="user" /> {`${me.name} `}
                             <i className="fa fa-caret-down" />
                             <ul className="child-list">
                                 <li>
