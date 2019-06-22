@@ -4,11 +4,15 @@ import { CURRENT_USER_QUERY } from '../queries/CurrentUser';
 import { UPDATE_PROFILE_MUTATION } from '../mutations/User';
 import { Form } from './styles/Form';
 import { ErrorMessage } from './ErrorMessage';
+import { SuccessMessage } from './SuccessMessage';
+import { FormValidator } from '../lib/FormValidator';
+import { Utilities } from '../lib/Utilities';
 
 class EditProfileForm extends Component {
     state = {
         name: '',
-        email: ''
+        email: '',
+        successMessage: null
     };
 
     saveToState = e => {
@@ -39,6 +43,32 @@ class EditProfileForm extends Component {
         });
     };
 
+    validate = e => {
+        e.preventDefault();
+
+        let { name, email } = this.state;
+
+        if (name === '') {
+            name = document.getElementById('name').value;
+        }
+
+        if (email === '') {
+            email = document.getElementById('email').value;
+        }
+
+        if (!FormValidator.validateNotEmpty(name)) {
+            Utilities.invalidateField('name', 'Name is required.');
+        } else {
+            Utilities.resetField('name');
+        }
+
+        if (!FormValidator.validateEmail(email)) {
+            Utilities.invalidateField('email', 'Invalid email');
+        } else {
+            Utilities.resetField('email');
+        }
+    };
+
     render() {
         return (
             <Query query={CURRENT_USER_QUERY}>
@@ -55,8 +85,18 @@ class EditProfileForm extends Component {
                                     method="post"
                                     onSubmit={async e => {
                                         this.updateProfile(e, updateUser);
+                                        if (!error) {
+                                            this.setState({
+                                                successMessage: 'Profile updated successfully'
+                                            });
+                                        } else {
+                                            this.setState({
+                                                successMessage: null
+                                            });
+                                        }
                                     }}
                                 >
+                                    <SuccessMessage message={this.state.successMessage} />
                                     <ErrorMessage error={error} />
                                     <fieldset disabled={mutationLoading} aria-busy={mutationLoading}>
                                         <input type="hidden" name="id" id="user_id" defaultValue={me.id} />
@@ -70,7 +110,9 @@ class EditProfileForm extends Component {
                                                 id="name"
                                                 defaultValue={me.name}
                                                 onChange={this.saveToState}
+                                                onBlur={this.validate}
                                             />
+                                            <div className="error-text" id="name-message" />
                                         </label>
                                         <label htmlFor="email">
                                             Email
@@ -82,7 +124,9 @@ class EditProfileForm extends Component {
                                                 required
                                                 defaultValue={me.email}
                                                 onChange={this.saveToState}
+                                                onBlur={this.validate}
                                             />
+                                            <div className="error-text" id="email-message" />
                                         </label>
                                         <button type="submit">Sav{mutationLoading ? 'ing' : 'e'} Changes</button>
                                     </fieldset>

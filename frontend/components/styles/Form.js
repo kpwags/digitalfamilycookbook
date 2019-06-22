@@ -16,26 +16,35 @@ const Form = styled.form`
     background: rgba(0, 0, 0, 0.02);
     border: 5px solid white;
     padding: 20px;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     line-height: 1.5;
     font-weight: 600;
     width: 500px;
     margin: 0 auto 0;
     label {
         display: block;
-        margin-bottom: 1rem;
+        margin: 1.5rem 0;
     }
     input,
     textarea,
     select {
         width: 100%;
-        padding: 0.5rem;
-        font-size: 1rem;
+        padding: 1rem;
+        font-size: 1.8rem;
         border: 1px solid black;
         &:focus {
             outline: 0;
             border-color: ${props => props.theme.green};
         }
+    }
+    label.errored {
+        color: #ff0000;
+    }
+    input.errored,
+    textarea.errored,
+    select.errored {
+        border-width: 2px;
+        border-color: #ff0000;
     }
     button,
     input[type='submit'] {
@@ -66,11 +75,20 @@ const Form = styled.form`
             content: '';
             display: block;
             background-image: linear-gradient(to right, #00802b 0%, #43ab5e 50%, #00802b 100%);
+            margin-bottom: 25px;
         }
         &[aria-busy='true']::before {
             background-size: 50% auto;
             animation: ${loading} 0.5s linear infinite;
         }
+    }
+
+    div.error-text {
+        color: #ff0000;
+        display: none;
+        font-size: 1.4rem;
+        font-weight: normal;
+        margin-top: 5px;
     }
 `;
 
