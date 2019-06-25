@@ -186,8 +186,8 @@ class SignupForm extends Component {
                                     id="bio"
                                     name="bio"
                                     placeholder="Enter a bit about yourself"
-                                    defaultValue={this.state.bio}
-                                    onChange={this.handleChange}
+                                    value={this.state.bio}
+                                    onChange={this.saveToState}
                                 />
                             </label>
                             <button type="submit">Sign Up</button>

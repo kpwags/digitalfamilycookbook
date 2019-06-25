@@ -103,11 +103,18 @@ const UserHeaderMenu = () => (
                 )}
 
                 {!me && (
-                    <li>
-                        <Link href="/login">
-                            <a>Sign In</a>
-                        </Link>
-                    </li>
+                    <>
+                        <li>
+                            <Link href="/signup">
+                                <a>Sign Up</a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/login">
+                                <a>Sign In</a>
+                            </Link>
+                        </li>
+                    </>
                 )}
             </UserMenu>
         )}
