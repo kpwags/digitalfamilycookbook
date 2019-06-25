@@ -81,11 +81,11 @@ const UserHeaderMenu = () => (
                 {me && (
                     <>
                         <li>
-                            <img src="/static/images/profile-picture.jpg" alt="user" /> {`${me.name} `}
+                            <img src={me.image} alt={me.name} /> {`${me.name} `}
                             <i className="fa fa-caret-down" />
                             <ul className="child-list">
                                 <li>
-                                    <Link href="/">
+                                    <Link href="/edit-profile">
                                         <a>Profile</a>
                                     </Link>
                                 </li>

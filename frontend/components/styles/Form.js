@@ -37,6 +37,9 @@ const Form = styled.form`
             border-color: ${props => props.theme.green};
         }
     }
+    textarea {
+        height: 175px;
+    }
     label.errored {
         color: #ff0000;
     }
@@ -89,6 +92,11 @@ const Form = styled.form`
         font-size: 1.4rem;
         font-weight: normal;
         margin-top: 5px;
+    }
+
+    div.image-preview {
+        margin: 15px auto;
+        width: 128px;
     }
 `;
 

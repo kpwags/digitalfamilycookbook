@@ -187,7 +187,6 @@ const Mutations = {
 
   updateUser(parent, args, ctx, info) {
     if (!ctx.request.userId) {
-      console.log('not logged in');
       throw new Error('You must be logged in');
     }
 
@@ -196,7 +195,6 @@ const Mutations = {
     delete updates.id;
 
     if (args.id !== ctx.request.userId) {
-      console.log(args);
       throw new Error('You can only edit your own profile');
     }
 

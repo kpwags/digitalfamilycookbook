@@ -6,6 +6,9 @@ const CURRENT_USER_QUERY = gql`
             id
             email
             name
+            bio
+            image
+            largeImage
             permissions
         }
     }
