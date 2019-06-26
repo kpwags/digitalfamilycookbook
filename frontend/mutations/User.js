@@ -1,5 +1,18 @@
 import gql from 'graphql-tag';
 
+const CHANGE_PASSWORD_MUTATION = gql`
+    mutation CHANGE_PASSWORD_MUTATION($id: ID!, $currentPassword: String!, $password: String!) {
+        changePassword(id: $id, currentPassword: $currentPassword, password: $password) {
+            id
+            name
+            email
+            bio
+            image
+            largeImage
+        }
+    }
+`;
+
 const UPDATE_PROFILE_MUTATION = gql`
     mutation UPDATE_PROFILE_MUTATION(
         $id: ID!
@@ -21,3 +34,4 @@ const UPDATE_PROFILE_MUTATION = gql`
 `;
 
 export { UPDATE_PROFILE_MUTATION };
+export { CHANGE_PASSWORD_MUTATION };

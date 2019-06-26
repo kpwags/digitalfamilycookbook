@@ -2,6 +2,40 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const Mutations = {
+  async changePassword(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    const updates = { ...args };
+
+    delete updates.id;
+
+    if (args.id !== ctx.request.userId) {
+      throw new Error('You can only change your own password');
+    }
+
+    const user = await ctx.db.query.user({ where: { id: ctx.request.userId } });
+    const valid = await bcrypt.compare(args.currentPassword, user.password);
+    if (!valid) {
+      throw new Error('Current password is invalid');
+    }
+
+    const password = await bcrypt.hash(args.password, 10);
+
+    return ctx.db.mutation.updateUser(
+      {
+        data: {
+          password,
+        },
+        where: {
+          id: args.id,
+        },
+      },
+      info,
+    );
+  },
+
   async createCategory(parent, args, ctx, info) {
     if (!ctx.request.userId) {
       throw new Error('You must be logged in to create a category');

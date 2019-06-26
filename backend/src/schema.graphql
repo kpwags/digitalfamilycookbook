@@ -5,6 +5,7 @@ type SuccessMessage {
 }
 
 type Mutation {
+  changePassword(id: ID!, currentPassword: String!, password: String!): User!
   createCategory(name: String!): Category!
   createMeat(name: String!): Meat!
   deleteCategory(id: ID!): Category
