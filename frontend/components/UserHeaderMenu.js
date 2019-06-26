@@ -81,11 +81,11 @@ const UserHeaderMenu = () => (
                 {me && (
                     <>
                         <li>
-                            <img src="/static/images/profile-picture.jpg" alt="user" /> Keith{' '}
+                            <img src={me.image} alt={me.name} /> {`${me.name} `}
                             <i className="fa fa-caret-down" />
                             <ul className="child-list">
                                 <li>
-                                    <Link href="/">
+                                    <Link href="/edit-profile">
                                         <a>Profile</a>
                                     </Link>
                                 </li>
@@ -103,11 +103,18 @@ const UserHeaderMenu = () => (
                 )}
 
                 {!me && (
-                    <li>
-                        <Link href="/login">
-                            <a>Sign In</a>
-                        </Link>
-                    </li>
+                    <>
+                        <li>
+                            <Link href="/signup">
+                                <a>Sign Up</a>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/login">
+                                <a>Sign In</a>
+                            </Link>
+                        </li>
+                    </>
                 )}
             </UserMenu>
         )}

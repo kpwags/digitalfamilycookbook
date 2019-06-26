@@ -1,5 +1,5 @@
 class Utilities {
-    static SetTableRowActive(tableId, rowId) {
+    static setTableRowActive(tableId, rowId) {
         const table = document.getElementById(tableId);
         const tbody = table.getElementsByTagName('tbody')[0];
 
@@ -10,6 +10,24 @@ class Utilities {
         }
 
         document.getElementById(rowId).className = 'selected';
+    }
+
+    // TODO: Add Message
+    static invalidateField(elementId, errorMessage = '') {
+        document.getElementById(elementId).className = 'errored';
+        document.getElementById(elementId).parentElement.className = 'errored';
+
+        if (errorMessage !== '') {
+            document.getElementById(`${elementId}-message`).innerText = errorMessage;
+            document.getElementById(`${elementId}-message`).style.display = 'block';
+        }
+    }
+
+    static resetField(elementId) {
+        document.getElementById(elementId).className = '';
+        document.getElementById(elementId).parentElement.className = '';
+        document.getElementById(`${elementId}-message`).style.display = 'none';
+        document.getElementById(`${elementId}-message`).innerText = '';
     }
 }
 

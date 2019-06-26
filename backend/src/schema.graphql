@@ -11,9 +11,10 @@ type Mutation {
   deleteMeat(id: ID!): Meat
   login(email: String!, password: String!): User!
   logout: SuccessMessage
-  signup(email: String!, password: String!, name: String!): User!
+  signup(email: String!, password: String!, name: String!, bio: String, image: String, largeImage: String): User!
   updateCategory(id: ID!, name: String): Category!
   updateMeat(id: ID!, name: String): Meat!
+  updateUser(id: ID!, name: String!, email: String!, bio: String, image: String, largeImage: String): User!
 }
 
 type Query {
@@ -22,11 +23,15 @@ type Query {
   me: User
   meat(where: MeatWhereUniqueInput!): Meat
   meats(where: MeatWhereInput, orderBy: MeatOrderByInput): [Meat]!
+  user(where: UserWhereUniqueInput!): User
 }
 
 type User {
   id: ID!
   name: String!
   email: String!
+  bio: String
+  image: String
+  largeImage: String
   permissions: [Permission!]!
 }

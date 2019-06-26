@@ -4,38 +4,51 @@ enum Permission {
 }
 
 type User {
-  id: ID! @unique
+  id: ID! @id @unique
   name: String!
   email: String! @unique
   password: String!
+  image: String
+  largeImage: String
+  bio: String
   resetToken: String
   resetTokenExpiry: Float
-  permissions: [Permission]
+  permissions: [Permission] @scalarList(strategy: RELATION)
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
 }
 
 type Meat {
-  id: ID! @unique
+  id: ID! @id @unique
   name: String!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
 }
 
 type Category {
-  id: ID! @unique
+  id: ID! @id @unique
   name: String!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
 }
 
 type Ingredient {
-  id: ID! @unique
+  id: ID! @id @unique
   name: String!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
 }
 
 type Direction {
-  id: ID! @unique
+  id: ID! @id @unique
   direction: String!
   sortOrder: Int
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
 }
 
 type Recipe {
-  id: ID! @unique
+  id: ID! @id @unique
   name: String!
   public: Boolean!
   source: String
@@ -57,4 +70,6 @@ type Recipe {
   meats: [Meat]
   categories: [Category]
   user: User!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
 }

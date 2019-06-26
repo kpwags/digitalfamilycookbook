@@ -184,6 +184,30 @@ const Mutations = {
       info,
     );
   },
+
+  updateUser(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    const updates = { ...args };
+
+    delete updates.id;
+
+    if (args.id !== ctx.request.userId) {
+      throw new Error('You can only edit your own profile');
+    }
+
+    return ctx.db.mutation.updateUser(
+      {
+        data: updates,
+        where: {
+          id: args.id,
+        },
+      },
+      info,
+    );
+  },
 };
 
 module.exports = Mutations;

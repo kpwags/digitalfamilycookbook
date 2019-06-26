@@ -1,17 +1,15 @@
 import gql from 'graphql-tag';
 
-const CURRENT_USER_QUERY = gql`
-    query {
-        me {
+const SINGLE_USER_QUERY = gql`
+    query SINGLE_USER_QUERY($id: ID!) {
+        user(where: { id: $id }) {
             id
-            email
             name
             bio
             image
             largeImage
-            permissions
         }
     }
 `;
 
-export { CURRENT_USER_QUERY };
+export { SINGLE_USER_QUERY };

@@ -1,6 +1,8 @@
 const { forwardTo } = require('prisma-binding');
 
 const Query = {
+  user: forwardTo('db'),
+
   categories(parent, args, ctx, info) {
     return ctx.db.query.categories(
       {
