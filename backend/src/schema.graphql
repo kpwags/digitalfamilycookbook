@@ -23,6 +23,7 @@ type Query {
   me: User
   meat(where: MeatWhereUniqueInput!): Meat
   meats(where: MeatWhereInput, orderBy: MeatOrderByInput): [Meat]!
+  user(where: UserWhereUniqueInput!): User
 }
 
 type User {

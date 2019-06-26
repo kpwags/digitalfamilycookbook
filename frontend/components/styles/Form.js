@@ -20,7 +20,7 @@ const Form = styled.form`
     line-height: 1.5;
     font-weight: 600;
     width: 500px;
-    margin: 0 auto 0;
+    margin: 30px auto 0;
     label {
         display: block;
         margin: 1.5rem 0;

@@ -136,6 +136,7 @@ class EditProfileForm extends Component {
                                     <SuccessMessage message={this.state.successMessage} />
                                     <ErrorMessage error={error} />
                                     <fieldset disabled={mutationLoading} aria-busy={mutationLoading}>
+                                        <h2>Edit Profile</h2>
                                         <input type="hidden" name="id" id="user_id" defaultValue={me.id} />
                                         <input type="hidden" name="image" id="image" defaultValue={me.image} />
                                         <input
@@ -157,6 +158,11 @@ class EditProfileForm extends Component {
                                             {this.state.image && (
                                                 <div className="image-preview">
                                                     <img src={this.state.image} alt="Upload Preview" />
+                                                </div>
+                                            )}
+                                            {!this.state.image && (
+                                                <div className="image-preview">
+                                                    <img src={me.image} alt={me.name} />
                                                 </div>
                                             )}
                                         </label>
@@ -194,7 +200,6 @@ class EditProfileForm extends Component {
                                                 id="bio"
                                                 name="bio"
                                                 placeholder="Enter a bit about yourself"
-                                                required
                                                 defaultValue={me.bio}
                                                 onChange={this.handleChange}
                                             />
