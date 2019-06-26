@@ -90,7 +90,7 @@ const UserHeaderMenu = () => (
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link href="/">
+                                    <Link href="/account">
                                         <a>Settings</a>
                                     </Link>
                                 </li>
