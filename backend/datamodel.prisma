@@ -6,6 +6,7 @@ enum Permission {
 type User {
   id: ID! @id @unique
   name: String!
+  username: String! @unique
   email: String! @unique
   password: String!
   image: String

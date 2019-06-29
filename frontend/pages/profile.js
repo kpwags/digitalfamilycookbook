@@ -3,7 +3,7 @@ import { Profile } from '../components/Profile';
 
 const EditProfile = ({ query }) => (
     <>
-        <Profile id={query.id} />
+        <Profile username={query.username} />
     </>
 );
 

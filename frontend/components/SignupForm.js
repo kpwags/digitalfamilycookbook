@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
+import Router from 'next/router';
 import { SIGNUP_MUTATION } from '../mutations/Signup';
 import { CURRENT_USER_QUERY } from '../queries/CurrentUser';
 import { Form } from './styles/Form';
@@ -10,6 +11,7 @@ import { Utilities } from '../lib/Utilities';
 class SignupForm extends Component {
     state = {
         name: '',
+        username: '',
         email: '',
         password: '',
         confirmPassword: '',
@@ -37,9 +39,14 @@ class SignupForm extends Component {
             this.setState({
                 email: '',
                 name: '',
+                username: '',
                 password: '',
                 confirmPassword: '',
                 bio: ''
+            });
+
+            Router.push({
+                pathname: '/'
             });
         }
     };
@@ -47,10 +54,12 @@ class SignupForm extends Component {
     validate = e => {
         e.preventDefault();
 
-        const { valid: passwordsValid, message } = FormValidator.validatePassword(
+        const { valid: passwordsValid, message: passwordMessage } = FormValidator.validatePassword(
             this.state.password,
             this.state.confirmPassword
         );
+
+        const { valid: usernameValid, message: usernameMessage } = FormValidator.validateUsername(this.state.username);
 
         // eslint-disable-next-line default-case
         switch (e.target.id) {
@@ -59,6 +68,14 @@ class SignupForm extends Component {
                 Utilities.invalidateField('email', 'Invalid email');
             } else {
                 Utilities.resetField('email');
+            }
+            break;
+
+        case 'username':
+            if (!usernameValid) {
+                Utilities.invalidateField('username', usernameMessage);
+            } else {
+                Utilities.resetField('username');
             }
             break;
 
@@ -74,7 +91,7 @@ class SignupForm extends Component {
         case 'confirmPassword':
             if (!passwordsValid) {
                 Utilities.invalidateField('password');
-                Utilities.invalidateField('confirmPassword', message);
+                Utilities.invalidateField('confirmPassword', passwordMessage);
             } else {
                 Utilities.resetField('password');
                 Utilities.resetField('confirmPassword');
@@ -91,19 +108,25 @@ class SignupForm extends Component {
             isValid = false;
         }
 
+        const { valid: usernameValid, message: usernameMessage } = FormValidator.validateUsername(this.state.username);
+        if (!usernameValid) {
+            Utilities.invalidateField('username', usernameMessage);
+            isValid = false;
+        }
+
         if (!FormValidator.validateEmail(this.state.email)) {
             Utilities.invalidateField('email', 'Invalid email');
             isValid = false;
         }
 
-        const { valid: passwordsValid, message } = FormValidator.validatePassword(
+        const { valid: passwordsValid, message: passwordMessage } = FormValidator.validatePassword(
             this.state.password,
             this.state.confirmPassword
         );
 
         if (!passwordsValid) {
             Utilities.invalidateField('password');
-            Utilities.invalidateField('confirmPassword', message);
+            Utilities.invalidateField('confirmPassword', passwordMessage);
             isValid = false;
         }
 
@@ -140,6 +163,20 @@ class SignupForm extends Component {
                                     onBlur={this.validate}
                                 />
                                 <div className="error-text" id="name-message" />
+                            </label>
+                            <label htmlFor="username">
+                                Username
+                                <input
+                                    type="text"
+                                    name="username"
+                                    id="username"
+                                    placeholder="Username"
+                                    maxLength="20"
+                                    value={this.state.username}
+                                    onChange={this.saveToState}
+                                    onBlur={this.validate}
+                                />
+                                <div className="error-text" id="username-message" />
                             </label>
                             <label htmlFor="email">
                                 Email

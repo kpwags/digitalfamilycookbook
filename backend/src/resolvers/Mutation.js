@@ -115,11 +115,15 @@ const Mutations = {
   },
 
   async login(parent, { email, password }, ctx) {
-    const user = await ctx.db.query.user({ where: { email } });
+    let user = await ctx.db.query.user({ where: { email } });
 
     // check if user exists
     if (!user) {
-      throw new Error(`No such user found for email ${email}`);
+      user = await ctx.db.query.user({ where: { username: email } });
+
+      if (!user) {
+        throw new Error(`No such user found for email ${email}`);
+      }
     }
 
     const valid = await bcrypt.compare(password, user.password);
