@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Mutation } from 'react-apollo';
+import { Query, Mutation } from 'react-apollo';
 import Router from 'next/router';
 import { SIGNUP_MUTATION } from '../mutations/Signup';
 import { CURRENT_USER_QUERY } from '../queries/CurrentUser';
+import { SINGLE_USER_USERNAME_QUERY } from '../queries/User';
 import { Form } from './styles/Form';
 import { ErrorMessage } from './ErrorMessage';
 import { FormValidator } from '../lib/FormValidator';
@@ -74,6 +75,8 @@ class SignupForm extends Component {
         case 'username':
             if (!usernameValid) {
                 Utilities.invalidateField('username', usernameMessage);
+            } else if (document.getElementById('duplicateUser').value !== '') {
+                Utilities.invalidateField('username', 'Username already taken');
             } else {
                 Utilities.resetField('username');
             }
@@ -112,6 +115,9 @@ class SignupForm extends Component {
         if (!usernameValid) {
             Utilities.invalidateField('username', usernameMessage);
             isValid = false;
+        } else if (document.getElementById('duplicateUser').value !== '') {
+            Utilities.invalidateField('username', 'Username already taken');
+            isValid = false;
         }
 
         if (!FormValidator.validateEmail(this.state.email)) {
@@ -135,103 +141,120 @@ class SignupForm extends Component {
 
     render() {
         return (
-            <Mutation
-                mutation={SIGNUP_MUTATION}
-                variables={this.state}
-                refetchQueries={[{ query: CURRENT_USER_QUERY }]}
+            <Query
+                query={SINGLE_USER_USERNAME_QUERY}
+                variables={{
+                    username: this.state.username
+                }}
             >
-                {(signup, { error, loading }) => (
-                    <Form
-                        data-test="form"
-                        method="post"
-                        onSubmit={async e => {
-                            this.signupUser(e, signup);
-                        }}
-                    >
-                        <fieldset disabled={loading} aria-busy={loading}>
-                            <h2>Sign Up for an Account</h2>
-                            <ErrorMessage error={error} />
-                            <label htmlFor="name">
-                                Name
-                                <input
-                                    type="text"
-                                    name="name"
-                                    id="name"
-                                    placeholder="Name"
-                                    value={this.state.name}
-                                    onChange={this.saveToState}
-                                    onBlur={this.validate}
-                                />
-                                <div className="error-text" id="name-message" />
-                            </label>
-                            <label htmlFor="username">
-                                Username
-                                <input
-                                    type="text"
-                                    name="username"
-                                    id="username"
-                                    placeholder="Username"
-                                    maxLength="20"
-                                    value={this.state.username}
-                                    onChange={this.saveToState}
-                                    onBlur={this.validate}
-                                />
-                                <div className="error-text" id="username-message" />
-                            </label>
-                            <label htmlFor="email">
-                                Email
-                                <input
-                                    type="email"
-                                    name="email"
-                                    id="email"
-                                    placeholder="Email"
-                                    value={this.state.email}
-                                    onChange={this.saveToState}
-                                    onBlur={this.validate}
-                                />
-                                <div className="error-text" id="email-message" />
-                            </label>
-                            <label htmlFor="password">
-                                Password
-                                <input
-                                    type="password"
-                                    name="password"
-                                    id="password"
-                                    placeholder="Password"
-                                    value={this.state.password}
-                                    onChange={this.saveToState}
-                                    onBlur={this.validate}
-                                />
-                                <div className="error-text" id="password-message" />
-                            </label>
-                            <label htmlFor="confirmPassword">
-                                Confirm Password
-                                <input
-                                    type="password"
-                                    name="confirmPassword"
-                                    id="confirmPassword"
-                                    placeholder="Confirm Password"
-                                    value={this.state.confirmPassword}
-                                    onChange={this.saveToState}
-                                    onBlur={this.validate}
-                                />
-                                <div className="error-text" id="confirmPassword-message" />
-                            </label>
-                            <label htmlFor="bio">
-                                Bio
-                                <textarea
-                                    id="bio"
-                                    name="bio"
-                                    placeholder="Enter a bit about yourself"
-                                    value={this.state.bio}
-                                    onChange={this.saveToState}
-                                />
-                            </label>
-                            <button type="submit">Sign Up</button>
-                        </fieldset>
-                    </Form>
-                )}
-            </Mutation>
+                {({ data: { user } }) => {
+                    return (
+                        <Mutation
+                            mutation={SIGNUP_MUTATION}
+                            variables={this.state}
+                            refetchQueries={[{ query: CURRENT_USER_QUERY }]}
+                        >
+                            {(signup, { error, loading }) => (
+                                <Form
+                                    data-test="form"
+                                    method="post"
+                                    onSubmit={async e => {
+                                        this.signupUser(e, signup);
+                                    }}
+                                >
+                                    <fieldset disabled={loading} aria-busy={loading}>
+                                        <h2>Sign Up for an Account</h2>
+                                        <ErrorMessage error={error} />
+                                        <input
+                                            type="hidden"
+                                            name="duplicateUser"
+                                            id="duplicateUser"
+                                            value={user === null ? '' : user.username}
+                                        />
+                                        <label htmlFor="name">
+                                            Name
+                                            <input
+                                                type="text"
+                                                name="name"
+                                                id="name"
+                                                placeholder="Name"
+                                                value={this.state.name}
+                                                onChange={this.saveToState}
+                                                onBlur={this.validate}
+                                            />
+                                            <div className="error-text" id="name-message" />
+                                        </label>
+                                        <label htmlFor="username">
+                                            Username
+                                            <input
+                                                type="text"
+                                                name="username"
+                                                id="username"
+                                                placeholder="Username"
+                                                maxLength="20"
+                                                value={this.state.username}
+                                                onChange={this.saveToState}
+                                                onBlur={this.validate}
+                                            />
+                                            <div className="error-text" id="username-message" />
+                                        </label>
+                                        <label htmlFor="email">
+                                            Email
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                id="email"
+                                                placeholder="Email"
+                                                value={this.state.email}
+                                                onChange={this.saveToState}
+                                                onBlur={this.validate}
+                                            />
+                                            <div className="error-text" id="email-message" />
+                                        </label>
+                                        <label htmlFor="password">
+                                            Password
+                                            <input
+                                                type="password"
+                                                name="password"
+                                                id="password"
+                                                placeholder="Password"
+                                                value={this.state.password}
+                                                onChange={this.saveToState}
+                                                onBlur={this.validate}
+                                            />
+                                            <div className="error-text" id="password-message" />
+                                        </label>
+                                        <label htmlFor="confirmPassword">
+                                            Confirm Password
+                                            <input
+                                                type="password"
+                                                name="confirmPassword"
+                                                id="confirmPassword"
+                                                placeholder="Confirm Password"
+                                                value={this.state.confirmPassword}
+                                                onChange={this.saveToState}
+                                                onBlur={this.validate}
+                                            />
+                                            <div className="error-text" id="confirmPassword-message" />
+                                        </label>
+                                        <label htmlFor="bio">
+                                            Bio
+                                            <textarea
+                                                id="bio"
+                                                name="bio"
+                                                placeholder="Enter a bit about yourself"
+                                                value={this.state.bio}
+                                                onChange={this.saveToState}
+                                            />
+                                        </label>
+                                        <button type="submit">Sign Up</button>
+                                    </fieldset>
+                                </Form>
+                            )}
+                        </Mutation>
+                    );
+                }}
+            </Query>
         );
     }
 }
