@@ -17,14 +17,24 @@ const UPDATE_PROFILE_MUTATION = gql`
     mutation UPDATE_PROFILE_MUTATION(
         $id: ID!
         $name: String!
+        $username: String!
         $email: String!
         $bio: String
         $image: String
         $largeImage: String
     ) {
-        updateUser(id: $id, name: $name, email: $email, bio: $bio, image: $image, largeImage: $largeImage) {
+        updateUser(
+            id: $id
+            name: $name
+            username: $username
+            email: $email
+            bio: $bio
+            image: $image
+            largeImage: $largeImage
+        ) {
             id
             name
+            username
             email
             bio
             image

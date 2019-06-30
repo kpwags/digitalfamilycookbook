@@ -23,7 +23,15 @@ type Mutation {
   ): User!
   updateCategory(id: ID!, name: String): Category!
   updateMeat(id: ID!, name: String): Meat!
-  updateUser(id: ID!, name: String!, email: String!, bio: String, image: String, largeImage: String): User!
+  updateUser(
+    id: ID!
+    name: String!
+    username: String!
+    email: String!
+    bio: String
+    image: String
+    largeImage: String
+  ): User!
 }
 
 type Query {
