@@ -26,9 +26,19 @@ const ErrorMessage = ({ error }) => {
             </ErrorStyles>
         ));
     }
+
+    let errorMessage = error.message.replace('GraphQL error: ', '');
+    if (errorMessage.indexOf('A unique constraint would be violated') !== -1) {
+        if (errorMessage.indexOf('Field name = username')) {
+            errorMessage = 'The username you selected is already in use, please choose another one.';
+        } else if (errorMessage.indexOf('Field name = email')) {
+            errorMessage = 'It seems like you have already signed up for an account. Did you forget your password?';
+        }
+    }
+
     return (
         <ErrorStyles>
-            <p data-test="graphql-error">{error.message.replace('GraphQL error: ', '')}</p>
+            <p data-test="graphql-error">{errorMessage}</p>
         </ErrorStyles>
     );
 };

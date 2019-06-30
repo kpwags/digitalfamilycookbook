@@ -6,6 +6,7 @@ const CURRENT_USER_QUERY = gql`
             id
             email
             name
+            username
             bio
             image
             largeImage

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { Query, Mutation } from 'react-apollo';
+import { Query, Mutation, ApolloConsumer } from 'react-apollo';
+import debounce from 'lodash.debounce';
 import { CURRENT_USER_QUERY } from '../queries/CurrentUser';
 import { UPDATE_PROFILE_MUTATION } from '../mutations/User';
+import { SINGLE_USER_USERNAME_QUERY } from '../queries/User';
 import { Form } from './styles/Form';
 import { ErrorMessage } from './ErrorMessage';
 import { SuccessMessage } from './SuccessMessage';
@@ -11,12 +13,35 @@ import { Utilities } from '../lib/Utilities';
 class EditProfileForm extends Component {
     state = {
         name: '',
+        username: '',
         email: '',
         bio: '',
         image: '',
         largeImage: '',
         successMessage: null
     };
+
+    saveUsername = debounce(async (e, client) => {
+        e.preventDefault();
+
+        this.setState({ username: e.target.value });
+
+        const res = await client.query({
+            query: SINGLE_USER_USERNAME_QUERY,
+            variables: { username: this.state.username }
+        });
+
+        const id = document.getElementById('user_id').value;
+        const { valid, message } = FormValidator.validateUsername(this.state.username);
+
+        if (res.data.user !== null && res.data.user.id !== id) {
+            Utilities.invalidateField('username', 'Username already taken');
+        } else if (!valid) {
+            Utilities.invalidateField('username', message);
+        } else {
+            Utilities.resetField('username');
+        }
+    }, 350);
 
     saveToState = e => {
         this.setState({ [e.target.name]: e.target.value });
@@ -27,10 +52,14 @@ class EditProfileForm extends Component {
 
         const id = document.getElementById('user_id').value;
 
-        let { name, email, bio, image, largeImage } = this.state;
+        let { name, username, email, bio, image, largeImage } = this.state;
 
         if (name === '') {
             name = document.getElementById('name').value;
+        }
+
+        if (username === '') {
+            username = document.getElementById('username').value;
         }
 
         if (email === '') {
@@ -49,16 +78,19 @@ class EditProfileForm extends Component {
             largeImage = document.getElementById('large_image').value;
         }
 
-        await updateProfileMutation({
-            variables: {
-                id,
-                name,
-                email,
-                bio,
-                image,
-                largeImage
-            }
-        });
+        if (this.validateForm()) {
+            await updateProfileMutation({
+                variables: {
+                    id,
+                    name,
+                    username,
+                    email,
+                    bio,
+                    image,
+                    largeImage
+                }
+            });
+        }
     };
 
     validate = e => {
@@ -74,17 +106,60 @@ class EditProfileForm extends Component {
             email = document.getElementById('email').value;
         }
 
-        if (!FormValidator.validateNotEmpty(name)) {
-            Utilities.invalidateField('name', 'Name is required.');
-        } else {
-            Utilities.resetField('name');
+        // eslint-disable-next-line default-case
+        switch (e.target.id) {
+        case 'email':
+            if (!FormValidator.validateEmail(email)) {
+                Utilities.invalidateField('email', 'Invalid email');
+            } else {
+                Utilities.resetField('email');
+            }
+            break;
+
+        case 'name':
+            if (!FormValidator.validateNotEmpty(name)) {
+                Utilities.invalidateField('name', 'Name is required.');
+            } else {
+                Utilities.resetField('name');
+            }
+            break;
         }
+    };
+
+    validateForm = () => {
+        let isValid = true;
+        let { name, username, email } = this.state;
+
+        if (name === '') {
+            name = document.getElementById('name').value;
+        }
+
+        if (email === '') {
+            email = document.getElementById('email').value;
+        }
+
+        if (username === '') {
+            username = document.getElementById('username').value;
+        }
+
+        const { valid: usernameValid, message: usernameMessage } = FormValidator.validateUsername(username);
 
         if (!FormValidator.validateEmail(email)) {
             Utilities.invalidateField('email', 'Invalid email');
-        } else {
-            Utilities.resetField('email');
+            isValid = false;
         }
+
+        if (!usernameValid) {
+            Utilities.invalidateField('username', usernameMessage);
+            isValid = false;
+        }
+
+        if (!FormValidator.validateNotEmpty(name)) {
+            Utilities.invalidateField('name', 'Name is required.');
+            isValid = false;
+        }
+
+        return isValid;
     };
 
     uploadFile = async e => {
@@ -152,7 +227,6 @@ class EditProfileForm extends Component {
                                                 id="file"
                                                 name="file"
                                                 placeholder="Upload an Image"
-                                                required
                                                 onChange={this.uploadFile}
                                             />
                                             {this.state.image && (
@@ -180,6 +254,28 @@ class EditProfileForm extends Component {
                                             />
                                             <div className="error-text" id="name-message" />
                                         </label>
+
+                                        <ApolloConsumer>
+                                            {client => (
+                                                <label htmlFor="username">
+                                                    Username
+                                                    <input
+                                                        type="text"
+                                                        name="username"
+                                                        id="username"
+                                                        placeholder="Username"
+                                                        maxLength="20"
+                                                        defaultValue={me.username}
+                                                        onChange={e => {
+                                                            e.persist();
+                                                            this.saveUsername(e, client);
+                                                        }}
+                                                    />
+                                                    <div className="error-text" id="username-message" />
+                                                </label>
+                                            )}
+                                        </ApolloConsumer>
+
                                         <label htmlFor="email">
                                             Email
                                             <input

@@ -49,11 +49,11 @@ class LoginForm extends Component {
                             <h2>Log In</h2>
                             <ErrorMessage error={error} />
                             <label htmlFor="email">
-                                Email
+                                Email or Username
                                 <input
-                                    type="email"
+                                    type="text"
                                     name="email"
-                                    placeholder="Email"
+                                    placeholder="Email or Username"
                                     value={this.state.email}
                                     onChange={this.saveToState}
                                 />

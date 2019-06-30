@@ -3,7 +3,7 @@ import { Query } from 'react-apollo';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { SINGLE_USER_QUERY } from '../queries/User';
+import { SINGLE_USER_USERNAME_QUERY } from '../queries/User';
 import { ErrorMessage } from './ErrorMessage';
 
 const ProfileDetails = styled.div`
@@ -31,9 +31,15 @@ const ProfileDetails = styled.div`
 
             h2 {
                 line-height: 1;
-                margin: 0 0 16px;
+                margin: 0 0 5px;
                 padding: 0;
                 color: ${props => props.theme.green};
+            }
+
+            div.username {
+                font-size: 18px;
+                color: ${props => props.theme.lightGreen};
+                margin: 0 0 16px;
             }
         }
     }
@@ -41,21 +47,21 @@ const ProfileDetails = styled.div`
 
 class Profile extends Component {
     static propTypes = {
-        id: PropTypes.string.isRequired
+        username: PropTypes.string.isRequired
     };
 
     render() {
         return (
             <Query
-                query={SINGLE_USER_QUERY}
+                query={SINGLE_USER_USERNAME_QUERY}
                 variables={{
-                    id: this.props.id
+                    username: this.props.username
                 }}
             >
                 {({ error, loading, data }) => {
                     if (error) return <ErrorMessage error={error} />;
                     if (loading) return <p>Loading...</p>;
-                    if (!data.user) return <p>No User Found for {this.props.id}</p>;
+                    if (!data.user) return <p>No User Found for {this.props.username}</p>;
 
                     const { user } = data;
                     return (
@@ -69,6 +75,7 @@ class Profile extends Component {
                                 </div>
                                 <div className="details">
                                     <h2>{user.name}</h2>
+                                    <div className="username">@{user.username}</div>
                                     <p>{user.bio}</p>
                                 </div>
                             </div>

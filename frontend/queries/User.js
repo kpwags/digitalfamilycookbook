@@ -5,6 +5,20 @@ const SINGLE_USER_QUERY = gql`
         user(where: { id: $id }) {
             id
             name
+            username
+            bio
+            image
+            largeImage
+        }
+    }
+`;
+
+const SINGLE_USER_USERNAME_QUERY = gql`
+    query SINGLE_USER_USERNAME_QUERY($username: String!) {
+        user(where: { username: $username }) {
+            id
+            name
+            username
             bio
             image
             largeImage
@@ -13,3 +27,4 @@ const SINGLE_USER_QUERY = gql`
 `;
 
 export { SINGLE_USER_QUERY };
+export { SINGLE_USER_USERNAME_QUERY };

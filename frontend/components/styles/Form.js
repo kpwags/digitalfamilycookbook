@@ -94,6 +94,10 @@ const Form = styled.form`
         margin-top: 5px;
     }
 
+    div.error-text.visible {
+        display: block;
+    }
+
     div.image-preview {
         margin: 15px auto;
         width: 128px;

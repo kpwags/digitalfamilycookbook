@@ -17,6 +17,56 @@ class FormValidator {
         return true;
     }
 
+    static validateSetLength(value, fieldName = 'value', minLength = 1, maxLength = 25) {
+        if (!this.validateNotEmpty(value)) {
+            return {
+                valid: false,
+                message: `${fieldName} is required`
+            };
+        }
+
+        if (value.trim().length < minLength || value.trim().length > maxLength) {
+            return {
+                valid: false,
+                message: `${fieldName} must be between ${minLength} and ${maxLength} characters`
+            };
+        }
+
+        return {
+            valid: true,
+            message: ''
+        };
+    }
+
+    static validateUsername(value) {
+        if (!this.validateNotEmpty(value)) {
+            return {
+                valid: false,
+                message: 'Username is required'
+            };
+        }
+
+        const regEx = new RegExp('^[A-Za-z0-9_]+$');
+        if (!regEx.test(value)) {
+            return {
+                valid: false,
+                message: 'Username can only contain letters, numbers, and underscores'
+            };
+        }
+
+        if (value.trim().length < 1 || value.trim().length > 20) {
+            return {
+                valid: false,
+                message: 'Username must be between 1 and 20 characters'
+            };
+        }
+
+        return {
+            valid: true,
+            message: ''
+        };
+    }
+
     static validatePassword(value1, value2) {
         if (typeof value1 !== 'string' || typeof value2 !== 'string' || (value1 === '' && value2 === '')) {
             return {

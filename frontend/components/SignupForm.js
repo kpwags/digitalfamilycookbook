@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { Mutation } from 'react-apollo';
+import { Mutation, ApolloConsumer } from 'react-apollo';
+import Router from 'next/router';
+import debounce from 'lodash.debounce';
 import { SIGNUP_MUTATION } from '../mutations/Signup';
 import { CURRENT_USER_QUERY } from '../queries/CurrentUser';
+import { SINGLE_USER_USERNAME_QUERY } from '../queries/User';
 import { Form } from './styles/Form';
 import { ErrorMessage } from './ErrorMessage';
 import { FormValidator } from '../lib/FormValidator';
@@ -10,11 +13,33 @@ import { Utilities } from '../lib/Utilities';
 class SignupForm extends Component {
     state = {
         name: '',
+        username: '',
         email: '',
         password: '',
         confirmPassword: '',
         bio: ''
     };
+
+    saveUsername = debounce(async (e, client) => {
+        e.preventDefault();
+
+        this.setState({ username: e.target.value });
+
+        const res = await client.query({
+            query: SINGLE_USER_USERNAME_QUERY,
+            variables: { username: this.state.username }
+        });
+
+        const { valid, message } = FormValidator.validateUsername(this.state.username);
+
+        if (res.data.user !== null) {
+            Utilities.invalidateField('username', 'Username already taken');
+        } else if (!valid) {
+            Utilities.invalidateField('username', message);
+        } else {
+            Utilities.resetField('username');
+        }
+    }, 350);
 
     saveToState = e => {
         this.setState({ [e.target.name]: e.target.value });
@@ -37,9 +62,14 @@ class SignupForm extends Component {
             this.setState({
                 email: '',
                 name: '',
+                username: '',
                 password: '',
                 confirmPassword: '',
                 bio: ''
+            });
+
+            Router.push({
+                pathname: '/'
             });
         }
     };
@@ -47,7 +77,7 @@ class SignupForm extends Component {
     validate = e => {
         e.preventDefault();
 
-        const { valid: passwordsValid, message } = FormValidator.validatePassword(
+        const { valid: passwordsValid, message: passwordMessage } = FormValidator.validatePassword(
             this.state.password,
             this.state.confirmPassword
         );
@@ -74,7 +104,7 @@ class SignupForm extends Component {
         case 'confirmPassword':
             if (!passwordsValid) {
                 Utilities.invalidateField('password');
-                Utilities.invalidateField('confirmPassword', message);
+                Utilities.invalidateField('confirmPassword', passwordMessage);
             } else {
                 Utilities.resetField('password');
                 Utilities.resetField('confirmPassword');
@@ -91,19 +121,25 @@ class SignupForm extends Component {
             isValid = false;
         }
 
+        const { valid: usernameValid, message: usernameMessage } = FormValidator.validateUsername(this.state.username);
+        if (!usernameValid) {
+            Utilities.invalidateField('username', usernameMessage);
+            isValid = false;
+        }
+
         if (!FormValidator.validateEmail(this.state.email)) {
             Utilities.invalidateField('email', 'Invalid email');
             isValid = false;
         }
 
-        const { valid: passwordsValid, message } = FormValidator.validatePassword(
+        const { valid: passwordsValid, message: passwordMessage } = FormValidator.validatePassword(
             this.state.password,
             this.state.confirmPassword
         );
 
         if (!passwordsValid) {
             Utilities.invalidateField('password');
-            Utilities.invalidateField('confirmPassword', message);
+            Utilities.invalidateField('confirmPassword', passwordMessage);
             isValid = false;
         }
 
@@ -141,6 +177,27 @@ class SignupForm extends Component {
                                 />
                                 <div className="error-text" id="name-message" />
                             </label>
+
+                            <ApolloConsumer>
+                                {client => (
+                                    <label htmlFor="username">
+                                        Username
+                                        <input
+                                            type="text"
+                                            name="username"
+                                            id="username"
+                                            placeholder="Username"
+                                            maxLength="20"
+                                            onChange={e => {
+                                                e.persist();
+                                                this.saveUsername(e, client);
+                                            }}
+                                        />
+                                        <div className="error-text" id="username-message" />
+                                    </label>
+                                )}
+                            </ApolloConsumer>
+
                             <label htmlFor="email">
                                 Email
                                 <input
