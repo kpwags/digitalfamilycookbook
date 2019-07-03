@@ -13,6 +13,10 @@ class DeleteCategory extends Component {
         children: PropTypes.node
     };
 
+    state = {
+        error: null
+    };
+
     update = (cache, payload) => {
         const data = cache.readQuery({ query: ALL_CATEGORIES_QUERY });
 
@@ -35,14 +39,19 @@ class DeleteCategory extends Component {
             <Mutation mutation={DELETE_CATEGORY_MUTATION} variables={{ id }} update={this.update}>
                 {(deleteCategory, { error }) => (
                     <>
-                        <ErrorAlert id={`delete-category-error-${id}`} error={error} />
+                        <ErrorAlert id={`delete-category-error-${id}`} error={error || this.state.error} />
                         <ConfirmDialog
                             id={`confirm-category-delete-${id}`}
                             message={`Are you sure you want to delete ${name}?`}
                             height="130"
                             continue={async () => {
-                                await deleteCategory();
-                                document.getElementById('page-overlay').style.display = 'none';
+                                await deleteCategory().catch(err => {
+                                    this.setState({ error: err });
+                                });
+
+                                if (this.state.error === null) {
+                                    document.getElementById('page-overlay').style.display = 'none';
+                                }
                             }}
                         />
                         <button type="button" onClick={this.confirmDelete}>

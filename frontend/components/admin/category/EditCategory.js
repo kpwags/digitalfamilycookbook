@@ -14,7 +14,8 @@ class EditCategory extends Component {
 
     state = {
         id: this.props.id,
-        name: this.props.name
+        name: this.props.name,
+        error: null
     };
 
     componentDidUpdate(prevProps) {
@@ -41,15 +42,21 @@ class EditCategory extends Component {
     updateCategory = async (e, updateCategoryMutation) => {
         e.preventDefault();
 
+        this.setState({ error: null });
+
         await updateCategoryMutation({
             variables: {
                 id: this.state.id,
                 name: this.state.name
             }
+        }).catch(err => {
+            this.setState({ error: err });
         });
 
-        document.getElementById('edit-category-window').style.display = 'none';
-        document.getElementById('page-overlay').style.display = 'none';
+        if (this.state.error === null) {
+            document.getElementById('edit-category-window').style.display = 'none';
+            document.getElementById('page-overlay').style.display = 'none';
+        }
     };
 
     render() {
@@ -66,7 +73,7 @@ class EditCategory extends Component {
                             this.updateCategory(e, updateCategory);
                         }}
                     >
-                        <ErrorMessage error={error} />
+                        <ErrorMessage error={error || this.state.error} />
                         <fieldset disabled={loading} aria-busy={loading}>
                             <label htmlFor="name">
                                 Name

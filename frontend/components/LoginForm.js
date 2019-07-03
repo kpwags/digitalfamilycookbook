@@ -14,7 +14,8 @@ class LoginForm extends Component {
 
     state = {
         email: '',
-        password: ''
+        password: '',
+        error: null
     };
 
     saveToState = e => {
@@ -35,19 +36,29 @@ class LoginForm extends Component {
                         method="post"
                         onSubmit={async e => {
                             e.preventDefault();
-                            await login();
-                            this.setState({
-                                email: '',
-                                password: ''
+
+                            this.setState({ error: null });
+
+                            await login().catch(err => {
+                                this.setState({
+                                    error: err
+                                });
                             });
-                            Router.push({
-                                pathname: redirectUrl
-                            });
+
+                            if (this.state.error === null) {
+                                this.setState({
+                                    email: '',
+                                    password: ''
+                                });
+                                Router.push({
+                                    pathname: redirectUrl
+                                });
+                            }
                         }}
                     >
                         <fieldset disabled={loading} aria-busy={loading}>
                             <h2>Log In</h2>
-                            <ErrorMessage error={error} />
+                            <ErrorMessage error={error || this.state.error} />
                             <label htmlFor="email">
                                 Email or Username
                                 <input

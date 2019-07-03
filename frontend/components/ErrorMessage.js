@@ -19,6 +19,15 @@ const ErrorStyles = styled.div`
 
 const ErrorMessage = ({ error }) => {
     if (!error || !error.message) return null;
+
+    if (typeof error === 'string') {
+        return (
+            <ErrorStyles>
+                <p data-test="graphql-error">{error}</p>
+            </ErrorStyles>
+        );
+    }
+
     if (error.networkError && error.networkError.result && error.networkError.result.errors.length) {
         return error.networkError.result.errors.map((err, i) => (
             <ErrorStyles key={i}>
