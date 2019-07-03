@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { CloseX } from './svg/CloseX';
 
 const Window = styled.div`
     display: none;
@@ -17,6 +18,7 @@ const Window = styled.div`
     form {
         box-shadow: none;
         background: #ffffff;
+        padding: 0 20px 20px;
     }
 
     .close-button {
@@ -28,7 +30,7 @@ const Window = styled.div`
             border: none;
             background: #ffffff;
             display: block;
-            padding: 5px 10px 0 0;
+            padding: 10px 10px 0 0;
             font-size: 18px;
             color: #777888;
             float: right;
@@ -75,7 +77,7 @@ class ModalWindow extends Component {
                                 ModalWindow.closePopup(e, id);
                             }}
                         >
-                            <i className="fas fa-times" />
+                            <CloseX width="15" height="15" fill="#666666" />
                         </button>
                     </div>
                     <div className="content">{this.props.children}</div>
