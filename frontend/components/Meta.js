@@ -7,12 +7,6 @@ const Meta = () => (
         <link rel="shortcut icon" href="/static/favicon.png" />
         <link rel="stylesheet" type="text/css" href="/static/styles/master.css" />
         <link rel="stylesheet" type="text/css" href="/static/styles/nprogress.css" />
-        <link
-            rel="stylesheet"
-            href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
-            integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt"
-            crossOrigin="anonymous"
-        />
         <title>Digital Family Cookbook</title>
     </Head>
 );

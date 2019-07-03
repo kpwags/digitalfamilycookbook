@@ -3,6 +3,7 @@ import { Query } from 'react-apollo';
 import styled from 'styled-components';
 import { ALL_CATEGORIES_QUERY } from '../queries/Category';
 import { ALL_MEATS_QUERY } from '../queries/Meat';
+import { DownArrow } from './svg/DownArrow';
 
 const StyledNavBar = styled.ul`
     float: left;
@@ -93,7 +94,7 @@ const NavBar = () => (
         <li>
             <Link href="/">
                 <a>
-                    Categories <i className="fa fa-caret-down" />
+                    Categories <DownArrow width={15} height={15} fill="#fff" viewbox="0 0 129 129" />
                 </a>
             </Link>
             <Query query={ALL_CATEGORIES_QUERY}>
@@ -123,7 +124,7 @@ const NavBar = () => (
         <li>
             <Link href="/">
                 <a>
-                    Meats <i className="fa fa-caret-down" />
+                    Meats <DownArrow width={15} height={15} fill="#fff" viewbox="0 0 129 129" />
                 </a>
             </Link>
             <Query query={ALL_MEATS_QUERY}>

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import { User } from './User';
 import { Logout } from './Logout';
+import { DownArrow } from './svg/DownArrow';
 
 const UserMenu = styled.ul`
     float: right;
@@ -82,7 +83,7 @@ const UserHeaderMenu = () => (
                     <>
                         <li>
                             <img src={me.image} alt={me.name} /> {`${me.name} `}
-                            <i className="fa fa-caret-down" />
+                            <DownArrow width={15} height={15} fill="#fff" viewbox="0 0 129 129" />
                             <ul className="child-list">
                                 <li>
                                     <Link href="/edit-profile">
