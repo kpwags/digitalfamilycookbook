@@ -18,7 +18,8 @@ class EditProfileForm extends Component {
         bio: '',
         image: '',
         largeImage: '',
-        successMessage: null
+        successMessage: null,
+        error: null
     };
 
     saveUsername = debounce(async (e, client) => {
@@ -89,6 +90,8 @@ class EditProfileForm extends Component {
                     image,
                     largeImage
                 }
+            }).catch(err => {
+                this.setState({ error: err });
             });
         }
     };
@@ -190,26 +193,25 @@ class EditProfileForm extends Component {
                             mutation={UPDATE_PROFILE_MUTATION}
                             variables={this.state}
                             refetchQueries={[{ query: CURRENT_USER_QUERY }]}
+                            onCompleted={() => {
+                                if (this.state.error === null) {
+                                    this.setState({
+                                        successMessage: 'Profile updated successfully'
+                                    });
+                                }
+                            }}
                         >
                             {(updateUser, { error, mutationLoading }) => (
                                 <Form
                                     data-test="form"
                                     method="post"
                                     onSubmit={async e => {
+                                        this.setState({ error: null, successMessage: null });
                                         this.updateProfile(e, updateUser);
-                                        if (!error) {
-                                            this.setState({
-                                                successMessage: 'Profile updated successfully'
-                                            });
-                                        } else {
-                                            this.setState({
-                                                successMessage: null
-                                            });
-                                        }
                                     }}
                                 >
                                     <SuccessMessage message={this.state.successMessage} />
-                                    <ErrorMessage error={error} />
+                                    <ErrorMessage error={error || this.state.error} />
                                     <fieldset disabled={mutationLoading} aria-busy={mutationLoading}>
                                         <h2>Edit Profile</h2>
                                         <input type="hidden" name="id" id="user_id" defaultValue={me.id} />
