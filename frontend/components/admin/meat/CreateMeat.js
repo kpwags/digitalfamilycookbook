@@ -7,7 +7,8 @@ import { ALL_MEATS_QUERY } from '../../../queries/Meat';
 
 class CreateMeat extends Component {
     state = {
-        name: ''
+        name: '',
+        error: null
     };
 
     handleChange = e => {
@@ -41,11 +42,19 @@ class CreateMeat extends Component {
                         id="create-meat-form"
                         onSubmit={async e => {
                             e.preventDefault();
-                            await createMeat();
-                            this.hideAddForm();
+
+                            this.setState({ error: null });
+
+                            await createMeat().catch(err => {
+                                this.setState({ error: err });
+                            });
+
+                            if (this.state.error === null) {
+                                this.hideAddForm();
+                            }
                         }}
                     >
-                        <ErrorMessage error={error} />
+                        <ErrorMessage error={error || this.state.error} />
                         <fieldset disabled={loading} aria-busy={loading}>
                             <label htmlFor="name">
                                 Name

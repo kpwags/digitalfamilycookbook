@@ -14,7 +14,8 @@ class EditMeat extends Component {
 
     state = {
         id: this.props.id,
-        name: this.props.name
+        name: this.props.name,
+        error: null
     };
 
     componentDidUpdate(prevProps) {
@@ -41,15 +42,21 @@ class EditMeat extends Component {
     updateMeat = async (e, updateMeatMutation) => {
         e.preventDefault();
 
+        this.setState({ error: null });
+
         await updateMeatMutation({
             variables: {
                 id: this.state.id,
                 name: this.state.name
             }
+        }).catch(err => {
+            this.setState({ error: err });
         });
 
-        document.getElementById('edit-meat-window').style.display = 'none';
-        document.getElementById('page-overlay').style.display = 'none';
+        if (this.state.error === null) {
+            document.getElementById('edit-meat-window').style.display = 'none';
+            document.getElementById('page-overlay').style.display = 'none';
+        }
     };
 
     render() {
@@ -66,7 +73,7 @@ class EditMeat extends Component {
                             this.updateMeat(e, updateMeat);
                         }}
                     >
-                        <ErrorMessage error={error} />
+                        <ErrorMessage error={error || this.state.error} />
                         <fieldset disabled={loading} aria-busy={loading}>
                             <label htmlFor="name">
                                 Name

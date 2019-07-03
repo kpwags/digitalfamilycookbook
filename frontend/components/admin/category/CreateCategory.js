@@ -7,7 +7,8 @@ import { ALL_CATEGORIES_QUERY } from '../../../queries/Category';
 
 class CreateCategory extends Component {
     state = {
-        name: ''
+        name: '',
+        error: null
     };
 
     handleChange = e => {
@@ -41,11 +42,19 @@ class CreateCategory extends Component {
                         id="create-category-form"
                         onSubmit={async e => {
                             e.preventDefault();
-                            await createCategory();
-                            this.hideAddForm();
+
+                            this.setState({ error: null });
+
+                            await createCategory().catch(err => {
+                                this.setState({ error: err });
+                            });
+
+                            if (this.state.error === null) {
+                                this.hideAddForm();
+                            }
                         }}
                     >
-                        <ErrorMessage error={error} />
+                        <ErrorMessage error={error || this.state.error} />
                         <fieldset disabled={loading} aria-busy={loading}>
                             <label htmlFor="name">
                                 Name

@@ -17,7 +17,8 @@ class SignupForm extends Component {
         email: '',
         password: '',
         confirmPassword: '',
-        bio: ''
+        bio: '',
+        error: null
     };
 
     saveUsername = debounce(async (e, client) => {
@@ -48,6 +49,8 @@ class SignupForm extends Component {
     signupUser = async (e, signupMutation) => {
         e.preventDefault();
 
+        this.setState({ error: null });
+
         if (this.validateForm()) {
             const args = this.state;
 
@@ -57,20 +60,24 @@ class SignupForm extends Component {
                     image: '/static/images/user.jpg',
                     largeImage: '/static/images/user-lg.jpg'
                 }
+            }).catch(err => {
+                this.setState({ error: err });
             });
 
-            this.setState({
-                email: '',
-                name: '',
-                username: '',
-                password: '',
-                confirmPassword: '',
-                bio: ''
-            });
+            if (this.state.error === null) {
+                this.setState({
+                    email: '',
+                    name: '',
+                    username: '',
+                    password: '',
+                    confirmPassword: '',
+                    bio: ''
+                });
 
-            Router.push({
-                pathname: '/'
-            });
+                Router.push({
+                    pathname: '/'
+                });
+            }
         }
     };
 
@@ -163,7 +170,7 @@ class SignupForm extends Component {
                     >
                         <fieldset disabled={loading} aria-busy={loading}>
                             <h2>Sign Up for an Account</h2>
-                            <ErrorMessage error={error} />
+                            <ErrorMessage error={error || this.state.error} />
                             <label htmlFor="name">
                                 Name
                                 <input

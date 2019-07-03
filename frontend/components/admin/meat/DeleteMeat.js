@@ -13,6 +13,10 @@ class DeleteMeat extends Component {
         children: PropTypes.node
     };
 
+    state = {
+        error: null
+    };
+
     update = (cache, payload) => {
         const data = cache.readQuery({ query: ALL_MEATS_QUERY });
 
@@ -35,14 +39,19 @@ class DeleteMeat extends Component {
             <Mutation mutation={DELETE_MEAT_MUTATION} variables={{ id }} update={this.update}>
                 {(deleteMeat, { error }) => (
                     <>
-                        <ErrorAlert id={`delete-meat-error-${id}`} error={error} />
+                        <ErrorAlert id={`delete-meat-error-${id}`} error={error || this.state.error} />
                         <ConfirmDialog
                             id={`confirm-meat-delete-${id}`}
                             message={`Are you sure you want to delete ${name}?`}
                             height="130"
                             continue={async () => {
-                                await deleteMeat();
-                                document.getElementById('page-overlay').style.display = 'none';
+                                await deleteMeat().catch(err => {
+                                    this.setState({ error: err });
+                                });
+
+                                if (this.state.error === null) {
+                                    document.getElementById('page-overlay').style.display = 'none';
+                                }
                             }}
                         />
                         <button type="button" onClick={this.confirmDelete}>
