@@ -18,7 +18,7 @@ class AdminMeats extends Component {
     render() {
         return (
             <>
-                <AuthGateway redirectUrl="/admin/meats">
+                <AuthGateway redirectUrl="/admin/meats" permissionNeeded="ADMIN">
                     <h1>Manage Meats</h1>
                     <AddButton>
                         <button onClick={this.showCreateMeatForm} type="button">

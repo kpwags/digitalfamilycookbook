@@ -95,6 +95,15 @@ const UserHeaderMenu = () => (
                                         <a>Settings</a>
                                     </Link>
                                 </li>
+
+                                {me.permissions.includes('ADMIN') && (
+                                    <li>
+                                        <Link href="/admin">
+                                            <a>Administration</a>
+                                        </Link>
+                                    </li>
+                                )}
+
                                 <li>
                                     <Logout />
                                 </li>
