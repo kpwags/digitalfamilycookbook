@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import { Mutation, ApolloConsumer } from 'react-apollo';
 import Router from 'next/router';
 import debounce from 'lodash.debounce';
-import { SIGNUP_MUTATION } from '../mutations/Signup';
-import { CURRENT_USER_QUERY } from '../queries/CurrentUser';
-import { SINGLE_USER_USERNAME_QUERY } from '../queries/User';
-import { Form } from './styles/Form';
-import { ErrorMessage } from './ErrorMessage';
-import { FormValidator } from '../lib/FormValidator';
-import { Utilities } from '../lib/Utilities';
+import { SIGNUP_MUTATION } from '../../../mutations/Signup';
+import { CURRENT_USER_QUERY, SINGLE_USER_USERNAME_QUERY } from '../../../queries/User';
+import { Form } from '../../styles/Form';
+import { ErrorMessage } from '../../elements/ErrorMessage';
+import { FormValidator } from '../../../lib/FormValidator';
+import { Utilities } from '../../../lib/Utilities';
 
 class SignupForm extends Component {
     state = {

@@ -1,4 +1,4 @@
-import { ChangePasswordForm } from '../components/ChangePasswordForm';
+import { ChangePasswordForm } from '../components/forms/user/ChangePasswordForm';
 import { AuthGateway } from '../components/AuthGateway';
 
 const EditProfile = () => (

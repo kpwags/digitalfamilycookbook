@@ -3,7 +3,7 @@ import { MeatGrid } from '../../components/admin/meat/MeatGrid';
 import { AddButton } from '../../components/styles/AddButton';
 import { CreateMeat } from '../../components/admin/meat/CreateMeat';
 import { AuthGateway } from '../../components/AuthGateway';
-import { ModalWindow } from '../../components/ModalWindow';
+import { ModalWindow } from '../../components/elements/ModalWindow';
 
 class AdminMeats extends Component {
     // eslint-disable-next-line class-methods-use-this

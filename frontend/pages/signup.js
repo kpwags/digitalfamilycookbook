@@ -1,4 +1,4 @@
-import { SignupForm } from '../components/SignupForm';
+import { SignupForm } from '../components/forms/user/SignupForm';
 import { User } from '../components/User';
 import { Homepage } from '../components/Homepage';
 

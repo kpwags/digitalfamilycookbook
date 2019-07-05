@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { Query, Mutation, ApolloConsumer } from 'react-apollo';
 import debounce from 'lodash.debounce';
-import { CURRENT_USER_QUERY } from '../queries/CurrentUser';
-import { UPDATE_PROFILE_MUTATION } from '../mutations/User';
-import { SINGLE_USER_USERNAME_QUERY } from '../queries/User';
-import { Form } from './styles/Form';
-import { ErrorMessage } from './ErrorMessage';
-import { SuccessMessage } from './SuccessMessage';
-import { FormValidator } from '../lib/FormValidator';
-import { Utilities } from '../lib/Utilities';
+import { CURRENT_USER_QUERY, SINGLE_USER_USERNAME_QUERY } from '../../../queries/User';
+import { UPDATE_PROFILE_MUTATION } from '../../../mutations/User';
+import { Form } from '../../styles/Form';
+import { ErrorMessage } from '../../elements/ErrorMessage';
+import { SuccessMessage } from '../../elements/SuccessMessage';
+import { FormValidator } from '../../../lib/FormValidator';
+import { Utilities } from '../../../lib/Utilities';
 
 class EditProfileForm extends Component {
     state = {

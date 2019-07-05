@@ -4,7 +4,7 @@ import Head from 'next/head';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { SINGLE_USER_USERNAME_QUERY } from '../queries/User';
-import { ErrorMessage } from './ErrorMessage';
+import { ErrorMessage } from './elements/ErrorMessage';
 
 const ProfileDetails = styled.div`
     width: 800px;
@@ -45,7 +45,7 @@ const ProfileDetails = styled.div`
     }
 `;
 
-class Profile extends Component {
+class ViewProfile extends Component {
     static propTypes = {
         username: PropTypes.string.isRequired
     };
@@ -87,4 +87,4 @@ class Profile extends Component {
     }
 }
 
-export { Profile };
+export { ViewProfile };

@@ -2,8 +2,8 @@ import React from 'react';
 import { Mutation } from 'react-apollo';
 import Router from 'next/router';
 import styled from 'styled-components';
-import { LOGOUT_MUTATION } from '../mutations/Logout';
-import { CURRENT_USER_QUERY } from '../queries/CurrentUser';
+import { LOGOUT_MUTATION } from '../mutations/User';
+import { CURRENT_USER_QUERY } from '../queries/User';
 
 const LogoutLink = styled.a``;
 
