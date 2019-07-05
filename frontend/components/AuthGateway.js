@@ -2,8 +2,8 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { CURRENT_USER_QUERY } from '../queries/CurrentUser';
-import { LoginForm } from './LoginForm';
+import { CURRENT_USER_QUERY } from '../queries/User';
+import { LoginForm } from './forms/user/LoginForm';
 import { Homepage } from './Homepage';
 
 const ContinueMessage = styled.h2`

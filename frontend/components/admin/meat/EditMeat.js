@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import PropTypes from 'prop-types';
 import { Form } from '../../styles/Form';
-import { ErrorMessage } from '../../ErrorMessage';
+import { ErrorMessage } from '../../elements/ErrorMessage';
 import { UPDATE_MEAT_MUTATION } from '../../../mutations/Meat';
 import { ALL_MEATS_QUERY } from '../../../queries/Meat';
 

@@ -43,5 +43,25 @@ const UPDATE_PROFILE_MUTATION = gql`
     }
 `;
 
+const LOGIN_MUTATION = gql`
+    mutation LOGIN_MUTATION($email: String!, $password: String!) {
+        login(email: $email, password: $password) {
+            id
+            email
+            name
+        }
+    }
+`;
+
+const LOGOUT_MUTATION = gql`
+    mutation LOGOUT_MUTATION {
+        logout {
+            message
+        }
+    }
+`;
+
 export { UPDATE_PROFILE_MUTATION };
 export { CHANGE_PASSWORD_MUTATION };
+export { LOGOUT_MUTATION };
+export { LOGIN_MUTATION };

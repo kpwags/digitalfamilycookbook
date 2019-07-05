@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { DELETE_CATEGORY_MUTATION } from '../../../mutations/Category';
 import { ALL_CATEGORIES_QUERY } from '../../../queries/Category';
 import { ConfirmDialog } from '../../styles/ConfirmDialog';
-import { ErrorAlert } from '../../ErrorAlert';
+import { ErrorAlert } from '../../elements/ErrorAlert';
 
 class DeleteCategory extends Component {
     static propTypes = {

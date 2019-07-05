@@ -1,4 +1,4 @@
-import { EditProfileForm } from '../components/EditProfileForm';
+import { EditProfileForm } from '../components/forms/user/EditProfileForm';
 import { AuthGateway } from '../components/AuthGateway';
 
 const EditProfile = () => (

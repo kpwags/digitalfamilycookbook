@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
-import { LOGIN_MUTATION } from '../mutations/Login';
-import { CURRENT_USER_QUERY } from '../queries/CurrentUser';
-import { Form } from './styles/Form';
-import { ErrorMessage } from './ErrorMessage';
+import { LOGIN_MUTATION } from '../../../mutations/User';
+import { CURRENT_USER_QUERY } from '../../../queries/User';
+import { Form } from '../../styles/Form';
+import { ErrorMessage } from '../../elements/ErrorMessage';
 
 class LoginForm extends Component {
     static propTypes = {

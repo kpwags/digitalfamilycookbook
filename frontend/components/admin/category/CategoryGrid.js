@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Query } from 'react-apollo';
 import { ALL_CATEGORIES_QUERY } from '../../../queries/Category';
 import { AdminGrid } from '../../styles/AdminGrid';
-import { ModalWindow } from '../../ModalWindow';
+import { ModalWindow } from '../../elements/ModalWindow';
 import { EditCategory } from './EditCategory';
 import { DeleteCategory } from './DeleteCategory';
 

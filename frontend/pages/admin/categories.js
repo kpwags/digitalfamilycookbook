@@ -3,7 +3,7 @@ import { CategoryGrid } from '../../components/admin/category/CategoryGrid';
 import { AddButton } from '../../components/styles/AddButton';
 import { CreateCategory } from '../../components/admin/category/CreateCategory';
 import { AuthGateway } from '../../components/AuthGateway';
-import { ModalWindow } from '../../components/ModalWindow';
+import { ModalWindow } from '../../components/elements/ModalWindow';
 
 class AdminCategories extends Component {
     static showCreateForm(e) {

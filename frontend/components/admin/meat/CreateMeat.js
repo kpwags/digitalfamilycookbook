@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import { Form } from '../../styles/Form';
-import { ErrorMessage } from '../../ErrorMessage';
+import { ErrorMessage } from '../../elements/ErrorMessage';
 import { CREATE_MEAT_MUTATION } from '../../../mutations/Meat';
 import { ALL_MEATS_QUERY } from '../../../queries/Meat';
 

@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import styled from 'styled-components';
-import { User } from './User';
-import { Logout } from './Logout';
-import { DownArrow } from './svg/DownArrow';
+import { User } from '../User';
+import { Logout } from '../Logout';
+import { DownArrow } from '../svg/DownArrow';
 
 const UserMenu = styled.ul`
     float: right;

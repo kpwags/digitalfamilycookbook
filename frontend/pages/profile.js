@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types';
-import { Profile } from '../components/Profile';
+import { ViewProfile } from '../components/ViewProfile';
 
-const EditProfile = ({ query }) => (
+const Profile = ({ query }) => (
     <>
-        <Profile username={query.username} />
+        <ViewProfile username={query.username} />
     </>
 );
 
-EditProfile.propTypes = {
+Profile.propTypes = {
     query: PropTypes.object
 };
 
-export default EditProfile;
+export default Profile;

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import styled, { ThemeProvider, injectGlobal } from 'styled-components';
 import PropTypes from 'prop-types';
-import Meta from './Meta';
-import Header from './Header';
+import Meta from './page_elements/Meta';
+import Header from './page_elements/Header';
 
 const theme = {
     black: '#393939',

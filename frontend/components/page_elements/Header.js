@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import styled from 'styled-components';
-import { siteTitle } from '../config';
+import { siteTitle } from '../../config';
 import NavBar from './NavBar';
 import UserHeaderMenu from './UserHeaderMenu';
 

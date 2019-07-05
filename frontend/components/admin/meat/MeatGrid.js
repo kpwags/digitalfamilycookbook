@@ -4,7 +4,7 @@ import { ALL_MEATS_QUERY } from '../../../queries/Meat';
 import { AdminGrid } from '../../styles/AdminGrid';
 import { DeleteMeat } from './DeleteMeat';
 import { EditMeat } from './EditMeat';
-import { ModalWindow } from '../../ModalWindow';
+import { ModalWindow } from '../../elements/ModalWindow';
 
 class MeatGrid extends Component {
     state = {

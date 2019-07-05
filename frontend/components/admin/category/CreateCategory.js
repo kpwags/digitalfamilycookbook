@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import { Form } from '../../styles/Form';
-import { ErrorMessage } from '../../ErrorMessage';
+import { ErrorMessage } from '../../elements/ErrorMessage';
 import { CREATE_CATEGORY_MUTATION } from '../../../mutations/Category';
 import { ALL_CATEGORIES_QUERY } from '../../../queries/Category';
 

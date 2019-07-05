@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Query, Mutation } from 'react-apollo';
-import { CURRENT_USER_QUERY } from '../queries/CurrentUser';
-import { CHANGE_PASSWORD_MUTATION } from '../mutations/User';
-import { Form } from './styles/Form';
-import { ErrorMessage } from './ErrorMessage';
-import { SuccessMessage } from './SuccessMessage';
-import { FormValidator } from '../lib/FormValidator';
-import { Utilities } from '../lib/Utilities';
+import { CURRENT_USER_QUERY } from '../../../queries/User';
+import { CHANGE_PASSWORD_MUTATION } from '../../../mutations/User';
+import { Form } from '../../styles/Form';
+import { ErrorMessage } from '../../elements/ErrorMessage';
+import { SuccessMessage } from '../../elements/SuccessMessage';
+import { FormValidator } from '../../../lib/FormValidator';
+import { Utilities } from '../../../lib/Utilities';
 
 class ChangePasswordForm extends Component {
     state = {
