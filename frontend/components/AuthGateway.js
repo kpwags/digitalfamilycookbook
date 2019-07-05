@@ -4,9 +4,16 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { CURRENT_USER_QUERY } from '../queries/CurrentUser';
 import { LoginForm } from './LoginForm';
+import { Homepage } from './Homepage';
 
 const ContinueMessage = styled.h2`
     color: ${props => props.theme.darkGreen};
+    text-align: center;
+    font-style: italic;
+`;
+
+const InvalidPermissionsMessage = styled.p`
+    color: #ff0000;
     text-align: center;
     font-style: italic;
 `;
@@ -24,6 +31,20 @@ const AuthGateway = props => (
                 );
             }
 
+            if (
+                typeof props.permissionNeeded !== 'undefined' &&
+                !data.me.permissions.includes(props.permissionNeeded)
+            ) {
+                return (
+                    <>
+                        <InvalidPermissionsMessage>
+                            You do not have permission to access this page.
+                        </InvalidPermissionsMessage>
+                        <Homepage />
+                    </>
+                );
+            }
+
             return props.children;
         }}
     </Query>
@@ -31,6 +52,7 @@ const AuthGateway = props => (
 
 AuthGateway.propTypes = {
     redirectUrl: PropTypes.string,
+    permissionNeeded: PropTypes.string,
     children: PropTypes.node
 };
 

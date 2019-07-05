@@ -17,7 +17,7 @@ class AdminCategories extends Component {
     render() {
         return (
             <>
-                <AuthGateway redirectUrl="/admin/categories">
+                <AuthGateway redirectUrl="/admin/categories" permissionNeeded="ADMIN">
                     <h1>Manage Categories</h1>
                     <AddButton>
                         <button onClick={AdminCategories.showCreateForm} type="button">

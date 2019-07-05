@@ -3,7 +3,7 @@ import { AuthGateway } from '../components/AuthGateway';
 
 const Account = () => (
     <>
-        <AuthGateway redirectUrl="/edit-profile">
+        <AuthGateway redirectUrl="/account">
             <h1>Account Settings</h1>
             <p>
                 <Link href="/change-password">
