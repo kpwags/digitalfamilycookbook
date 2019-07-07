@@ -209,10 +209,10 @@ class EditProfileForm extends Component {
                                         this.updateProfile(e, updateUser);
                                     }}
                                 >
-                                    <SuccessMessage message={this.state.successMessage} />
-                                    <ErrorMessage error={error || this.state.error} />
                                     <fieldset disabled={mutationLoading} aria-busy={mutationLoading}>
                                         <h2>Edit Profile</h2>
+                                        <SuccessMessage message={this.state.successMessage} />
+                                        <ErrorMessage error={error || this.state.error} />
                                         <input type="hidden" name="id" id="user_id" defaultValue={me.id} />
                                         <input type="hidden" name="image" id="image" defaultValue={me.image} />
                                         <input
