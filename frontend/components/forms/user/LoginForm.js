@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Link from 'next/link';
 import { Mutation } from 'react-apollo';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
@@ -79,6 +80,11 @@ class LoginForm extends Component {
                                     onChange={this.saveToState}
                                 />
                             </label>
+                            <p>
+                                <Link href="/forgot-password">
+                                    <a>Forgot Password?</a>
+                                </Link>
+                            </p>
                             <button type="submit">Log In</button>
                         </fieldset>
                     </Form>

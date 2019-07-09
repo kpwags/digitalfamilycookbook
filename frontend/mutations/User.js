@@ -61,7 +61,27 @@ const LOGOUT_MUTATION = gql`
     }
 `;
 
+const REQUEST_PASSWORD_RESET_MUTATION = gql`
+    mutation REQUEST_PASSWORD_RESET_MUTATION($email: String!) {
+        requestPasswordReset(email: $email) {
+            message
+        }
+    }
+`;
+
+const RESET_PASSWORD_MUTATION = gql`
+    mutation RESET_PASSWORD_MUTATION($resetToken: String!, $password: String!) {
+        resetPassword(resetToken: $resetToken, password: $password) {
+            id
+            email
+            name
+        }
+    }
+`;
+
 export { UPDATE_PROFILE_MUTATION };
 export { CHANGE_PASSWORD_MUTATION };
 export { LOGOUT_MUTATION };
 export { LOGIN_MUTATION };
+export { REQUEST_PASSWORD_RESET_MUTATION };
+export { RESET_PASSWORD_MUTATION };

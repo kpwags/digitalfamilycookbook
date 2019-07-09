@@ -12,6 +12,8 @@ type Mutation {
   deleteMeat(id: ID!): Meat
   login(email: String!, password: String!): User!
   logout: SuccessMessage
+  requestPasswordReset(email: String!): SuccessMessage
+  resetPassword(resetToken: String!, password: String!): User
   signup(
     email: String!
     username: String!

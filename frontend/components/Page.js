@@ -43,7 +43,10 @@ injectGlobal`
   a {
     text-decoration:none;
     cursor:pointer;
-    color: ${theme.black};
+    color: ${theme.green};
+  }
+  a:hover {
+      text-decoration: underline;
   }
 `;
 
