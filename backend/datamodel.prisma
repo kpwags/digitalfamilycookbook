@@ -19,6 +19,13 @@ type User {
   updatedAt: DateTime! @updatedAt
 }
 
+type InvitationCode {
+  id: ID! @id @unique
+  code: String! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
 type Meat {
   id: ID! @id @unique
   name: String!

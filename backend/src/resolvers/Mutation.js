@@ -48,7 +48,7 @@ const Mutations = {
     const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
 
     if (!hasPermissions) {
-      throw new Error('You do not have the proper permissions to delete');
+      throw new Error('You do not have the proper permissions to create a category');
     }
 
     const category = ctx.db.mutation.createCategory(
@@ -63,6 +63,29 @@ const Mutations = {
     return category;
   },
 
+  async createInvitationCode(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in to create an inivation code');
+    }
+
+    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+
+    if (!hasPermissions) {
+      throw new Error('You do not have the proper permissions to create an invitation code');
+    }
+
+    const invitationCode = ctx.db.mutation.createInvitationCode(
+      {
+        data: {
+          ...args,
+        },
+      },
+      info,
+    );
+
+    return invitationCode;
+  },
+
   async createMeat(parent, args, ctx, info) {
     if (!ctx.request.userId) {
       throw new Error('You must be logged in to create a meat');
@@ -71,7 +94,7 @@ const Mutations = {
     const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
 
     if (!hasPermissions) {
-      throw new Error('You do not have the proper permissions to delete');
+      throw new Error('You do not have the proper permissions to create a meat');
     }
 
     const meat = ctx.db.mutation.createMeat(
@@ -100,6 +123,22 @@ const Mutations = {
     }
 
     return ctx.db.mutation.deleteCategory({ where }, info);
+  },
+
+  async deleteInvitationCode(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    const where = { id: args.id };
+
+    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+
+    if (!hasPermissions) {
+      throw new Error('You do not have the proper permissions to delete invitation codes');
+    }
+
+    return ctx.db.mutation.deleteInvitationCode({ where }, info);
   },
 
   async deleteMeat(parent, args, ctx, info) {
@@ -217,6 +256,14 @@ const Mutations = {
     // eslint-disable-next-line no-param-reassign
     args.email = args.email.toLowerCase();
 
+    const invitationCode = await ctx.db.query.invitationCode({
+      where: { code: args.invitationCode },
+    });
+
+    if (!invitationCode) {
+      throw new Error('Invalid invitation code');
+    }
+
     const password = await bcrypt.hash(args.password, 10);
     const user = await ctx.db.mutation.createUser(
       {
@@ -247,7 +294,7 @@ const Mutations = {
     const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
 
     if (!hasPermissions) {
-      throw new Error('You do not have the proper permissions to delete');
+      throw new Error('You do not have the proper permissions to update categories');
     }
 
     const updates = { ...args };
@@ -255,6 +302,32 @@ const Mutations = {
     delete updates.id;
 
     return ctx.db.mutation.updateCategory(
+      {
+        data: updates,
+        where: {
+          id: args.id,
+        },
+      },
+      info,
+    );
+  },
+
+  updateInvitationCode(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+
+    if (!hasPermissions) {
+      throw new Error('You do not have the proper permissions to update invitation codes');
+    }
+
+    const updates = { ...args };
+
+    delete updates.id;
+
+    return ctx.db.mutation.updateInvitationCode(
       {
         data: updates,
         where: {
@@ -273,7 +346,7 @@ const Mutations = {
     const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
 
     if (!hasPermissions) {
-      throw new Error('You do not have the proper permissions to delete');
+      throw new Error('You do not have the proper permissions to update meats');
     }
 
     const updates = { ...args };

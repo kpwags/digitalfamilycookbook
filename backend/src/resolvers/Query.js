@@ -1,8 +1,6 @@
 const { forwardTo } = require('prisma-binding');
 
 const Query = {
-  user: forwardTo('db'),
-
   categories(parent, args, ctx, info) {
     return ctx.db.query.categories(
       {
@@ -13,6 +11,9 @@ const Query = {
   },
 
   category: forwardTo('db'),
+
+  invitationCode: forwardTo('db'),
+  invitationCodes: forwardTo('db'),
 
   me(parent, args, ctx, info) {
     // check if there is a user id
@@ -38,6 +39,8 @@ const Query = {
       info,
     );
   },
+
+  user: forwardTo('db'),
 };
 
 module.exports = Query;

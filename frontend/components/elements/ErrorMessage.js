@@ -37,11 +37,14 @@ const ErrorMessage = ({ error }) => {
     }
 
     let errorMessage = error.message.replace('GraphQL error: ', '');
+
     if (errorMessage.indexOf('A unique constraint would be violated') !== -1) {
-        if (errorMessage.indexOf('Field name = username')) {
+        if (errorMessage.indexOf('Field name = username') !== -1) {
             errorMessage = 'The username you selected is already in use, please choose another one.';
-        } else if (errorMessage.indexOf('Field name = email')) {
+        } else if (errorMessage.indexOf('Field name = email') !== -1) {
             errorMessage = 'It seems like you have already signed up for an account. Did you forget your password?';
+        } else if (errorMessage.indexOf('Field name = code') !== -1) {
+            errorMessage = 'It seems like you have already created this invitation code';
         }
     }
 

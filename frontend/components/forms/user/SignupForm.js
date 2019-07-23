@@ -17,6 +17,7 @@ class SignupForm extends Component {
         password: '',
         confirmPassword: '',
         bio: '',
+        invitationCode: '',
         error: null
     };
 
@@ -70,7 +71,8 @@ class SignupForm extends Component {
                     username: '',
                     password: '',
                     confirmPassword: '',
-                    bio: ''
+                    bio: '',
+                    invitationCode: ''
                 });
 
                 Router.push({
@@ -116,6 +118,14 @@ class SignupForm extends Component {
                 Utilities.resetField('confirmPassword');
             }
             break;
+
+        case 'invitationCode':
+            if (!FormValidator.validateNotEmpty(this.state.invitationCode)) {
+                Utilities.invalidateField('invitationCode', 'Invitation code is required.');
+            } else {
+                Utilities.resetField('invitationCode');
+            }
+            break;
         }
     };
 
@@ -149,6 +159,11 @@ class SignupForm extends Component {
             isValid = false;
         }
 
+        if (!FormValidator.validateNotEmpty(this.state.invitationCode)) {
+            Utilities.invalidateField('invitationCode', 'Invitation code is required.');
+            isValid = false;
+        }
+
         return isValid;
     };
 
@@ -176,7 +191,6 @@ class SignupForm extends Component {
                                     type="text"
                                     name="name"
                                     id="name"
-                                    placeholder="Name"
                                     value={this.state.name}
                                     onChange={this.saveToState}
                                     onBlur={this.validate}
@@ -192,7 +206,6 @@ class SignupForm extends Component {
                                             type="text"
                                             name="username"
                                             id="username"
-                                            placeholder="Username"
                                             maxLength="20"
                                             onChange={e => {
                                                 e.persist();
@@ -210,7 +223,6 @@ class SignupForm extends Component {
                                     type="email"
                                     name="email"
                                     id="email"
-                                    placeholder="Email"
                                     value={this.state.email}
                                     onChange={this.saveToState}
                                     onBlur={this.validate}
@@ -223,7 +235,6 @@ class SignupForm extends Component {
                                     type="password"
                                     name="password"
                                     id="password"
-                                    placeholder="Password"
                                     value={this.state.password}
                                     onChange={this.saveToState}
                                     onBlur={this.validate}
@@ -236,7 +247,6 @@ class SignupForm extends Component {
                                     type="password"
                                     name="confirmPassword"
                                     id="confirmPassword"
-                                    placeholder="Confirm Password"
                                     value={this.state.confirmPassword}
                                     onChange={this.saveToState}
                                     onBlur={this.validate}
@@ -245,13 +255,19 @@ class SignupForm extends Component {
                             </label>
                             <label htmlFor="bio">
                                 Bio
-                                <textarea
-                                    id="bio"
-                                    name="bio"
-                                    placeholder="Enter a bit about yourself"
-                                    value={this.state.bio}
+                                <textarea id="bio" name="bio" value={this.state.bio} onChange={this.saveToState} />
+                            </label>
+                            <label htmlFor="invitationCode">
+                                Invitation Code
+                                <input
+                                    type="text"
+                                    name="invitationCode"
+                                    id="invitationCode"
+                                    value={this.state.invitationCode}
                                     onChange={this.saveToState}
+                                    onBlur={this.validate}
                                 />
+                                <div className="error-text" id="invitationCode-message" />
                             </label>
                             <button type="submit">Sign Up</button>
                         </fieldset>
