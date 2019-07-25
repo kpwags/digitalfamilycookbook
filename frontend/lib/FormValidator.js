@@ -9,6 +9,35 @@ class FormValidator {
         return true;
     }
 
+    static validateInvitationCode(value) {
+        if (!this.validateNotEmpty(value)) {
+            return {
+                valid: false,
+                message: 'Invitation code is required'
+            };
+        }
+
+        const regEx = new RegExp('^[A-Za-z0-9_]+$');
+        if (!regEx.test(value)) {
+            return {
+                valid: false,
+                message: 'Invitation codes can only contain letters, numbers, and underscores'
+            };
+        }
+
+        if (value.trim().length < 1 || value.trim().length > 20) {
+            return {
+                valid: false,
+                message: 'Invitation codes must be between 1 and 20 characters'
+            };
+        }
+
+        return {
+            valid: true,
+            message: ''
+        };
+    }
+
     static validateNotEmpty(value) {
         if (typeof value !== 'string' || value.trim().length === 0) {
             return false;

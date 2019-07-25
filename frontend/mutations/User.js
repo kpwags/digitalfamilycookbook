@@ -13,36 +13,6 @@ const CHANGE_PASSWORD_MUTATION = gql`
     }
 `;
 
-const UPDATE_PROFILE_MUTATION = gql`
-    mutation UPDATE_PROFILE_MUTATION(
-        $id: ID!
-        $name: String!
-        $username: String!
-        $email: String!
-        $bio: String
-        $image: String
-        $largeImage: String
-    ) {
-        updateUser(
-            id: $id
-            name: $name
-            username: $username
-            email: $email
-            bio: $bio
-            image: $image
-            largeImage: $largeImage
-        ) {
-            id
-            name
-            username
-            email
-            bio
-            image
-            largeImage
-        }
-    }
-`;
-
 const LOGIN_MUTATION = gql`
     mutation LOGIN_MUTATION($email: String!, $password: String!) {
         login(email: $email, password: $password) {
@@ -79,9 +49,72 @@ const RESET_PASSWORD_MUTATION = gql`
     }
 `;
 
-export { UPDATE_PROFILE_MUTATION };
+const SIGNUP_MUTATION = gql`
+    mutation SIGNUP_MUTATION(
+        $email: String!
+        $username: String!
+        $name: String!
+        $password: String!
+        $bio: String
+        $invitationCode: String!
+        $image: String
+        $largeImage: String
+    ) {
+        signup(
+            email: $email
+            username: $username
+            name: $name
+            password: $password
+            bio: $bio
+            invitationCode: $invitationCode
+            image: $image
+            largeImage: $largeImage
+        ) {
+            id
+            email
+            username
+            name
+            bio
+            image
+            largeImage
+        }
+    }
+`;
+
+const UPDATE_PROFILE_MUTATION = gql`
+    mutation UPDATE_PROFILE_MUTATION(
+        $id: ID!
+        $name: String!
+        $username: String!
+        $email: String!
+        $bio: String
+        $image: String
+        $largeImage: String
+    ) {
+        updateUser(
+            id: $id
+            name: $name
+            username: $username
+            email: $email
+            bio: $bio
+            image: $image
+            largeImage: $largeImage
+        ) {
+            id
+            name
+            username
+            email
+            bio
+            image
+            largeImage
+        }
+    }
+`;
+
 export { CHANGE_PASSWORD_MUTATION };
 export { LOGOUT_MUTATION };
 export { LOGIN_MUTATION };
 export { REQUEST_PASSWORD_RESET_MUTATION };
 export { RESET_PASSWORD_MUTATION };
+export { SIGNUP_MUTATION };
+export { UPDATE_PROFILE_MUTATION };

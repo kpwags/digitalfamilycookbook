@@ -7,8 +7,10 @@ type SuccessMessage {
 type Mutation {
   changePassword(id: ID!, currentPassword: String!, password: String!): User!
   createCategory(name: String!): Category!
+  createInvitationCode(code: String!): InvitationCode!
   createMeat(name: String!): Meat!
   deleteCategory(id: ID!): Category
+  deleteInvitationCode(id: ID!): InvitationCode
   deleteMeat(id: ID!): Meat
   login(email: String!, password: String!): User!
   logout: SuccessMessage
@@ -20,10 +22,12 @@ type Mutation {
     password: String!
     name: String!
     bio: String
+    invitationCode: String!
     image: String
     largeImage: String
   ): User!
   updateCategory(id: ID!, name: String): Category!
+  updateInvitationCode(id: ID!, code: String): InvitationCode!
   updateMeat(id: ID!, name: String): Meat!
   updateUser(
     id: ID!
@@ -39,6 +43,8 @@ type Mutation {
 type Query {
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput): [Category]!
   category(where: CategoryWhereUniqueInput!): Category
+  invitationCode(where: InvitationCodeWhereUniqueInput!): InvitationCode
+  invitationCodes: [InvitationCode]
   me: User
   meat(where: MeatWhereUniqueInput!): Meat
   meats(where: MeatWhereInput, orderBy: MeatOrderByInput): [Meat]!

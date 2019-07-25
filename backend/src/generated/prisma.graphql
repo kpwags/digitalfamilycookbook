@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/digital-family-cookbook/digitalfamilycookbook/dev
-# timestamp: Fri Jun 28 2019 19:30:06 GMT-0400 (Eastern Daylight Time)
+# timestamp: Mon Jul 22 2019 19:10:26 GMT-0400 (Eastern Daylight Time)
 
 type AggregateCategory {
   count: Int!
@@ -10,6 +10,10 @@ type AggregateDirection {
 }
 
 type AggregateIngredient {
+  count: Int!
+}
+
+type AggregateInvitationCode {
   count: Int!
 }
 
@@ -1318,6 +1322,242 @@ input IngredientWhereUniqueInput {
   id: ID
 }
 
+type InvitationCode implements Node {
+  id: ID!
+  code: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type InvitationCodeConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [InvitationCodeEdge]!
+  aggregate: AggregateInvitationCode!
+}
+
+input InvitationCodeCreateInput {
+  id: ID
+  code: String!
+}
+
+"""An edge in a connection."""
+type InvitationCodeEdge {
+  """The item at the end of the edge."""
+  node: InvitationCode!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum InvitationCodeOrderByInput {
+  id_ASC
+  id_DESC
+  code_ASC
+  code_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type InvitationCodePreviousValues {
+  id: ID!
+  code: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type InvitationCodeSubscriptionPayload {
+  mutation: MutationType!
+  node: InvitationCode
+  updatedFields: [String!]
+  previousValues: InvitationCodePreviousValues
+}
+
+input InvitationCodeSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [InvitationCodeSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [InvitationCodeSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [InvitationCodeSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: InvitationCodeWhereInput
+}
+
+input InvitationCodeUpdateInput {
+  code: String
+}
+
+input InvitationCodeUpdateManyMutationInput {
+  code: String
+}
+
+input InvitationCodeWhereInput {
+  """Logical AND on all given filters."""
+  AND: [InvitationCodeWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [InvitationCodeWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [InvitationCodeWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  code: String
+
+  """All values that are not equal to given value."""
+  code_not: String
+
+  """All values that are contained in given list."""
+  code_in: [String!]
+
+  """All values that are not contained in given list."""
+  code_not_in: [String!]
+
+  """All values less than the given value."""
+  code_lt: String
+
+  """All values less than or equal the given value."""
+  code_lte: String
+
+  """All values greater than the given value."""
+  code_gt: String
+
+  """All values greater than or equal the given value."""
+  code_gte: String
+
+  """All values containing the given string."""
+  code_contains: String
+
+  """All values not containing the given string."""
+  code_not_contains: String
+
+  """All values starting with the given string."""
+  code_starts_with: String
+
+  """All values not starting with the given string."""
+  code_not_starts_with: String
+
+  """All values ending with the given string."""
+  code_ends_with: String
+
+  """All values not ending with the given string."""
+  code_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+}
+
+input InvitationCodeWhereUniqueInput {
+  id: ID
+  code: String
+}
+
 """
 The `Long` scalar type represents non-fractional signed whole numeric values.
 Long can represent values between -(2^63) and 2^63 - 1.
@@ -1736,36 +1976,42 @@ input MeatWhereUniqueInput {
 }
 
 type Mutation {
+  createInvitationCode(data: InvitationCodeCreateInput!): InvitationCode!
   createRecipe(data: RecipeCreateInput!): Recipe!
   createIngredient(data: IngredientCreateInput!): Ingredient!
   createUser(data: UserCreateInput!): User!
   createMeat(data: MeatCreateInput!): Meat!
   createCategory(data: CategoryCreateInput!): Category!
   createDirection(data: DirectionCreateInput!): Direction!
+  updateInvitationCode(data: InvitationCodeUpdateInput!, where: InvitationCodeWhereUniqueInput!): InvitationCode
   updateRecipe(data: RecipeUpdateInput!, where: RecipeWhereUniqueInput!): Recipe
   updateIngredient(data: IngredientUpdateInput!, where: IngredientWhereUniqueInput!): Ingredient
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateMeat(data: MeatUpdateInput!, where: MeatWhereUniqueInput!): Meat
   updateCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
   updateDirection(data: DirectionUpdateInput!, where: DirectionWhereUniqueInput!): Direction
+  deleteInvitationCode(where: InvitationCodeWhereUniqueInput!): InvitationCode
   deleteRecipe(where: RecipeWhereUniqueInput!): Recipe
   deleteIngredient(where: IngredientWhereUniqueInput!): Ingredient
   deleteUser(where: UserWhereUniqueInput!): User
   deleteMeat(where: MeatWhereUniqueInput!): Meat
   deleteCategory(where: CategoryWhereUniqueInput!): Category
   deleteDirection(where: DirectionWhereUniqueInput!): Direction
+  upsertInvitationCode(where: InvitationCodeWhereUniqueInput!, create: InvitationCodeCreateInput!, update: InvitationCodeUpdateInput!): InvitationCode!
   upsertRecipe(where: RecipeWhereUniqueInput!, create: RecipeCreateInput!, update: RecipeUpdateInput!): Recipe!
   upsertIngredient(where: IngredientWhereUniqueInput!, create: IngredientCreateInput!, update: IngredientUpdateInput!): Ingredient!
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertMeat(where: MeatWhereUniqueInput!, create: MeatCreateInput!, update: MeatUpdateInput!): Meat!
   upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
   upsertDirection(where: DirectionWhereUniqueInput!, create: DirectionCreateInput!, update: DirectionUpdateInput!): Direction!
+  updateManyInvitationCodes(data: InvitationCodeUpdateManyMutationInput!, where: InvitationCodeWhereInput): BatchPayload!
   updateManyRecipes(data: RecipeUpdateManyMutationInput!, where: RecipeWhereInput): BatchPayload!
   updateManyIngredients(data: IngredientUpdateManyMutationInput!, where: IngredientWhereInput): BatchPayload!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManyMeats(data: MeatUpdateManyMutationInput!, where: MeatWhereInput): BatchPayload!
   updateManyCategories(data: CategoryUpdateManyMutationInput!, where: CategoryWhereInput): BatchPayload!
   updateManyDirections(data: DirectionUpdateManyMutationInput!, where: DirectionWhereInput): BatchPayload!
+  deleteManyInvitationCodes(where: InvitationCodeWhereInput): BatchPayload!
   deleteManyRecipes(where: RecipeWhereInput): BatchPayload!
   deleteManyIngredients(where: IngredientWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
@@ -1807,18 +2053,21 @@ enum Permission {
 }
 
 type Query {
+  invitationCodes(where: InvitationCodeWhereInput, orderBy: InvitationCodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [InvitationCode]!
   recipes(where: RecipeWhereInput, orderBy: RecipeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Recipe]!
   ingredients(where: IngredientWhereInput, orderBy: IngredientOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Ingredient]!
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   meats(where: MeatWhereInput, orderBy: MeatOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Meat]!
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
   directions(where: DirectionWhereInput, orderBy: DirectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Direction]!
+  invitationCode(where: InvitationCodeWhereUniqueInput!): InvitationCode
   recipe(where: RecipeWhereUniqueInput!): Recipe
   ingredient(where: IngredientWhereUniqueInput!): Ingredient
   user(where: UserWhereUniqueInput!): User
   meat(where: MeatWhereUniqueInput!): Meat
   category(where: CategoryWhereUniqueInput!): Category
   direction(where: DirectionWhereUniqueInput!): Direction
+  invitationCodesConnection(where: InvitationCodeWhereInput, orderBy: InvitationCodeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): InvitationCodeConnection!
   recipesConnection(where: RecipeWhereInput, orderBy: RecipeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RecipeConnection!
   ingredientsConnection(where: IngredientWhereInput, orderBy: IngredientOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): IngredientConnection!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
@@ -2586,6 +2835,7 @@ input RecipeWhereUniqueInput {
 }
 
 type Subscription {
+  invitationCode(where: InvitationCodeSubscriptionWhereInput): InvitationCodeSubscriptionPayload
   recipe(where: RecipeSubscriptionWhereInput): RecipeSubscriptionPayload
   ingredient(where: IngredientSubscriptionWhereInput): IngredientSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
