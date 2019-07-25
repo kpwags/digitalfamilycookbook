@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { Mutation, ApolloConsumer } from 'react-apollo';
 import Router from 'next/router';
 import debounce from 'lodash.debounce';
-import { SIGNUP_MUTATION } from '../../../mutations/Signup';
+import { SIGNUP_MUTATION } from '../../../mutations/User';
 import { CURRENT_USER_QUERY, SINGLE_USER_USERNAME_QUERY } from '../../../queries/User';
 import { Form } from '../../styles/Form';
 import { ErrorMessage } from '../../elements/ErrorMessage';
 import { FormValidator } from '../../../lib/FormValidator';
 import { Utilities } from '../../../lib/Utilities';
+import { publicRegistration } from '../../../config';
 
 class SignupForm extends Component {
     state = {
@@ -53,6 +54,10 @@ class SignupForm extends Component {
 
         if (this.validateForm()) {
             const args = this.state;
+
+            if (publicRegistration) {
+                args.invitationCode = 'N/A';
+            }
 
             await signupMutation({
                 variables: {
@@ -159,7 +164,7 @@ class SignupForm extends Component {
             isValid = false;
         }
 
-        if (!FormValidator.validateNotEmpty(this.state.invitationCode)) {
+        if (!publicRegistration && !FormValidator.validateNotEmpty(this.state.invitationCode)) {
             Utilities.invalidateField('invitationCode', 'Invitation code is required.');
             isValid = false;
         }
@@ -257,18 +262,20 @@ class SignupForm extends Component {
                                 Bio
                                 <textarea id="bio" name="bio" value={this.state.bio} onChange={this.saveToState} />
                             </label>
-                            <label htmlFor="invitationCode">
-                                Invitation Code
-                                <input
-                                    type="text"
-                                    name="invitationCode"
-                                    id="invitationCode"
-                                    value={this.state.invitationCode}
-                                    onChange={this.saveToState}
-                                    onBlur={this.validate}
-                                />
-                                <div className="error-text" id="invitationCode-message" />
-                            </label>
+                            {!publicRegistration && (
+                                <label htmlFor="invitationCode">
+                                    Invitation Code
+                                    <input
+                                        type="text"
+                                        name="invitationCode"
+                                        id="invitationCode"
+                                        value={this.state.invitationCode}
+                                        onChange={this.saveToState}
+                                        onBlur={this.validate}
+                                    />
+                                    <div className="error-text" id="invitationCode-message" />
+                                </label>
+                            )}
                             <button type="submit">Sign Up</button>
                         </fieldset>
                     </Form>

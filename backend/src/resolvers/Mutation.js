@@ -253,22 +253,29 @@ const Mutations = {
   },
 
   async signup(parent, args, ctx, info) {
-    // eslint-disable-next-line no-param-reassign
-    args.email = args.email.toLowerCase();
+    const formValues = args;
 
-    const invitationCode = await ctx.db.query.invitationCode({
-      where: { code: args.invitationCode },
-    });
+    if (parseInt(process.env.PUBLIC_REGISTRATION, 10) === 0) {
+      const invitationCode = await ctx.db.query.invitationCode({
+        where: { code: formValues.invitationCode },
+      });
 
-    if (!invitationCode) {
-      throw new Error('Invalid invitation code');
+      if (!invitationCode) {
+        throw new Error('Invalid invitation code');
+      }
     }
 
-    const password = await bcrypt.hash(args.password, 10);
+    if (typeof formValues.invitationCode !== 'undefined') {
+      delete formValues.invitationCode;
+    }
+
+    formValues.email = args.email.toLowerCase();
+
+    const password = await bcrypt.hash(formValues.password, 10);
     const user = await ctx.db.mutation.createUser(
       {
         data: {
-          ...args,
+          ...formValues,
           password,
           permissions: { set: ['USER'] },
         },
