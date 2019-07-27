@@ -10,6 +10,11 @@ const Home = () => (
                 </Link>
             </li>
             <li>
+                <Link href="/admin/users">
+                    <a>Manage Family Members</a>
+                </Link>
+            </li>
+            <li>
                 <Link href="/admin/categories">
                     <a>Manage Categories</a>
                 </Link>

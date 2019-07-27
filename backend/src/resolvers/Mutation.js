@@ -122,6 +122,8 @@ const Mutations = {
       throw new Error('You do not have the proper permissions to delete');
     }
 
+    // TODO: Delete the category link to the recipes its attached to
+
     return ctx.db.mutation.deleteCategory({ where }, info);
   },
 
@@ -154,7 +156,27 @@ const Mutations = {
       throw new Error('You do not have the proper permissions to delete');
     }
 
+    // TODO: Delete the meat link to the recipes its attached to
+
     return ctx.db.mutation.deleteMeat({ where }, info);
+  },
+
+  async deleteUser(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    const where = { id: args.id };
+
+    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+
+    if (!hasPermissions) {
+      throw new Error('You do not have the proper permissions to delete a user');
+    }
+
+    // TODO: Update all recipes that user created to the admin deleting the user
+
+    return ctx.db.mutation.deleteUser({ where }, info);
   },
 
   async login(parent, { email, password }, ctx) {
@@ -291,6 +313,42 @@ const Mutations = {
     });
 
     return user;
+  },
+
+  async toggleAdmin(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+
+    if (!hasPermissions) {
+      throw new Error("You do not have the proper permissions to update the user's permissions");
+    }
+
+    const user = await ctx.db.query.user(
+      {
+        where: { id: args.id },
+      },
+      '{ permissions }',
+    );
+
+    let permissions = ['USER'];
+    if (!user.permissions.includes('ADMIN')) {
+      permissions = ['ADMIN', 'USER'];
+    }
+
+    return ctx.db.mutation.updateUser(
+      {
+        data: {
+          permissions: { set: permissions },
+        },
+        where: {
+          id: args.id,
+        },
+      },
+      info,
+    );
   },
 
   updateCategory(parent, args, ctx, info) {

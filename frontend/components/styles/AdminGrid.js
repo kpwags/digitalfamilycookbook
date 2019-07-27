@@ -38,6 +38,9 @@ const AdminGrid = styled.table`
                     color: #ffffff;
                     padding: 3px 10px;
                 }
+                button[type='button'].wide {
+                    min-width: 100px;
+                }
             }
         }
         tr:last-child {

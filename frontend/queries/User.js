@@ -41,6 +41,22 @@ const CURRENT_USER_QUERY = gql`
     }
 `;
 
+const ALL_USERS_QUERY = gql`
+    query ALL_USERS_QUERY {
+        users {
+            id
+            name
+            username
+            email
+            bio
+            image
+            largeImage
+            permissions
+        }
+    }
+`;
+
 export { SINGLE_USER_QUERY };
 export { SINGLE_USER_USERNAME_QUERY };
 export { CURRENT_USER_QUERY };
+export { ALL_USERS_QUERY };
