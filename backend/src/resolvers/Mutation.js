@@ -63,6 +63,40 @@ const Mutations = {
     return category;
   },
 
+  async createDirection(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in to create an ingredient');
+    }
+
+    const direction = ctx.db.mutation.createDirection(
+      {
+        data: {
+          ...args,
+        },
+      },
+      info,
+    );
+
+    return direction;
+  },
+
+  async createIngredient(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in to create an ingredient');
+    }
+
+    const ingredient = ctx.db.mutation.createIngredient(
+      {
+        data: {
+          ...args,
+        },
+      },
+      info,
+    );
+
+    return ingredient;
+  },
+
   async createInvitationCode(parent, args, ctx, info) {
     if (!ctx.request.userId) {
       throw new Error('You must be logged in to create an inivation code');
@@ -107,6 +141,79 @@ const Mutations = {
     );
 
     return meat;
+  },
+
+  async createRecipe(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    const formValues = args;
+
+    const ingredients = [];
+    const directions = [];
+
+    formValues.ingredients.forEach(async (i) => {
+      const ingredient = await ctx.db.createIngredient(
+        {
+          data: {
+            name: i.name,
+          },
+        },
+        '{ id, name, createdAt, updatedAt }',
+      );
+
+      ingredients.push(ingredient);
+    });
+
+    formValues.directions.forEach(async (d) => {
+      const direction = await ctx.db.createDirection(
+        {
+          data: {
+            direction: d.direction,
+            sortOrder: d.sortOrder,
+          },
+        },
+        '{ id, direction, sortOrder, createdAt, updatedAt }',
+      );
+
+      directions.push(direction);
+    });
+
+    const recipe = await ctx.db.mutation.createRecipe(
+      {
+        data: {
+          name: formValues.name,
+          public: formValues.public,
+          source: formValues.source,
+          sourceUrl: formValues.sourceUrl,
+          time: formValues.time,
+          activeTime: formValues.activeTime,
+          servings: formValues.servings,
+          calories: formValues.calories,
+          carbohydrates: formValues.carbohydrates,
+          protein: formValues.protein,
+          fat: formValues.fat,
+          sugar: formValues.sugar,
+          cholesterol: formValues.cholesterol,
+          fiber: formValues.fiber,
+          image: formValues.image,
+          largeImage: formValues.largeImage,
+          ingredients,
+          directions,
+          meats: formValues.meats,
+          categories: formValues.categories,
+          user: {
+            connect: {
+              id: ctx.request.userId,
+            },
+          },
+        },
+      },
+      info,
+    );
+
+    return recipe;
   },
 
   async deleteCategory(parent, args, ctx, info) {
