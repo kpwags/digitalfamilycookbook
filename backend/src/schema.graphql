@@ -12,6 +12,7 @@ type Mutation {
   deleteCategory(id: ID!): Category
   deleteInvitationCode(id: ID!): InvitationCode
   deleteMeat(id: ID!): Meat
+  deleteUser(id: ID!): User
   login(email: String!, password: String!): User!
   logout: SuccessMessage
   requestPasswordReset(email: String!): SuccessMessage
@@ -26,6 +27,7 @@ type Mutation {
     image: String
     largeImage: String
   ): User!
+  toggleAdmin(id: ID!): User!
   updateCategory(id: ID!, name: String): Category!
   updateInvitationCode(id: ID!, code: String): InvitationCode!
   updateMeat(id: ID!, name: String): Meat!
@@ -49,6 +51,7 @@ type Query {
   meat(where: MeatWhereUniqueInput!): Meat
   meats(where: MeatWhereInput, orderBy: MeatOrderByInput): [Meat]!
   user(where: UserWhereUniqueInput!): User
+  users(where: UserWhereInput, orderBy: UserOrderByInput): [User]!
 }
 
 type User {

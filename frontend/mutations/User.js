@@ -13,6 +13,14 @@ const CHANGE_PASSWORD_MUTATION = gql`
     }
 `;
 
+const DELETE_USER_MUTATION = gql`
+    mutation DELETE_USER_MUTATION($id: ID!) {
+        deleteUser(id: $id) {
+            id
+        }
+    }
+`;
+
 const LOGIN_MUTATION = gql`
     mutation LOGIN_MUTATION($email: String!, $password: String!) {
         login(email: $email, password: $password) {
@@ -81,6 +89,20 @@ const SIGNUP_MUTATION = gql`
     }
 `;
 
+const TOGGLE_ADMIN_MUTATION = gql`
+    mutation TOGGLE_ADMIN_MUTATION($id: ID!) {
+        toggleAdmin(id: $id) {
+            id
+            name
+            username
+            email
+            bio
+            image
+            largeImage
+        }
+    }
+`;
+
 const UPDATE_PROFILE_MUTATION = gql`
     mutation UPDATE_PROFILE_MUTATION(
         $id: ID!
@@ -112,9 +134,11 @@ const UPDATE_PROFILE_MUTATION = gql`
 `;
 
 export { CHANGE_PASSWORD_MUTATION };
+export { DELETE_USER_MUTATION };
 export { LOGOUT_MUTATION };
 export { LOGIN_MUTATION };
 export { REQUEST_PASSWORD_RESET_MUTATION };
 export { RESET_PASSWORD_MUTATION };
 export { SIGNUP_MUTATION };
 export { UPDATE_PROFILE_MUTATION };
+export { TOGGLE_ADMIN_MUTATION };

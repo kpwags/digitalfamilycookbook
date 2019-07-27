@@ -41,6 +41,15 @@ const Query = {
   },
 
   user: forwardTo('db'),
+
+  users(parent, args, ctx, info) {
+    return ctx.db.query.users(
+      {
+        orderBy: 'name_ASC',
+      },
+      info,
+    );
+  },
 };
 
 module.exports = Query;
