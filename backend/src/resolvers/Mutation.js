@@ -199,10 +199,10 @@ const Mutations = {
           fiber: formValues.fiber,
           image: formValues.image,
           largeImage: formValues.largeImage,
-          ingredients,
-          directions,
-          meats: formValues.meats,
-          categories: formValues.categories,
+          // ingredients,
+          // directions,
+          // meats: formValues.meats,
+          // categories: formValues.categories,
           user: {
             connect: {
               id: ctx.request.userId,

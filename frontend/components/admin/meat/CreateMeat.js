@@ -39,6 +39,7 @@ class CreateMeat extends Component {
                 {(createMeat, { loading, error }) => (
                     <Form
                         data-test="form"
+                        method="POST"
                         id="create-meat-form"
                         onSubmit={async e => {
                             e.preventDefault();
