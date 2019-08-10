@@ -150,35 +150,38 @@ const Mutations = {
 
     const formValues = args;
 
-    const ingredients = [];
-    const directions = [];
-
-    formValues.ingredients.forEach(async (i) => {
-      const ingredient = await ctx.db.createIngredient(
+    const ingredientCreations = formValues.ingredients.map(async (i) => {
+      const ingredient = await ctx.db.mutation.createIngredient(
         {
           data: {
             name: i.name,
           },
         },
-        '{ id, name, createdAt, updatedAt }',
+        '{ id }',
       );
 
-      ingredients.push(ingredient);
+      return ingredient;
     });
 
-    formValues.directions.forEach(async (d) => {
-      const direction = await ctx.db.createDirection(
+    const ingredients = await Promise.all(ingredientCreations);
+
+    const directionCreations = formValues.directions.map(async (d) => {
+      const direction = await ctx.db.mutation.createDirection(
         {
           data: {
             direction: d.direction,
             sortOrder: d.sortOrder,
           },
         },
-        '{ id, direction, sortOrder, createdAt, updatedAt }',
+        '{ id }',
       );
 
-      directions.push(direction);
+      return direction;
     });
+
+    const directions = await Promise.all(directionCreations);
+
+    console.log({ formValues });
 
     const recipe = await ctx.db.mutation.createRecipe(
       {
@@ -199,10 +202,18 @@ const Mutations = {
           fiber: formValues.fiber,
           image: formValues.image,
           largeImage: formValues.largeImage,
-          // ingredients,
-          // directions,
-          // meats: formValues.meats,
-          // categories: formValues.categories,
+          ingredients: {
+            connect: ingredients,
+          },
+          directions: {
+            connect: directions,
+          },
+          categories: {
+            connect: formValues.categories,
+          },
+          meats: {
+            connect: formValues.meats,
+          },
           user: {
             connect: {
               id: ctx.request.userId,

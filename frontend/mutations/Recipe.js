@@ -18,10 +18,10 @@ const CREATE_RECIPE_MUTATION = gql`
         $fiber: Float
         $image: String
         $largeImage: String
-        $ingredients: [Ingredient]
-        $directions: [Direction]
-        $meats: [Meat]
-        $categories: [Category]
+        $ingredients: [IngredientInput]
+        $directions: [DirectionInput]
+        $meats: [MeatInput]
+        $categories: [CategoryInput]
     ) {
         createRecipe(
             name: $name
@@ -57,14 +57,23 @@ const CREATE_RECIPE_MUTATION = gql`
             protein
             fat
             sugar
-            cholesterolol
+            cholesterol
             fiber
             image
             largeImage
-            ingredientsts
-            directions
-            meats
-            categories
+            ingredients {
+                name
+            }
+            directions {
+                sortOrder
+                direction
+            }
+            meats {
+                name
+            }
+            categories {
+                name
+            }
         }
     }
 `;

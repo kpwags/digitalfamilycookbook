@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Trash } from '../../svg/Trash';
 
 class Ingredient extends Component {
-    state = {
-        name: ''
+    static propTypes = {
+        id: PropTypes.number,
+        name: PropTypes.string
     };
+
+    // state = {
+    //     name: ''
+    // };
 
     handleChange = e => {
         const { name, value } = e.target;
@@ -12,25 +18,15 @@ class Ingredient extends Component {
     };
 
     deleteIngredient = e => {
-        //e.preventDefault();
+        // e.preventDefault();
         alert('deleting?');
-    }
+    };
 
     render() {
+        const { id, name } = this.props;
+
         return (
-            <label htmlFor="name">
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    className="ingredient"
-                    value={this.state.name}
-                    onChange={this.handleChange}
-                />
-                <a title="Delete Ingredient" onClick={this.deleteIngredient}>
-                    <Trash width="32px" height="32px" className="delete-item" />
-                </a>
-            </label>
+
         );
     }
 }

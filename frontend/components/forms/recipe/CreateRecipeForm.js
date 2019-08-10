@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { Mutation } from 'react-apollo';
+import { Query, Mutation } from 'react-apollo';
 import { CREATE_RECIPE_MUTATION } from '../../../mutations/Recipe';
+import { ALL_CATEGORIES_QUERY } from '../../../queries/Category';
+import { ALL_MEATS_QUERY } from '../../../queries/Meat';
 import { RecipeForm } from '../../styles/RecipeForm';
-import { Ingredient } from './Ingredient';
+import { Trash } from '../../svg/Trash';
 import { ErrorMessage } from '../../elements/ErrorMessage';
+import { Utilities } from '../../../lib/Utilities';
 
 class CreateRecipeForm extends Component {
     state = {
@@ -25,8 +28,8 @@ class CreateRecipeForm extends Component {
         fiber: '',
         image: '',
         largeImage: '',
-        ingredients: [],
-        directions: [],
+        ingredients: [{ key: 1, name: '' }],
+        directions: [{ sortOrder: 1, direction: '' }],
         meats: [],
         categories: []
     };
@@ -37,6 +40,133 @@ class CreateRecipeForm extends Component {
         this.setState({ [name]: val });
     };
 
+    handleIngredientChange = (e, ingredient) => {
+        const { value } = e.target;
+
+        const { ingredients } = this.state;
+
+        ingredients.forEach(i => {
+            if (i.key === ingredient.key) {
+                // eslint-disable-next-line no-param-reassign
+                i.name = value;
+            }
+        });
+
+        this.setState({ ingredients });
+    };
+
+    addIngredient = e => {
+        e.preventDefault();
+
+        const { ingredients } = this.state;
+
+        const nextKey = Utilities.getNextAvailableValue(ingredients);
+
+        ingredients.push({ key: nextKey, name: '' });
+
+        this.setState({ ingredients });
+    };
+
+    deleteIngredient = (e, ingredient) => {
+        e.preventDefault();
+
+        if (
+            typeof e.keyCode === 'undefined' ||
+            (typeof e.keyCode !== 'undefined' && (e.keyCode === 13 || e.keyCode === 32))
+        ) {
+            const { ingredients } = this.state;
+            const newIngredients = ingredients.filter(i => {
+                return i.key !== ingredient.key;
+            });
+
+            this.setState({ ingredients: newIngredients });
+        }
+    };
+
+    handleDirectionChange = (e, direction) => {
+        const { value } = e.target;
+
+        const { directions } = this.state;
+
+        directions.forEach(i => {
+            if (i.sortOrder === direction.sortOrder) {
+                // eslint-disable-next-line no-param-reassign
+                i.direction = value;
+            }
+        });
+
+        this.setState({ directions });
+    };
+
+    addDirection = e => {
+        e.preventDefault();
+
+        const { directions } = this.state;
+
+        const nextSortOrder = Utilities.getNextAvailableValue(directions, 'sortOrder');
+
+        directions.push({ sortOrder: nextSortOrder, direction: '' });
+
+        this.setState({ directions });
+    };
+
+    deleteDirection = (e, direction) => {
+        e.preventDefault();
+
+        if (
+            typeof e.keyCode === 'undefined' ||
+            (typeof e.keyCode !== 'undefined' && (e.keyCode === 13 || e.keyCode === 32))
+        ) {
+            const { directions } = this.state;
+
+            const newDirections = directions.filter(i => {
+                return i.sortOrder !== direction.sortOrder;
+            });
+
+            this.setState({ directions: newDirections });
+        }
+    };
+
+    onCategoryChange = e => {
+        const { categories } = this.state;
+        const categoryId = e.target.name.split('_')[1];
+
+        if (categories.includes(categoryId)) {
+            for (let i = 0; i < categories.length; i += 1) {
+                if (categories[i] === categoryId) {
+                    categories.splice(i, 1);
+                    break;
+                }
+            }
+        } else {
+            categories.push(categoryId);
+        }
+
+        this.setState({
+            categories
+        });
+    };
+
+    onMeatChange = e => {
+        const { meats } = this.state;
+        const meatId = e.target.name.split('_')[1];
+
+        if (meats.includes(meatId)) {
+            for (let i = 0; i < meats.length; i += 1) {
+                if (meats[i] === meatId) {
+                    meats.splice(i, 1);
+                    break;
+                }
+            }
+        } else {
+            meats.push(meatId);
+        }
+
+        this.setState({
+            meats
+        });
+    };
+
     createRecipe = async (e, createRecipeMutation) => {
         e.preventDefault();
 
@@ -44,9 +174,20 @@ class CreateRecipeForm extends Component {
 
         const args = this.state;
 
+        const dbCategories = [];
+        args.categories.forEach(category => {
+            dbCategories.push({ id: category });
+        });
+        const dbMeats = [];
+        args.meats.forEach(meat => {
+            dbMeats.push({ id: meat });
+        });
+
         await createRecipeMutation({
             variables: {
-                ...args
+                ...args,
+                categories: dbCategories,
+                meats: dbMeats
             }
         }).catch(err => {
             this.setState({ error: err });
@@ -57,7 +198,6 @@ class CreateRecipeForm extends Component {
         return (
             <Mutation
                 mutation={CREATE_RECIPE_MUTATION}
-                variables={this.state}
                 onCompleted={() => {
                     if (this.state.error === null) {
                         this.setState({
@@ -88,7 +228,7 @@ class CreateRecipeForm extends Component {
                                     onChange={this.handleChange}
                                 />
                             </label>
-                            <label htmlFor="name">
+                            <label htmlFor="source">
                                 Source
                                 <input
                                     type="text"
@@ -98,7 +238,7 @@ class CreateRecipeForm extends Component {
                                     onChange={this.handleChange}
                                 />
                             </label>
-                            <label htmlFor="name">
+                            <label htmlFor="sourceUrl">
                                 Source URL
                                 <input
                                     type="text"
@@ -112,13 +252,112 @@ class CreateRecipeForm extends Component {
                                 <div className="column1">
                                     <h2>Ingredients</h2>
 
-                                    <Ingredient />
+                                    <div id="ingredients">
+                                        {this.state.ingredients.map(ingredient => (
+                                            <label key={ingredient.key} htmlFor="name">
+                                                <div className="ingredient">
+                                                    <div className="input">
+                                                        <input
+                                                            type="text"
+                                                            id={`ingredientname-${ingredient.key}`}
+                                                            name="name"
+                                                            className="ingredient"
+                                                            defaultValue={ingredient.name}
+                                                            onChange={e => {
+                                                                this.handleIngredientChange(e, ingredient);
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className="delete-button">
+                                                        {this.state.ingredients.length > 1 && (
+                                                            <a
+                                                                role="button"
+                                                                tabIndex={0}
+                                                                title="Delete Ingredient"
+                                                                onClick={e => {
+                                                                    this.deleteIngredient(e, ingredient);
+                                                                }}
+                                                                onKeyUp={e => {
+                                                                    this.deleteIngredient(e, ingredient);
+                                                                }}
+                                                            >
+                                                                <Trash
+                                                                    width="32px"
+                                                                    height="32px"
+                                                                    className="delete-item"
+                                                                />
+                                                            </a>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        ))}
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        onClick={e => {
+                                            this.addIngredient(e);
+                                        }}
+                                    >
+                                        Add Ingredient
+                                    </button>
 
                                     <h2>Directions</h2>
+
+                                    <div id="directions">
+                                        {this.state.directions.map(direction => (
+                                            <label key={direction.sortOrder} htmlFor="direction">
+                                                <div className="direction">
+                                                    <div className="input">
+                                                        <textarea
+                                                            id={`directionstep-${direction.sortOrder}`}
+                                                            name="direction"
+                                                            className="direction"
+                                                            defaultValue={direction.direction}
+                                                            onChange={e => {
+                                                                this.handleDirectionChange(e, direction);
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className="delete-button">
+                                                        {this.state.directions.length > 1 && (
+                                                            <a
+                                                                role="button"
+                                                                tabIndex={0}
+                                                                title="Delete Direction"
+                                                                onClick={e => {
+                                                                    this.deleteDirection(e, direction);
+                                                                }}
+                                                                onKeyUp={e => {
+                                                                    this.deleteDirection(e, direction);
+                                                                }}
+                                                            >
+                                                                <Trash
+                                                                    width="32px"
+                                                                    height="32px"
+                                                                    className="delete-item"
+                                                                />
+                                                            </a>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        ))}
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        onClick={e => {
+                                            this.addDirection(e);
+                                        }}
+                                    >
+                                        Add Step
+                                    </button>
                                 </div>
 
                                 <div className="column2">
-                                    <label htmlFor="name">
+                                    <label htmlFor="time">
                                         Time
                                         <input
                                             type="text"
@@ -130,7 +369,7 @@ class CreateRecipeForm extends Component {
                                         />
                                     </label>
 
-                                    <label htmlFor="name">
+                                    <label htmlFor="activeTime">
                                         Active Time
                                         <input
                                             type="text"
@@ -142,7 +381,7 @@ class CreateRecipeForm extends Component {
                                         />
                                     </label>
 
-                                    <label htmlFor="name">
+                                    <label htmlFor="servings">
                                         Servings
                                         <input
                                             type="text"
@@ -156,7 +395,7 @@ class CreateRecipeForm extends Component {
 
                                     <h3>Nutrition</h3>
 
-                                    <label htmlFor="name">
+                                    <label htmlFor="calories">
                                         Calories
                                         <input
                                             type="text"
@@ -168,8 +407,8 @@ class CreateRecipeForm extends Component {
                                         />
                                     </label>
 
-                                    <label htmlFor="name">
-                                        Protein
+                                    <label htmlFor="protein">
+                                        Protein (g)
                                         <input
                                             type="text"
                                             id="protein"
@@ -180,8 +419,8 @@ class CreateRecipeForm extends Component {
                                         />
                                     </label>
 
-                                    <label htmlFor="name">
-                                        Carbohydrates
+                                    <label htmlFor="carbohydrates">
+                                        Carbohydrates (g)
                                         <input
                                             type="text"
                                             id="carbohydrates"
@@ -192,8 +431,8 @@ class CreateRecipeForm extends Component {
                                         />
                                     </label>
 
-                                    <label htmlFor="name">
-                                        Fat
+                                    <label htmlFor="fat">
+                                        Fat (g)
                                         <input
                                             type="text"
                                             id="fat"
@@ -204,8 +443,8 @@ class CreateRecipeForm extends Component {
                                         />
                                     </label>
 
-                                    <label htmlFor="name">
-                                        Sugar
+                                    <label htmlFor="sugar">
+                                        Sugar (g)
                                         <input
                                             type="text"
                                             id="sugar"
@@ -216,8 +455,8 @@ class CreateRecipeForm extends Component {
                                         />
                                     </label>
 
-                                    <label htmlFor="name">
-                                        Cholesterol
+                                    <label htmlFor="cholesterol">
+                                        Cholesterol (mg)
                                         <input
                                             type="text"
                                             id="cholesterol"
@@ -228,8 +467,8 @@ class CreateRecipeForm extends Component {
                                         />
                                     </label>
 
-                                    <label htmlFor="name">
-                                        Fiber
+                                    <label htmlFor="fiber">
+                                        Fiber (g)
                                         <input
                                             type="text"
                                             id="fiber"
@@ -242,7 +481,63 @@ class CreateRecipeForm extends Component {
                                 </div>
                             </div>
 
-                            <button type="submit">Sav{loading ? 'ing' : 'e'}</button>
+                            <Query query={ALL_CATEGORIES_QUERY}>
+                                {({ data, categoryError }) => {
+                                    if (categoryError) return <p>Error: {categoryError.message}</p>;
+                                    return (
+                                        data.categories.length > 0 && (
+                                            <>
+                                                <h2>Categories</h2>
+                                                <div className="categories_meats">
+                                                    {data.categories.map(category => (
+                                                        <label htmlFor={`category_${category.id}`} key={category.id}>
+                                                            <input
+                                                                type="checkbox"
+                                                                name={`category_${category.id}`}
+                                                                id={`category_${category.id}`}
+                                                                onChange={this.onCategoryChange}
+                                                                checked={!!this.state.categories.includes(category.id)}
+                                                            />
+                                                            {category.name}
+                                                        </label>
+                                                    ))}
+                                                </div>
+                                            </>
+                                        )
+                                    );
+                                }}
+                            </Query>
+
+                            <Query query={ALL_MEATS_QUERY}>
+                                {({ data, meatError }) => {
+                                    if (meatError) return <p>Error: {meatError.message}</p>;
+                                    return (
+                                        data.meats.length > 0 && (
+                                            <>
+                                                <h2>Meats</h2>
+                                                <div className="categories_meats">
+                                                    {data.meats.map(meat => (
+                                                        <label htmlFor={`meat_${meat.id}`} key={meat.id}>
+                                                            <input
+                                                                type="checkbox"
+                                                                name={`meat_${meat.id}`}
+                                                                id={`meat_${meat.id}`}
+                                                                onChange={this.onMeatChange}
+                                                                checked={!!this.state.meats.includes(meat.id)}
+                                                            />
+                                                            {meat.name}
+                                                        </label>
+                                                    ))}
+                                                </div>
+                                            </>
+                                        )
+                                    );
+                                }}
+                            </Query>
+
+                            <div className="save-button">
+                                <button type="submit">Sav{loading ? 'ing' : 'e'}</button>
+                            </div>
                         </fieldset>
                     </RecipeForm>
                 )}

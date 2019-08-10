@@ -27,7 +27,12 @@ const RecipeForm = styled.form`
         margin: 1.5rem 0;
 
         svg {
-            cursor:pointer;
+            cursor: pointer;
+            fill: #333333;
+        }
+
+        svg:hover {
+            fill: #ff0000;
         }
     }
 
@@ -48,10 +53,6 @@ const RecipeForm = styled.form`
     input.small {
         width: 30%;
         display: block;
-    }
-
-    input.ingredient {
-        width: 75%;
     }
 
     textarea {
@@ -128,9 +129,12 @@ const RecipeForm = styled.form`
         width: 128px;
     }
 
+    div.save-button {
+        margin: 40px 0 0 0;
+    }
+
     div.recipe-form-grid {
         display: grid;
-        isplay: grid;
         grid-template-columns: 3fr 1fr;
         grid-template-rows: 1fr;
         grid-column-gap: 10px;
@@ -152,9 +156,66 @@ const RecipeForm = styled.form`
         }
     }
 
+    div.ingredient {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+        grid-template-rows: 1fr;
+        grid-column-gap: 10px;
+        grid-row-gap: 0px;
+        align-items: center;
+
+        div.input {
+            grid-column-start: 1;
+            grid-column-end: 1;
+        }
+
+        div.delete-button {
+            grid-column-start: 2;
+            grid-column-end: 2;
+        }
+    }
+
+    div.direction {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+        grid-template-rows: 1fr;
+        grid-column-gap: 10px;
+        grid-row-gap: 0px;
+        align-items: center;
+
+        div.input {
+            grid-column-start: 1;
+            grid-column-end: 1;
+        }
+
+        div.delete-button {
+            grid-column-start: 2;
+            grid-column-end: 2;
+        }
+    }
+
+    div.categories_meats {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-rows: 1fr;
+        grid-column-gap: 10px;
+        grid-row-gap: 10px;
+        align-items: center;
+
+        label {
+            display: inline;
+            vertical-align: middle;
+
+            input {
+                width: auto;
+                margin-right: 8px;
+            }
+        }
+    }
+
     svg {
         margin-left: 12px;
-        vertical-align:middle;
+        vertical-align: middle;
     }
 `;
 

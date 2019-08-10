@@ -29,6 +29,19 @@ class Utilities {
         document.getElementById(`${elementId}-message`).style.display = 'none';
         document.getElementById(`${elementId}-message`).innerText = '';
     }
+
+    static getNextAvailableValue(arr, idx = 'key') {
+        let nextValue = 0;
+        arr.forEach(item => {
+            if (item[idx] >= nextValue) {
+                nextValue = item[idx];
+            }
+        });
+
+        nextValue += 1;
+
+        return nextValue;
+    }
 }
 
 export { Utilities };
