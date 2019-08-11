@@ -40,6 +40,8 @@ const Query = {
     );
   },
 
+  recipe: forwardTo('db'),
+
   user: forwardTo('db'),
 
   users(parent, args, ctx, info) {

@@ -45,35 +45,7 @@ const CREATE_RECIPE_MUTATION = gql`
             meats: $meats
             categories: $categories
         ) {
-            name
-            public
-            source
-            sourceUrl
-            time
-            activeTime
-            servings
-            calories
-            carbohydrates
-            protein
-            fat
-            sugar
-            cholesterol
-            fiber
-            image
-            largeImage
-            ingredients {
-                name
-            }
-            directions {
-                sortOrder
-                direction
-            }
-            meats {
-                name
-            }
-            categories {
-                name
-            }
+            id
         }
     }
 `;

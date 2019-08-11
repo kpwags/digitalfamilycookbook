@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Query, Mutation } from 'react-apollo';
+import Router from 'next/router';
 import { CREATE_RECIPE_MUTATION } from '../../../mutations/Recipe';
 import { ALL_CATEGORIES_QUERY } from '../../../queries/Category';
 import { ALL_MEATS_QUERY } from '../../../queries/Meat';
@@ -183,7 +184,7 @@ class CreateRecipeForm extends Component {
             dbMeats.push({ id: meat });
         });
 
-        await createRecipeMutation({
+        const recipe = await createRecipeMutation({
             variables: {
                 ...args,
                 categories: dbCategories,
@@ -191,6 +192,11 @@ class CreateRecipeForm extends Component {
             }
         }).catch(err => {
             this.setState({ error: err });
+        });
+
+        Router.push({
+            pathname: '/item',
+            query: { id: recipe.data.createRecipe.id }
         });
     };
 

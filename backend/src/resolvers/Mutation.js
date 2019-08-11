@@ -181,8 +181,6 @@ const Mutations = {
 
     const directions = await Promise.all(directionCreations);
 
-    console.log({ formValues });
-
     const recipe = await ctx.db.mutation.createRecipe(
       {
         data: {

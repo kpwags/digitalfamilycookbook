@@ -74,6 +74,7 @@ type Query {
   me: User
   meat(where: MeatWhereUniqueInput!): Meat
   meats(where: MeatWhereInput, orderBy: MeatOrderByInput): [Meat]!
+  recipe(where: RecipeWhereUniqueInput!): Recipe
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput): [User]!
 }
