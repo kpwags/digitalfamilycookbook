@@ -23,6 +23,22 @@ class Utilities {
         }
     }
 
+    static invalidateFieldByClass(className) {
+        const elements = document.getElementsByClassName(className);
+
+        for (let i = 0; i < elements.length; i += 1) {
+            elements[i].className = `${className}  errored`;
+        }
+    }
+
+    static resetFieldByClass(className) {
+        const elements = document.getElementsByClassName(className);
+
+        for (let i = 0; i < elements.length; i += 1) {
+            elements[i].className = 'className';
+        }
+    }
+
     static resetField(elementId) {
         document.getElementById(elementId).className = '';
         document.getElementById(elementId).parentElement.className = '';

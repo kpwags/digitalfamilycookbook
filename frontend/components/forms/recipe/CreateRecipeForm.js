@@ -8,13 +8,14 @@ import { RecipeForm } from '../../styles/RecipeForm';
 import { Trash } from '../../svg/Trash';
 import { ErrorMessage } from '../../elements/ErrorMessage';
 import { Utilities } from '../../../lib/Utilities';
+import { FormValidator } from '../../../lib/FormValidator';
 
 class CreateRecipeForm extends Component {
     state = {
         error: null,
         successMessage: null,
         name: '',
-        public: '',
+        public: false,
         source: '',
         sourceUrl: '',
         time: '',
@@ -168,12 +169,31 @@ class CreateRecipeForm extends Component {
         });
     };
 
+    uploadFile = async e => {
+        const { files } = e.target;
+        const data = new FormData();
+        data.append('file', files[0]);
+        data.append('upload_preset', 'digitalfamilycookbook-recipes');
+
+        const res = await fetch('https://api.cloudinary.com/v1_1/kpwags/image/upload', {
+            method: 'POST',
+            body: data
+        });
+
+        const file = await res.json();
+
+        this.setState({
+            image: file.secure_url,
+            largeImage: file.eager[0].secure_url
+        });
+    };
+
     createRecipe = async (e, createRecipeMutation) => {
         e.preventDefault();
 
         this.setState({ error: null });
 
-        const args = this.state;
+        const args = JSON.parse(JSON.stringify(this.state));
 
         const dbCategories = [];
         args.categories.forEach(category => {
@@ -184,20 +204,194 @@ class CreateRecipeForm extends Component {
             dbMeats.push({ id: meat });
         });
 
-        const recipe = await createRecipeMutation({
-            variables: {
-                ...args,
-                categories: dbCategories,
-                meats: dbMeats
+        if (args.time === '') {
+            args.time = null;
+        }
+
+        if (args.activeTime === '') {
+            args.activeTime = null;
+        }
+
+        if (args.servings === '') {
+            args.servings = null;
+        }
+
+        if (args.calories === '') {
+            args.calories = null;
+        }
+
+        if (args.protein === '') {
+            args.protein = null;
+        }
+
+        if (args.carbohydrates === '') {
+            args.carbohydrates = null;
+        }
+
+        if (args.fat === '') {
+            args.fat = null;
+        }
+
+        if (args.cholesterol === '') {
+            args.cholesterol = null;
+        }
+
+        if (args.fiber === '') {
+            args.fiber = null;
+        }
+
+        if (args.sugar === '') {
+            args.sugar = null;
+        }
+
+        if (this.validateForm()) {
+            const recipe = await createRecipeMutation({
+                variables: {
+                    ...args,
+                    categories: dbCategories,
+                    meats: dbMeats
+                }
+            }).catch(err => {
+                this.setState({ error: err });
+            });
+
+            Router.push({
+                pathname: '/recipe',
+                query: { id: recipe.data.createRecipe.id }
+            });
+        }
+    };
+
+    validate = e => {
+        e.preventDefault();
+
+        // eslint-disable-next-line default-case
+        switch (e.target.id) {
+        case 'name':
+            if (!FormValidator.validateNotEmpty(this.state.name)) {
+                Utilities.invalidateField('name', 'Name is required.');
+            } else {
+                Utilities.resetField('name');
             }
-        }).catch(err => {
-            this.setState({ error: err });
+            break;
+        }
+    };
+
+    validateForm = () => {
+        let isValid = true;
+
+        if (!FormValidator.validateNotEmpty(this.state.name)) {
+            Utilities.invalidateField('name', 'Name is required.');
+            isValid = false;
+        } else {
+            Utilities.resetField('name');
+        }
+
+        let hasIngredients = false;
+        this.state.ingredients.forEach(i => {
+            if (i.name.trim() !== '') {
+                hasIngredients = true;
+            }
         });
 
-        Router.push({
-            pathname: '/item',
-            query: { id: recipe.data.createRecipe.id }
+        if (!hasIngredients) {
+            Utilities.invalidateFieldByClass('ingredient');
+            document.getElementById('ingredients-message').innerHTML = 'At least 1 ingredient is required';
+            document.getElementById('ingredients-message').style.display = 'block';
+            isValid = false;
+        } else {
+            Utilities.resetFieldByClass('ingredient');
+            document.getElementById('ingredients-message').style.display = 'none';
+        }
+
+        let hasDirections = false;
+        this.state.directions.forEach(d => {
+            if (d.direction.trim() !== '') {
+                hasDirections = true;
+            }
         });
+
+        if (!hasDirections) {
+            Utilities.invalidateFieldByClass('direction');
+            document.getElementById('directions-message').innerHTML = 'At least 1 direction is required';
+            document.getElementById('directions-message').style.display = 'block';
+            isValid = false;
+        } else {
+            Utilities.resetFieldByClass('direction');
+            document.getElementById('directions-message').style.display = 'none';
+        }
+
+        if (!FormValidator.validateNumeric(this.state.time)) {
+            Utilities.invalidateField('time', 'Time must be numeric');
+            isValid = false;
+        } else {
+            Utilities.resetField('time');
+        }
+
+        if (!FormValidator.validateNumeric(this.state.activeTime)) {
+            Utilities.invalidateField('activeTime', 'Active time must be numeric');
+            isValid = false;
+        } else {
+            Utilities.resetField('activeTime');
+        }
+
+        if (!FormValidator.validateNumeric(this.state.servings)) {
+            Utilities.invalidateField('servings', 'Servings must be numeric');
+            isValid = false;
+        } else {
+            Utilities.resetField('servings');
+        }
+
+        if (!FormValidator.validateNumeric(this.state.calories)) {
+            Utilities.invalidateField('calories', 'Calories must be numeric');
+            isValid = false;
+        } else {
+            Utilities.resetField('calories');
+        }
+
+        if (!FormValidator.validateNumeric(this.state.protein)) {
+            Utilities.invalidateField('protein', 'Protein must be numeric');
+            isValid = false;
+        } else {
+            Utilities.resetField('protein');
+        }
+
+        if (!FormValidator.validateNumeric(this.state.carbohydrates)) {
+            Utilities.invalidateField('carbohydrates', 'Carbohydrates must be numeric');
+            isValid = false;
+        } else {
+            Utilities.resetField('carbohydrates');
+        }
+
+        if (!FormValidator.validateNumeric(this.state.fat)) {
+            Utilities.invalidateField('fat', 'Fat must be numeric');
+            isValid = false;
+        } else {
+            Utilities.resetField('fat');
+        }
+
+        if (!FormValidator.validateNumeric(this.state.sugar)) {
+            Utilities.invalidateField('sugar', 'Sugar must be numeric');
+            isValid = false;
+        } else {
+            Utilities.resetField('sugar');
+        }
+
+        if (!FormValidator.validateNumeric(this.state.cholesterol)) {
+            Utilities.invalidateField('cholesterol', 'Cholesterol must be numeric');
+            isValid = false;
+        } else {
+            Utilities.resetField('cholesterol');
+        }
+
+        if (!FormValidator.validateNumeric(this.state.fiber)) {
+            Utilities.invalidateField('fiber', 'Fiber must be numeric');
+            isValid = false;
+        } else {
+            Utilities.resetField('fiber');
+        }
+
+        return isValid;
     };
 
     render() {
@@ -225,14 +419,16 @@ class CreateRecipeForm extends Component {
                         <ErrorMessage error={error || this.state.error} />
                         <fieldset disabled={loading} aria-busy={loading}>
                             <label htmlFor="name">
-                                Name
+                                Name <span className="required">*</span>
                                 <input
                                     type="text"
                                     id="name"
                                     name="name"
                                     value={this.state.name}
                                     onChange={this.handleChange}
+                                    onBlur={this.validate}
                                 />
+                                <div className="error-text" id="name-message" />
                             </label>
                             <label htmlFor="source">
                                 Source
@@ -257,6 +453,8 @@ class CreateRecipeForm extends Component {
                             <div className="recipe-form-grid">
                                 <div className="column1">
                                     <h2>Ingredients</h2>
+
+                                    <div className="error-text" id="ingredients-message" />
 
                                     <div id="ingredients">
                                         {this.state.ingredients.map(ingredient => (
@@ -310,6 +508,8 @@ class CreateRecipeForm extends Component {
                                     </button>
 
                                     <h2>Directions</h2>
+
+                                    <div className="error-text" id="directions-message" />
 
                                     <div id="directions">
                                         {this.state.directions.map(direction => (
@@ -373,6 +573,7 @@ class CreateRecipeForm extends Component {
                                             value={this.state.time}
                                             onChange={this.handleChange}
                                         />
+                                        <div className="error-text" id="time-message" />
                                     </label>
 
                                     <label htmlFor="activeTime">
@@ -385,6 +586,7 @@ class CreateRecipeForm extends Component {
                                             value={this.state.activeTime}
                                             onChange={this.handleChange}
                                         />
+                                        <div className="error-text" id="activeTime-message" />
                                     </label>
 
                                     <label htmlFor="servings">
@@ -397,6 +599,7 @@ class CreateRecipeForm extends Component {
                                             value={this.state.servings}
                                             onChange={this.handleChange}
                                         />
+                                        <div className="error-text" id="servings-message" />
                                     </label>
 
                                     <h3>Nutrition</h3>
@@ -411,6 +614,7 @@ class CreateRecipeForm extends Component {
                                             value={this.state.calories}
                                             onChange={this.handleChange}
                                         />
+                                        <div className="error-text" id="calories-message" />
                                     </label>
 
                                     <label htmlFor="protein">
@@ -423,6 +627,7 @@ class CreateRecipeForm extends Component {
                                             value={this.state.protein}
                                             onChange={this.handleChange}
                                         />
+                                        <div className="error-text" id="protein-message" />
                                     </label>
 
                                     <label htmlFor="carbohydrates">
@@ -435,6 +640,7 @@ class CreateRecipeForm extends Component {
                                             value={this.state.carbohydrates}
                                             onChange={this.handleChange}
                                         />
+                                        <div className="error-text" id="carbohydrates-message" />
                                     </label>
 
                                     <label htmlFor="fat">
@@ -447,6 +653,7 @@ class CreateRecipeForm extends Component {
                                             value={this.state.fat}
                                             onChange={this.handleChange}
                                         />
+                                        <div className="error-text" id="fat-message" />
                                     </label>
 
                                     <label htmlFor="sugar">
@@ -459,6 +666,7 @@ class CreateRecipeForm extends Component {
                                             value={this.state.sugar}
                                             onChange={this.handleChange}
                                         />
+                                        <div className="error-text" id="sugar-message" />
                                     </label>
 
                                     <label htmlFor="cholesterol">
@@ -471,6 +679,7 @@ class CreateRecipeForm extends Component {
                                             value={this.state.cholesterol}
                                             onChange={this.handleChange}
                                         />
+                                        <div className="error-text" id="cholesterol-message" />
                                     </label>
 
                                     <label htmlFor="fiber">
@@ -483,6 +692,7 @@ class CreateRecipeForm extends Component {
                                             value={this.state.fiber}
                                             onChange={this.handleChange}
                                         />
+                                        <div className="error-text" id="fiber-message" />
                                     </label>
                                 </div>
                             </div>
@@ -540,6 +750,22 @@ class CreateRecipeForm extends Component {
                                     );
                                 }}
                             </Query>
+
+                            <label htmlFor="file">
+                                Image
+                                <input
+                                    type="file"
+                                    id="file"
+                                    name="file"
+                                    placeholder="Upload an Image"
+                                    onChange={this.uploadFile}
+                                />
+                                {this.state.image && (
+                                    <div className="image-preview">
+                                        <img src={this.state.image} alt="Upload Preview" />
+                                    </div>
+                                )}
+                            </label>
 
                             <div className="save-button">
                                 <button type="submit">Sav{loading ? 'ing' : 'e'}</button>

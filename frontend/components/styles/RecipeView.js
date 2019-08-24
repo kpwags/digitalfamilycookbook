@@ -8,7 +8,7 @@ const RecipeView = styled.div`
 
     .recipe-image {
         width: 1000px;
-        margin: 10px auto;
+        margin: 10px auto 25px;
         text-align: center;
 
         img {

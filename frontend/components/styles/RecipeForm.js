@@ -125,8 +125,13 @@ const RecipeForm = styled.form`
     }
 
     div.image-preview {
-        margin: 15px auto;
-        width: 128px;
+        margin: 24px auto;
+        width: 512px;
+
+        img {
+            display: block;
+            max-width: 512px;
+        }
     }
 
     div.save-button {
@@ -211,6 +216,11 @@ const RecipeForm = styled.form`
                 margin-right: 8px;
             }
         }
+    }
+
+    span.required {
+        color: #ff0000;
+        font-weight: bold;
     }
 
     svg {
