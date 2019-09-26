@@ -34,8 +34,13 @@ type Mutation {
     categories: [CategoryInput]
   ): Recipe!
   deleteCategory(id: ID!): Category
+  deleteDirection(id: ID!): Direction
+  deleteDirections(ids: [ID]!): Direction
+  deleteIngredient(id: ID!): Ingredient
+  deleteIngredients(ids: [ID]!): Ingredient
   deleteInvitationCode(id: ID!): InvitationCode
   deleteMeat(id: ID!): Meat
+  deleteRecipe(id: ID!): Recipe
   deleteUser(id: ID!): User
   login(email: String!, password: String!): User!
   logout: SuccessMessage
@@ -55,6 +60,29 @@ type Mutation {
   updateCategory(id: ID!, name: String): Category!
   updateInvitationCode(id: ID!, code: String): InvitationCode!
   updateMeat(id: ID!, name: String): Meat!
+  updateRecipe(
+    id: ID!
+    name: String!
+    public: Boolean!
+    source: String
+    sourceUrl: String
+    time: Int
+    activeTime: Int
+    servings: Float
+    calories: Float
+    carbohydrates: Float
+    protein: Float
+    fat: Float
+    sugar: Float
+    cholesterol: Float
+    fiber: Float
+    image: String
+    largeImage: String
+    ingredients: [IngredientInput]
+    directions: [DirectionInput]
+    meats: [MeatInput]
+    categories: [CategoryInput]
+  ): Recipe!
   updateUser(
     id: ID!
     name: String!
@@ -75,6 +103,7 @@ type Query {
   meat(where: MeatWhereUniqueInput!): Meat
   meats(where: MeatWhereInput, orderBy: MeatOrderByInput): [Meat]!
   recipe(where: RecipeWhereUniqueInput!): Recipe
+  recipes(where: RecipeWhereInput, orderBy: RecipeOrderByInput): [Recipe]!
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput): [User]!
 }
@@ -92,7 +121,7 @@ type User {
 
 input IngredientInput {
   name: String!
-  key: Int
+  sortOrder: Int!
 }
 
 input DirectionInput {

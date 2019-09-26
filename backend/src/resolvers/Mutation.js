@@ -148,69 +148,36 @@ const Mutations = {
       throw new Error('You must be logged in');
     }
 
-    const formValues = args;
-
-    const ingredientCreations = formValues.ingredients.map(async (i) => {
-      const ingredient = await ctx.db.mutation.createIngredient(
-        {
-          data: {
-            name: i.name,
-          },
-        },
-        '{ id }',
-      );
-
-      return ingredient;
-    });
-
-    const ingredients = await Promise.all(ingredientCreations);
-
-    const directionCreations = formValues.directions.map(async (d) => {
-      const direction = await ctx.db.mutation.createDirection(
-        {
-          data: {
-            direction: d.direction,
-            sortOrder: d.sortOrder,
-          },
-        },
-        '{ id }',
-      );
-
-      return direction;
-    });
-
-    const directions = await Promise.all(directionCreations);
-
     const recipe = await ctx.db.mutation.createRecipe(
       {
         data: {
-          name: formValues.name,
-          public: formValues.public,
-          source: formValues.source !== '' ? formValues.source : null,
-          sourceUrl: formValues.sourceUrl !== '' ? formValues.sourceUrl : null,
-          time: formValues.time !== '' ? formValues.time : null,
-          activeTime: formValues.activeTime !== '' ? formValues.activeTime : null,
-          servings: formValues.servings !== '' ? formValues.servings : null,
-          calories: formValues.calories !== '' ? formValues.calories : null,
-          carbohydrates: formValues.carbohydrates !== '' ? formValues.carbohydrates : null,
-          protein: formValues.protein !== '' ? formValues.protein : null,
-          fat: formValues.fat !== '' ? formValues.fat : null,
-          sugar: formValues.sugar !== '' ? formValues.sugar : null,
-          cholesterol: formValues.cholesterol !== '' ? formValues.cholesterol : null,
-          fiber: formValues.fiber !== '' ? formValues.fiber : null,
-          image: formValues.image,
-          largeImage: formValues.largeImage,
+          name: args.name,
+          public: args.public,
+          source: args.source !== '' ? args.source : null,
+          sourceUrl: args.sourceUrl !== '' ? args.sourceUrl : null,
+          time: args.time !== '' ? args.time : null,
+          activeTime: args.activeTime !== '' ? args.activeTime : null,
+          servings: args.servings !== '' ? args.servings : null,
+          calories: args.calories !== '' ? args.calories : null,
+          carbohydrates: args.carbohydrates !== '' ? args.carbohydrates : null,
+          protein: args.protein !== '' ? args.protein : null,
+          fat: args.fat !== '' ? args.fat : null,
+          sugar: args.sugar !== '' ? args.sugar : null,
+          cholesterol: args.cholesterol !== '' ? args.cholesterol : null,
+          fiber: args.fiber !== '' ? args.fiber : null,
+          image: args.image,
+          largeImage: args.largeImage,
           ingredients: {
-            connect: ingredients,
+            create: args.ingredients,
           },
           directions: {
-            connect: directions,
+            create: args.directions,
           },
           categories: {
-            connect: formValues.categories,
+            connect: args.categories,
           },
           meats: {
-            connect: formValues.meats,
+            connect: args.meats,
           },
           user: {
             connect: {
@@ -241,6 +208,38 @@ const Mutations = {
     // TODO: Delete the category link to the recipes its attached to
 
     return ctx.db.mutation.deleteCategory({ where }, info);
+  },
+
+  async deleteDirection(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    const where = { id: args.id };
+
+    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+
+    if (!hasPermissions) {
+      throw new Error('You do not have the proper permissions to delete');
+    }
+
+    return ctx.db.mutation.deleteDirection({ where }, info);
+  },
+
+  async deleteIngredient(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    const where = { id: args.id };
+
+    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+
+    if (!hasPermissions) {
+      throw new Error('You do not have the proper permissions to delete');
+    }
+
+    return ctx.db.mutation.deleteIngredient({ where }, info);
   },
 
   async deleteInvitationCode(parent, args, ctx, info) {
@@ -275,6 +274,55 @@ const Mutations = {
     // TODO: Delete the meat link to the recipes its attached to
 
     return ctx.db.mutation.deleteMeat({ where }, info);
+  },
+
+  async deleteRecipe(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    const recipeId = args.id;
+
+    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+
+    if (!hasPermissions) {
+      throw new Error('You do not have the proper permissions to delete');
+    }
+
+    const recipe = await ctx.db.query.recipes(
+      { where: { id: recipeId } },
+      '{ id, ingredients { id }, directions { id } }',
+    );
+
+    if (recipe.length !== 1) {
+      throw new Error('Recipe not found');
+    }
+
+    const ingredients = [];
+    recipe[0].ingredients.forEach((i) => {
+      ingredients.push(i.id);
+    });
+
+    const directions = [];
+    recipe[0].directions.forEach((d) => {
+      directions.push(d.id);
+    });
+
+    await ctx.db.mutation
+      .deleteManyIngredients({ where: { id_in: ingredients } }, '{ count }')
+      .catch((e) => {
+        throw new Error(e.message);
+      });
+
+    await ctx.db.mutation
+      .deleteManyDirections({ where: { id_in: directions } }, '{ count }')
+      .catch((e) => {
+        throw new Error(e.message);
+      });
+
+    return ctx.db.mutation.deleteRecipe({ where: { id: recipeId } }, info).catch((e) => {
+      throw new Error(e.message);
+    });
   },
 
   async deleteUser(parent, args, ctx, info) {
@@ -537,6 +585,88 @@ const Mutations = {
     return ctx.db.mutation.updateMeat(
       {
         data: updates,
+        where: {
+          id: args.id,
+        },
+      },
+      info,
+    );
+  },
+
+  async updateRecipe(parent, args, ctx, info) {
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in');
+    }
+
+    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+
+    if (!hasPermissions) {
+      throw new Error('You do not have the proper permissions to update this recipe');
+    }
+
+    const recipe = await ctx.db.query.recipes(
+      { where: { id: args.id } },
+      '{ id, ingredients { id }, directions { id } }',
+    );
+
+    if (recipe.length !== 1) {
+      throw new Error('Recipe not found');
+    }
+
+    const ingredientsToDelete = [];
+    recipe[0].ingredients.forEach((i) => {
+      ingredientsToDelete.push(i.id);
+    });
+
+    const directionsToDelete = [];
+    recipe[0].directions.forEach((d) => {
+      directionsToDelete.push(d.id);
+    });
+
+    await ctx.db.mutation
+      .deleteManyIngredients({ where: { id_in: ingredientsToDelete } }, '{ count }')
+      .catch((e) => {
+        throw new Error(e.message);
+      });
+
+    await ctx.db.mutation
+      .deleteManyDirections({ where: { id_in: directionsToDelete } }, '{ count }')
+      .catch((e) => {
+        throw new Error(e.message);
+      });
+
+    return ctx.db.mutation.updateRecipe(
+      {
+        data: {
+          name: args.name,
+          public: args.public,
+          source: args.source !== '' ? args.source : null,
+          sourceUrl: args.sourceUrl !== '' ? args.sourceUrl : null,
+          time: args.time !== '' ? args.time : null,
+          activeTime: args.activeTime !== '' ? args.activeTime : null,
+          servings: args.servings !== '' ? args.servings : null,
+          calories: args.calories !== '' ? args.calories : null,
+          carbohydrates: args.carbohydrates !== '' ? args.carbohydrates : null,
+          protein: args.protein !== '' ? args.protein : null,
+          fat: args.fat !== '' ? args.fat : null,
+          sugar: args.sugar !== '' ? args.sugar : null,
+          cholesterol: args.cholesterol !== '' ? args.cholesterol : null,
+          fiber: args.fiber !== '' ? args.fiber : null,
+          image: args.image,
+          largeImage: args.largeImage,
+          ingredients: {
+            create: args.ingredients,
+          },
+          directions: {
+            create: args.directions,
+          },
+          categories: {
+            connect: args.categories,
+          },
+          meats: {
+            connect: args.meats,
+          },
+        },
         where: {
           id: args.id,
         },

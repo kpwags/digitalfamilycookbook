@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Query } from 'react-apollo';
 import { RECIPE_BY_ID_QUERY } from '../queries/Recipe';
+import { User } from './User';
 import { RecipeView } from './styles/RecipeView';
 import { Utilities } from '../lib/Utilities';
 
@@ -35,6 +36,13 @@ class Recipe extends Component {
 
                             <div className="main">
                                 <div className="recipe-details">
+                                    <p className="details">
+                                        <strong>Added By:</strong>&nbsp;
+                                        <Link href={`/recipes?userid=${data.recipe.user.id}`}>
+                                            <a>{data.recipe.user.name}</a>
+                                        </Link>
+                                    </p>
+
                                     {data.recipe.source && (
                                         <p className="details">
                                             <strong>Source:</strong>&nbsp;
@@ -101,14 +109,14 @@ class Recipe extends Component {
                                     <h2>Ingredients</h2>
                                     <ul className="ingredients">
                                         {data.recipe.ingredients.map(ingredient => (
-                                            <li key={ingredient.id}>{ingredient.name} </li>
+                                            <li key={ingredient.sortOrder}>{ingredient.name} </li>
                                         ))}
                                     </ul>
 
                                     <h2>Directions</h2>
                                     <ol className="directions">
                                         {data.recipe.directions.map(direction => (
-                                            <li key={direction.id}>{direction.direction} </li>
+                                            <li key={direction.sortOrder}>{direction.direction} </li>
                                         ))}
                                     </ol>
                                 </div>
@@ -164,6 +172,20 @@ class Recipe extends Component {
                                     </div>
                                 )}
                             </div>
+
+                            <User>
+                                {({ data: { me } }) => (
+                                    <>
+                                        {me.id === data.recipe.user.id && (
+                                            <p>
+                                                <Link href={`/edit-recipe?id=${data.recipe.id}`}>
+                                                    <a>Edit Recipe</a>
+                                                </Link>
+                                            </p>
+                                        )}
+                                    </>
+                                )}
+                            </User>
                         </RecipeView>
                     ) : (
                         <RecipeView>

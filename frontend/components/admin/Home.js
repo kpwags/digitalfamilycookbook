@@ -24,6 +24,11 @@ const Home = () => (
                     <a>Manage Meats</a>
                 </Link>
             </li>
+            <li>
+                <Link href="/admin/recipes">
+                    <a>Manage Recipes</a>
+                </Link>
+            </li>
         </ul>
     </>
 );

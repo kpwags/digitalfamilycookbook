@@ -43,6 +43,7 @@ type Category {
 type Ingredient {
   id: ID! @id @unique
   name: String!
+  sortOrder: Int
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }

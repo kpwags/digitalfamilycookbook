@@ -1,5 +1,18 @@
 import gql from 'graphql-tag';
 
+const ALL_RECIPES_QUERY = gql`
+    query {
+        recipes(orderBy: name_ASC) {
+            id
+            name
+            user {
+                id
+                name
+            }
+        }
+    }
+`;
+
 const RECIPE_BY_ID_QUERY = gql`
     query RECIPE_BY_ID_QUERY($id: ID!) {
         recipe(where: { id: $id }) {
@@ -20,13 +33,13 @@ const RECIPE_BY_ID_QUERY = gql`
             fiber
             image
             largeImage
-            ingredients {
-                id
+            ingredients(orderBy: sortOrder_ASC) {
                 name
+                sortOrder
             }
             directions(orderBy: sortOrder_ASC) {
-                id
                 direction
+                sortOrder
             }
             meats(orderBy: name_ASC) {
                 id
@@ -36,8 +49,13 @@ const RECIPE_BY_ID_QUERY = gql`
                 id
                 name
             }
+            user {
+                id
+                name
+            }
         }
     }
 `;
 
+export { ALL_RECIPES_QUERY };
 export { RECIPE_BY_ID_QUERY };

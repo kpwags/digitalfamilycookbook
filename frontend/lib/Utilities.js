@@ -86,6 +86,25 @@ class Utilities {
 
         return returnString;
     }
+
+    static convertIDArray(arr) {
+        const newArr = [];
+        arr.forEach(i => {
+            newArr.push(i.id);
+        });
+
+        return newArr;
+    }
+
+    static toTitleCase(str) {
+        return str
+            .toLowerCase()
+            .split(' ')
+            .map(word => {
+                return word.replace(word[0], word[0].toUpperCase());
+            })
+            .join(' ');
+    }
 }
 
 export { Utilities };

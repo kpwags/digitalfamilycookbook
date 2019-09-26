@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/digital-family-cookbook/digitalfamilycookbook/dev
-# timestamp: Tue Aug 06 2019 17:22:00 GMT-0400 (Eastern Daylight Time)
+# timestamp: Sun Aug 25 2019 14:28:45 GMT-0400 (Eastern Daylight Time)
 
 type AggregateCategory {
   count: Int!
@@ -914,6 +914,7 @@ input DirectionWhereUniqueInput {
 type Ingredient implements Node {
   id: ID!
   name: String!
+  sortOrder: Int
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -931,6 +932,7 @@ type IngredientConnection {
 input IngredientCreateInput {
   id: ID
   name: String!
+  sortOrder: Int
 }
 
 input IngredientCreateManyInput {
@@ -952,6 +954,8 @@ enum IngredientOrderByInput {
   id_DESC
   name_ASC
   name_DESC
+  sortOrder_ASC
+  sortOrder_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -961,6 +965,7 @@ enum IngredientOrderByInput {
 type IngredientPreviousValues {
   id: ID!
   name: String!
+  sortOrder: Int
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -1054,6 +1059,28 @@ input IngredientScalarWhereInput {
 
   """All values not ending with the given string."""
   name_not_ends_with: String
+  sortOrder: Int
+
+  """All values that are not equal to given value."""
+  sortOrder_not: Int
+
+  """All values that are contained in given list."""
+  sortOrder_in: [Int!]
+
+  """All values that are not contained in given list."""
+  sortOrder_not_in: [Int!]
+
+  """All values less than the given value."""
+  sortOrder_lt: Int
+
+  """All values less than or equal the given value."""
+  sortOrder_lte: Int
+
+  """All values greater than the given value."""
+  sortOrder_gt: Int
+
+  """All values greater than or equal the given value."""
+  sortOrder_gte: Int
   createdAt: DateTime
 
   """All values that are not equal to given value."""
@@ -1141,14 +1168,17 @@ input IngredientSubscriptionWhereInput {
 
 input IngredientUpdateDataInput {
   name: String
+  sortOrder: Int
 }
 
 input IngredientUpdateInput {
   name: String
+  sortOrder: Int
 }
 
 input IngredientUpdateManyDataInput {
   name: String
+  sortOrder: Int
 }
 
 input IngredientUpdateManyInput {
@@ -1165,6 +1195,7 @@ input IngredientUpdateManyInput {
 
 input IngredientUpdateManyMutationInput {
   name: String
+  sortOrder: Int
 }
 
 input IngredientUpdateManyWithWhereNestedInput {
@@ -1272,6 +1303,28 @@ input IngredientWhereInput {
 
   """All values not ending with the given string."""
   name_not_ends_with: String
+  sortOrder: Int
+
+  """All values that are not equal to given value."""
+  sortOrder_not: Int
+
+  """All values that are contained in given list."""
+  sortOrder_in: [Int!]
+
+  """All values that are not contained in given list."""
+  sortOrder_not_in: [Int!]
+
+  """All values less than the given value."""
+  sortOrder_lt: Int
+
+  """All values less than or equal the given value."""
+  sortOrder_lte: Int
+
+  """All values greater than the given value."""
+  sortOrder_gt: Int
+
+  """All values greater than or equal the given value."""
+  sortOrder_gte: Int
   createdAt: DateTime
 
   """All values that are not equal to given value."""

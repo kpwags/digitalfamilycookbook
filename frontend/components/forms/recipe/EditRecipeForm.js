@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Query, Mutation } from 'react-apollo';
 import Router from 'next/router';
-import { CREATE_RECIPE_MUTATION } from '../../../mutations/Recipe';
+import PropTypes from 'prop-types';
+import { UPDATE_RECIPE_MUTATION } from '../../../mutations/Recipe';
 import { ALL_CATEGORIES_QUERY } from '../../../queries/Category';
 import { ALL_MEATS_QUERY } from '../../../queries/Meat';
 import { RecipeForm } from '../../styles/RecipeForm';
@@ -10,31 +11,45 @@ import { ErrorMessage } from '../../elements/ErrorMessage';
 import { Utilities } from '../../../lib/Utilities';
 import { FormValidator } from '../../../lib/FormValidator';
 
-class CreateRecipeForm extends Component {
-    state = {
-        error: null,
-        successMessage: null,
-        name: '',
-        public: false,
-        source: '',
-        sourceUrl: '',
-        time: '',
-        activeTime: '',
-        servings: '',
-        calories: '',
-        carbohydrates: '',
-        protein: '',
-        fat: '',
-        sugar: '',
-        cholesterol: '',
-        fiber: '',
-        image: '',
-        largeImage: '',
-        ingredients: [{ sortOrder: 1, name: '' }],
-        directions: [{ sortOrder: 1, direction: '' }],
-        meats: [],
-        categories: []
+class EditRecipeForm extends Component {
+    static propTypes = {
+        recipe: PropTypes.object
     };
+
+    constructor(props) {
+        super();
+
+        const { recipe } = props;
+
+        const meats = Utilities.convertIDArray(recipe.meats);
+        const categories = Utilities.convertIDArray(recipe.categories);
+
+        this.state = {
+            error: null,
+            successMessage: null,
+            id: recipe.id,
+            name: recipe.name,
+            public: false,
+            source: recipe.source === null ? '' : recipe.source,
+            sourceUrl: recipe.sourceUrl === null ? '' : recipe.sourceUrl,
+            time: recipe.time === null ? '' : recipe.time,
+            activeTime: recipe.activeTime === null ? '' : recipe.activeTime,
+            servings: recipe.servings === null ? '' : recipe.servings,
+            calories: recipe.calories === null ? '' : recipe.calories,
+            carbohydrates: recipe.carbohydrates === null ? '' : recipe.carbohydrates,
+            protein: recipe.protein === null ? '' : recipe.protein,
+            fat: recipe.fat === null ? '' : recipe.fat,
+            sugar: recipe.sugar === null ? '' : recipe.sugar,
+            cholesterol: recipe.cholesterol === null ? '' : recipe.cholesterol,
+            fiber: recipe.fiber === null ? '' : recipe.fiber,
+            image: recipe.image === null ? '' : recipe.image,
+            largeImage: recipe.largeImage === null ? '' : recipe.largeImage,
+            ingredients: recipe.ingredients,
+            directions: recipe.directions,
+            meats,
+            categories
+        };
+    }
 
     handleChange = e => {
         const { name, type, value } = e.target;
@@ -188,7 +203,7 @@ class CreateRecipeForm extends Component {
         });
     };
 
-    createRecipe = async (e, createRecipeMutation) => {
+    updateRecipe = async (e, updateRecipeMutation) => {
         e.preventDefault();
 
         this.setState({ error: null });
@@ -202,6 +217,26 @@ class CreateRecipeForm extends Component {
         const dbMeats = [];
         args.meats.forEach(meat => {
             dbMeats.push({ id: meat });
+        });
+
+        const ingredients = [];
+        args.ingredients.forEach(i => {
+            const ingredient = i;
+
+            // eslint-disable-next-line no-underscore-dangle
+            delete ingredient.__typename;
+
+            ingredients.push(ingredient);
+        });
+
+        const directions = [];
+        args.directions.forEach(d => {
+            const direction = d;
+
+            // eslint-disable-next-line no-underscore-dangle
+            delete direction.__typename;
+
+            directions.push(direction);
         });
 
         if (args.time === '') {
@@ -245,9 +280,11 @@ class CreateRecipeForm extends Component {
         }
 
         if (this.validateForm()) {
-            const recipe = await createRecipeMutation({
+            await updateRecipeMutation({
                 variables: {
                     ...args,
+                    ingredients,
+                    directions,
                     categories: dbCategories,
                     meats: dbMeats
                 }
@@ -255,10 +292,7 @@ class CreateRecipeForm extends Component {
                 this.setState({ error: err });
             });
 
-            Router.push({
-                pathname: '/recipe',
-                query: { id: recipe.data.createRecipe.id }
-            });
+            Router.back();
         }
     };
 
@@ -413,7 +447,7 @@ class CreateRecipeForm extends Component {
     render() {
         return (
             <Mutation
-                mutation={CREATE_RECIPE_MUTATION}
+                mutation={UPDATE_RECIPE_MUTATION}
                 onCompleted={() => {
                     if (this.state.error === null) {
                         this.setState({
@@ -422,16 +456,16 @@ class CreateRecipeForm extends Component {
                     }
                 }}
             >
-                {(createRecipe, { error, loading }) => (
+                {(updateRecipe, { error, loading }) => (
                     <RecipeForm
                         id="create-recipe-form"
                         data-test="form"
                         method="POST"
                         onSubmit={e => {
-                            this.createRecipe(e, createRecipe);
+                            this.updateRecipe(e, updateRecipe);
                         }}
                     >
-                        <h2>Create a Recipe</h2>
+                        <h2>Edit Recipe</h2>
                         <ErrorMessage error={error || this.state.error} />
                         <fieldset disabled={loading} aria-busy={loading}>
                             <label htmlFor="name">
@@ -482,7 +516,7 @@ class CreateRecipeForm extends Component {
                                                             id={`ingredientname-${ingredient.sortOrder}`}
                                                             name="name"
                                                             className="ingredient"
-                                                            defaultValue={ingredient.name}
+                                                            value={ingredient.name}
                                                             onChange={e => {
                                                                 this.handleIngredientChange(e, ingredient);
                                                             }}
@@ -536,7 +570,7 @@ class CreateRecipeForm extends Component {
                                                             id={`directionstep-${direction.sortOrder}`}
                                                             name="direction"
                                                             className="direction"
-                                                            defaultValue={direction.direction}
+                                                            value={direction.direction}
                                                             onChange={e => {
                                                                 this.handleDirectionChange(e, direction);
                                                             }}
@@ -580,7 +614,7 @@ class CreateRecipeForm extends Component {
 
                                 <div className="column2">
                                     <label htmlFor="time">
-                                        Time
+                                        Time (Minutes)
                                         <input
                                             type="text"
                                             id="time"
@@ -594,7 +628,7 @@ class CreateRecipeForm extends Component {
                                     </label>
 
                                     <label htmlFor="activeTime">
-                                        Active Time
+                                        Active Time (Minutes)
                                         <input
                                             type="text"
                                             id="activeTime"
@@ -724,14 +758,14 @@ class CreateRecipeForm extends Component {
                             </div>
 
                             <Query query={ALL_CATEGORIES_QUERY}>
-                                {({ data, categoryError }) => {
+                                {({ data: categoryData, categoryError }) => {
                                     if (categoryError) return <p>Error: {categoryError.message}</p>;
                                     return (
-                                        data.categories.length > 0 && (
+                                        categoryData.categories.length > 0 && (
                                             <>
                                                 <h2>Categories</h2>
                                                 <div className="categories_meats">
-                                                    {data.categories.map(category => (
+                                                    {categoryData.categories.map(category => (
                                                         <label htmlFor={`category_${category.id}`} key={category.id}>
                                                             <input
                                                                 type="checkbox"
@@ -751,14 +785,14 @@ class CreateRecipeForm extends Component {
                             </Query>
 
                             <Query query={ALL_MEATS_QUERY}>
-                                {({ data, meatError }) => {
+                                {({ data: meatData, meatError }) => {
                                     if (meatError) return <p>Error: {meatError.message}</p>;
                                     return (
-                                        data.meats.length > 0 && (
+                                        meatData.meats.length > 0 && (
                                             <>
                                                 <h2>Meats</h2>
                                                 <div className="categories_meats">
-                                                    {data.meats.map(meat => (
+                                                    {meatData.meats.map(meat => (
                                                         <label htmlFor={`meat_${meat.id}`} key={meat.id}>
                                                             <input
                                                                 type="checkbox"
@@ -804,4 +838,4 @@ class CreateRecipeForm extends Component {
     }
 }
 
-export { CreateRecipeForm };
+export { EditRecipeForm };
