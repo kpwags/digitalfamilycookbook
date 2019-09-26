@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Query } from 'react-apollo';
+import { editMode } from '../config';
 import { RECIPE_BY_ID_QUERY } from '../queries/Recipe';
 import { User } from './User';
 import { RecipeView } from './styles/RecipeView';
@@ -176,7 +177,10 @@ class Recipe extends Component {
                             <User>
                                 {({ data: { me } }) => (
                                     <>
-                                        {me.id === data.recipe.user.id && (
+                                        {me &&
+                                            (me.permissions.includes('ADMIN') ||
+                                                me.id === data.recipe.user.id ||
+                                                editMode === 'ALL') && (
                                             <p>
                                                 <Link href={`/edit-recipe?id=${data.recipe.id}`}>
                                                     <a>Edit Recipe</a>
