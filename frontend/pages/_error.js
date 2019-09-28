@@ -1,8 +1,12 @@
+import { PageError } from '../components/elements/PageError';
+
 const Error = () => (
-    <>
-        <h1>Ooops</h1>
-        <p>There seems to have been an error...</p>
-    </>
+    <PageError
+        error={{
+            Title: 'Oops',
+            Message: 'There seems to have been an error...'
+        }}
+    />
 );
 
 export default Error;

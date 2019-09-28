@@ -598,19 +598,21 @@ const Mutations = {
       throw new Error('You must be logged in');
     }
 
-    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
-
-    if (!hasPermissions) {
-      throw new Error('You do not have the proper permissions to update this recipe');
-    }
-
     const recipe = await ctx.db.query.recipes(
       { where: { id: args.id } },
-      '{ id, ingredients { id }, directions { id } }',
+      '{ id, ingredients { id }, directions { id }, user { id } }',
     );
 
     if (recipe.length !== 1) {
       throw new Error('Recipe not found');
+    }
+
+    if (process.env.EDIT_MODE === 'USER') {
+      const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+
+      if (!hasPermissions && recipe[0].user.id !== ctx.request.userId) {
+        throw new Error('You do not have the permission to update this recipe');
+      }
     }
 
     const ingredientsToDelete = [];

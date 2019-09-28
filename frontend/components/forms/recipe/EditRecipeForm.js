@@ -289,10 +289,14 @@ class EditRecipeForm extends Component {
                     meats: dbMeats
                 }
             }).catch(err => {
-                this.setState({ error: err });
+                this.setState({ error: err }, () => {
+                    window.scrollTo(0, 0);
+                });
             });
 
-            Router.back();
+            if (this.state.error === null) {
+                Router.back();
+            }
         }
     };
 
