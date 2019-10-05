@@ -145,14 +145,19 @@ const RecipeForm = styled.form`
         grid-column-gap: 10px;
         grid-row-gap: 0px;
 
-        div.column1 {
+        div.ingredients-directions {
             grid-column-start: 1;
             grid-column-end: 1;
         }
 
-        div.column2 {
+        div.time-nutrition {
             grid-column-start: 2;
             grid-column-end: 2;
+
+            input.small {
+                width: 90%;
+                display: block;
+            }
         }
 
         input.small {
@@ -172,6 +177,11 @@ const RecipeForm = styled.form`
         div.input {
             grid-column-start: 1;
             grid-column-end: 1;
+
+            input.small {
+                width: 90%;
+                display: block;
+            }
         }
 
         div.delete-button {
@@ -191,6 +201,11 @@ const RecipeForm = styled.form`
         div.input {
             grid-column-start: 1;
             grid-column-end: 1;
+
+            input.small {
+                width: 90%;
+                display: block;
+            }
         }
 
         div.delete-button {

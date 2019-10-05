@@ -35,13 +35,20 @@ class Utilities {
         const elements = document.getElementsByClassName(className);
 
         for (let i = 0; i < elements.length; i += 1) {
-            elements[i].className = 'className';
+            let { elementClassName } = elements[i];
+            elementClassName = elementClassName.replace('errored', '');
+            elements[i].className.className = elementClassName;
         }
     }
 
     static resetField(elementId) {
-        document.getElementById(elementId).className = '';
-        document.getElementById(elementId).parentElement.className = '';
+        let { className } = document.getElementById(elementId);
+        className = className.replace('errored', '');
+        document.getElementById(elementId).className = className;
+
+        let parentClassName = document.getElementById(elementId).parentElement.className;
+        parentClassName = parentClassName.replace('errored', '');
+        document.getElementById(elementId).parentElement.className = parentClassName;
         document.getElementById(`${elementId}-message`).style.display = 'none';
         document.getElementById(`${elementId}-message`).innerText = '';
     }

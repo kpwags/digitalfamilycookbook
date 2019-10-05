@@ -467,7 +467,7 @@ class CreateRecipeForm extends Component {
                                 />
                             </label>
                             <div className="recipe-form-grid">
-                                <div className="column1">
+                                <div className="ingredients-directions">
                                     <h2>Ingredients</h2>
 
                                     <div className="error-text" id="ingredients-message" />
@@ -578,7 +578,7 @@ class CreateRecipeForm extends Component {
                                     </button>
                                 </div>
 
-                                <div className="column2">
+                                <div className="time-nutrition">
                                     <label htmlFor="time">
                                         Time
                                         <input
