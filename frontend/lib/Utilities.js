@@ -35,9 +35,9 @@ class Utilities {
         const elements = document.getElementsByClassName(className);
 
         for (let i = 0; i < elements.length; i += 1) {
-            let { elementClassName } = elements[i];
+            let elementClassName = elements[i].className;
             elementClassName = elementClassName.replace('errored', '');
-            elements[i].className.className = elementClassName;
+            elements[i].className = elementClassName;
         }
     }
 

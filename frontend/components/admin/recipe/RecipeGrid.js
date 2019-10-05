@@ -80,7 +80,7 @@ class RecipeGrid extends Component {
                                                         e.preventDefault();
                                                         Router.push({
                                                             pathname: '/edit-recipe',
-                                                            query: { id: recipe.id }
+                                                            query: { id: recipe.id, returnpage: 'admin' }
                                                         });
                                                     }}
                                                 >

@@ -19,12 +19,16 @@ const EditRecipe = props => (
                             me &&
                             (me.permissions.includes('ADMIN') || me.id === data.recipe.user.id || editMode === 'ALL')
                         ) {
-                            return <EditRecipeForm recipe={data.recipe} />;
+                            return <EditRecipeForm recipe={data.recipe} previousPage={props.query.returnpage} />;
                         }
-                        return <PageError error={{
-                            Title: 'Can\'t Edit Recipe',
-                            Message: 'You do not have permission to edit this recipe.' }}
-                        />;
+                        return (
+                            <PageError
+                                error={{
+                                    Title: 'Can\'t Edit Recipe',
+                                    Message: 'You do not have permission to edit this recipe.'
+                                }}
+                            />
+                        );
                     }}
                 </Query>
             )}

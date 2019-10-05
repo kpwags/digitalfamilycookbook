@@ -182,7 +182,7 @@ class Recipe extends Component {
                                                 me.id === data.recipe.user.id ||
                                                 editMode === 'ALL') && (
                                             <p>
-                                                <Link href={`/edit-recipe?id=${data.recipe.id}`}>
+                                                <Link href={`/edit-recipe?id=${data.recipe.id}&returnpage=view`}>
                                                     <a>Edit Recipe</a>
                                                 </Link>
                                             </p>

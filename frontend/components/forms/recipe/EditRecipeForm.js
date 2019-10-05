@@ -13,7 +13,8 @@ import { FormValidator } from '../../../lib/FormValidator';
 
 class EditRecipeForm extends Component {
     static propTypes = {
-        recipe: PropTypes.object
+        recipe: PropTypes.object,
+        previousPage: PropTypes.string
     };
 
     constructor(props) {
@@ -295,7 +296,20 @@ class EditRecipeForm extends Component {
             });
 
             if (this.state.error === null) {
-                Router.back();
+                switch (this.props.previousPage) {
+                case 'admin':
+                    Router.push({
+                        pathname: '/admin/recipes'
+                    });
+                    break;
+                case 'view':
+                default:
+                    Router.push({
+                        pathname: '/recipe',
+                        query: { id: args.id }
+                    });
+                    break;
+                }
             }
         }
     };
@@ -841,5 +855,10 @@ class EditRecipeForm extends Component {
         );
     }
 }
+
+EditRecipeForm.defaultProps = {
+    recipe: {},
+    previousPage: 'view'
+};
 
 export { EditRecipeForm };
