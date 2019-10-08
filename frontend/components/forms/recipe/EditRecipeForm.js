@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { UPDATE_RECIPE_MUTATION } from '../../../mutations/Recipe';
 import { ALL_CATEGORIES_QUERY } from '../../../queries/Category';
 import { ALL_MEATS_QUERY } from '../../../queries/Meat';
+import { RECIPE_BY_ID_QUERY } from '../../../queries/Recipe';
 import { RecipeForm } from '../../styles/RecipeForm';
 import { Trash } from '../../svg/Trash';
 import { ErrorMessage } from '../../elements/ErrorMessage';
@@ -466,6 +467,7 @@ class EditRecipeForm extends Component {
         return (
             <Mutation
                 mutation={UPDATE_RECIPE_MUTATION}
+                refetchQueries={[{ query: RECIPE_BY_ID_QUERY, variables: {id: this.state.id } }]}
                 onCompleted={() => {
                     if (this.state.error === null) {
                         this.setState({
