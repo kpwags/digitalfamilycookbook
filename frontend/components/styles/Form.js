@@ -102,6 +102,11 @@ const Form = styled.form`
         margin: 15px auto;
         width: 128px;
     }
+
+    span.required {
+        color: #ff0000;
+        font-weight: bold;
+    }
 `;
 
 Form.displayName = 'Form';

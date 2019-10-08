@@ -86,6 +86,11 @@ const UserHeaderMenu = () => (
                             <DownArrow width={15} height={15} fill="#fff" viewbox="0 0 129 129" />
                             <ul className="child-list">
                                 <li>
+                                    <Link href="/create-recipe">
+                                        <a>Add New Recipe</a>
+                                    </Link>
+                                </li>
+                                <li>
                                     <Link href="/edit-profile">
                                         <a>Profile</a>
                                     </Link>
