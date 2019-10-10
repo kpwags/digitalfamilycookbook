@@ -29,6 +29,10 @@ const RecipeView = styled.div`
         grid-column-gap: 10px;
         grid-row-gap: 0px;
 
+        @media print {
+            display: block;
+        }
+
         .recipe-details {
             grid-column-start: 1;
             grid-column-end: 1;
@@ -58,6 +62,10 @@ const RecipeView = styled.div`
         .nutrition {
             grid-column-start: 2;
             grid-column-end: 2;
+
+            @media print {
+                display: none;
+            }
 
             .info {
                 border: 1px solid ${props => props.theme.black};
@@ -120,6 +128,12 @@ const RecipeView = styled.div`
                     }
                 }
             }
+        }
+    }
+
+    @media print {
+        .hide-print {
+            display: none;
         }
     }
 `;

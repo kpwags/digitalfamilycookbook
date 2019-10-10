@@ -30,7 +30,7 @@ class Recipe extends Component {
                             <h1>{data.recipe.name}</h1>
 
                             {data.recipe.largeImage && (
-                                <div className="recipe-image">
+                                <div className="recipe-image hide-print">
                                     <img src={data.recipe.largeImage} alt={data.recipe.name} />
                                 </div>
                             )}
@@ -80,7 +80,7 @@ class Recipe extends Component {
                                     )}
 
                                     {data.recipe.categories.length > 0 && (
-                                        <p className="details">
+                                        <p className="details hide-print">
                                             <strong>Categories:</strong>&nbsp;
                                             {data.recipe.categories.map((category, idx) => (
                                                 <span key={category.id}>
@@ -94,7 +94,7 @@ class Recipe extends Component {
                                     )}
 
                                     {data.recipe.meats.length > 0 && (
-                                        <p className="details">
+                                        <p className="details hide-print">
                                             <strong>Meats:</strong>&nbsp;
                                             {data.recipe.meats.map((meat, idx) => (
                                                 <span key={meat.id}>
@@ -181,7 +181,7 @@ class Recipe extends Component {
                                             (me.permissions.includes('ADMIN') ||
                                                 me.id === data.recipe.user.id ||
                                                 editMode === 'ALL') && (
-                                            <p>
+                                            <p className="hide-print">
                                                 <Link href={`/edit-recipe?id=${data.recipe.id}&returnpage=view`}>
                                                     <a>Edit Recipe</a>
                                                 </Link>
