@@ -30,7 +30,7 @@ class Recipe extends Component {
                             <h1>{data.recipe.name}</h1>
 
                             {data.recipe.largeImage && (
-                                <div className="recipe-image">
+                                <div className="recipe-image hide-print">
                                     <img src={data.recipe.largeImage} alt={data.recipe.name} />
                                 </div>
                             )}
