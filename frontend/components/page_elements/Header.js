@@ -15,6 +15,10 @@ const StyledHeader = styled.header`
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #43ab5e), color-stop(100, #00802b));
     background-image: -webkit-linear-gradient(top, #43ab5e 0%, #00802b 100%);
     background-image: linear-gradient(to bottom, #43ab5e 0%, #00802b 100%);
+
+    @media print {
+        display: none;
+    }
 `;
 
 const Logo = styled.h1`
