@@ -6,7 +6,7 @@ import { Homepage } from '../components/Homepage';
 const ResetPassword = props => (
     <User>
         {({ data: { me } }) => {
-            if (me) {
+            if (me || typeof props.query.resetToken === 'undefined') {
                 return <Homepage />;
             }
 
