@@ -1,10 +1,10 @@
-import App, { Container } from 'next/app';
+import App from 'next/app';
 import { ApolloProvider } from 'react-apollo';
 import Page from '../components/Page';
 import { Overlay } from '../components/styles/Overlay';
 import withData from '../lib/withData';
 
-class MyApp extends App {
+class DigitalFamilyCookbook extends App {
     static async getInitialProps({ Component, ctx }) {
         let pageProps = {};
         if (Component.getInitialProps) {
@@ -20,16 +20,14 @@ class MyApp extends App {
         const { Component, apollo, pageProps } = this.props;
 
         return (
-            <Container>
-                <ApolloProvider client={apollo}>
-                    <Overlay id="page-overlay" />
-                    <Page>
-                        <Component {...pageProps} />
-                    </Page>
-                </ApolloProvider>
-            </Container>
+            <ApolloProvider client={apollo}>
+                <Overlay id="page-overlay" />
+                <Page>
+                    <Component {...pageProps} />
+                </Page>
+            </ApolloProvider>
         );
     }
 }
 
-export default withData(MyApp);
+export default withData(DigitalFamilyCookbook);

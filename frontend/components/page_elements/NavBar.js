@@ -99,8 +99,8 @@ const NavBar = () => (
             </Link>
             <Query query={ALL_CATEGORIES_QUERY}>
                 {({ data, error, loading }) => {
-                    if (loading) return <p>Loading...</p>;
-                    if (error) return <p>Error: {error.message}</p>;
+                    if (loading) return <></>;
+                    if (error) return <></>;
                     return (
                         <ul className="child-list">
                             {data.categories.length > 0 ? (
@@ -129,8 +129,8 @@ const NavBar = () => (
             </Link>
             <Query query={ALL_MEATS_QUERY}>
                 {({ data, error, loading }) => {
-                    if (loading) return <p>Loading...</p>;
-                    if (error) return <p>Error: {error.message}</p>;
+                    if (loading) return <></>;
+                    if (error) return <></>;
                     return (
                         <ul className="child-list">
                             {data.meats.length > 0 ? (
