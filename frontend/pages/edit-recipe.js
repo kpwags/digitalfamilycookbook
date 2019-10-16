@@ -8,7 +8,7 @@ import { User } from '../components/User';
 import { PageError } from '../components/elements/PageError';
 
 const EditRecipe = props => (
-    <AuthGateway redirectUrl={`/edit-recipe?id=${props.query.id}`}>
+    <AuthGateway redirectUrl={`/edit-recipe?id=${props.query.id}`} permissionNeeded="USER">
         <User>
             {({ data: { me } }) => (
                 <Query query={RECIPE_BY_ID_QUERY} variables={{ id: props.query.id }}>
