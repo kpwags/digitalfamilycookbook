@@ -42,6 +42,7 @@ const StyledNavBar = styled.ul`
                 );
                 background-image: -webkit-linear-gradient(bottom, #43ab5e 0%, #00802b 100%);
                 background-image: linear-gradient(to top, #43ab5e 0%, #00802b 100%);
+                text-decoration: none;
             }
         }
 

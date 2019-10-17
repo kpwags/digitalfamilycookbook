@@ -10,6 +10,7 @@ const AdminGrid = styled.table`
             background: ${props => props.theme.green};
             color: #ffffff;
             font-weight: normal;
+            font-size: 1.2rem;
             padding: 5px 0;
             border: none;
             th {
@@ -30,13 +31,15 @@ const AdminGrid = styled.table`
         tr {
             td {
                 border-bottom: 1px solid #cccccc;
-                padding: 0 4px;
+                padding: 0.2rem 0.5rem;
+                font-size: 1.1rem;
                 button[type='button'] {
                     background: ${props => props.theme.green};
                     border: 1px solid ${props => props.theme.darkGreen};
                     cursor: pointer;
                     color: #ffffff;
-                    padding: 3px 10px;
+                    padding: 1px 10px;
+                    font-size: 1rem;
                 }
                 button[type='button'].wide {
                     min-width: 100px;

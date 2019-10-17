@@ -6,10 +6,11 @@ const AddButton = styled.div`
     button {
         background: ${props => props.theme.green};
         color: #ffffff;
-        font-size: 2rem;
+        font-size: 1.2rem;
         font-weight: 600;
         padding: 0.5rem 1.2rem;
         border: 0;
+        cursor: pointer;
     }
 `;
 

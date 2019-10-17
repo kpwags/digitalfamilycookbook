@@ -223,13 +223,7 @@ class EditProfileForm extends Component {
                                         />
                                         <label htmlFor="file">
                                             Image
-                                            <input
-                                                type="file"
-                                                id="file"
-                                                name="file"
-                                                placeholder="Upload an Image"
-                                                onChange={this.uploadFile}
-                                            />
+                                            <input type="file" id="file" name="file" onChange={this.uploadFile} />
                                             {this.state.image && (
                                                 <div className="image-preview">
                                                     <img src={this.state.image} alt="Upload Preview" />
@@ -246,7 +240,6 @@ class EditProfileForm extends Component {
                                             <input
                                                 type="text"
                                                 name="name"
-                                                placeholder="Name"
                                                 required
                                                 id="name"
                                                 defaultValue={me.name}
@@ -264,7 +257,6 @@ class EditProfileForm extends Component {
                                                         type="text"
                                                         name="username"
                                                         id="username"
-                                                        placeholder="Username"
                                                         maxLength="20"
                                                         defaultValue={me.username}
                                                         onChange={e => {
@@ -283,7 +275,6 @@ class EditProfileForm extends Component {
                                                 type="email"
                                                 name="email"
                                                 id="email"
-                                                placeholder="Email"
                                                 required
                                                 defaultValue={me.email}
                                                 onChange={this.saveToState}
@@ -296,7 +287,6 @@ class EditProfileForm extends Component {
                                             <textarea
                                                 id="bio"
                                                 name="bio"
-                                                placeholder="Enter a bit about yourself"
                                                 defaultValue={me.bio}
                                                 onChange={this.handleChange}
                                             />

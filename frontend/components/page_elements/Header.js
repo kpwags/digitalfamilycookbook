@@ -30,6 +30,9 @@ const Logo = styled.h1`
     a {
         color: #ffffff;
     }
+    a:hover {
+        text-decoration: none;
+    }
 `;
 
 const Header = () => (
