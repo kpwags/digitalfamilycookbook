@@ -38,13 +38,7 @@ class ForgotPasswordForm extends Component {
                             )}
                             <label htmlFor="email">
                                 Email
-                                <input
-                                    type="email"
-                                    name="email"
-                                    placeholder="Email"
-                                    value={this.state.email}
-                                    onChange={this.saveToState}
-                                />
+                                <input type="email" name="email" value={this.state.email} onChange={this.saveToState} />
                             </label>
                             <button type="submit">Request Reset</button>
                         </fieldset>

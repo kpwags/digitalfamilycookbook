@@ -62,20 +62,13 @@ class LoginForm extends Component {
                             <ErrorMessage error={error || this.state.error} />
                             <label htmlFor="email">
                                 Email or Username
-                                <input
-                                    type="text"
-                                    name="email"
-                                    placeholder="Email or Username"
-                                    value={this.state.email}
-                                    onChange={this.saveToState}
-                                />
+                                <input type="text" name="email" value={this.state.email} onChange={this.saveToState} />
                             </label>
                             <label htmlFor="password">
                                 Password
                                 <input
                                     type="password"
                                     name="password"
-                                    placeholder="password"
                                     value={this.state.password}
                                     onChange={this.saveToState}
                                 />

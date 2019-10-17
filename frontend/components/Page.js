@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styled, { ThemeProvider, injectGlobal } from 'styled-components';
+import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import PropTypes from 'prop-types';
 import Meta from './page_elements/Meta';
 import Header from './page_elements/Header';
@@ -25,10 +25,10 @@ const Inner = styled.div`
     padding: 2rem;
 `;
 
-injectGlobal`
+const GlobalStyle = createGlobalStyle`
   html {
     box-sizing: border-box;
-    font-size: 10px;
+    font-size: 100%;
     font-family: 'Helvetica-Neue', Arial, Helvetica, sans-serif
   }
   *, *:before, *:after {
@@ -38,12 +38,28 @@ injectGlobal`
     padding: 0;
     margin: 0;
     font-size: 1.5rem;
-    line-height: 2;
+  }
+  h1 {
+      font-size:2rem;
+  }
+  h2 {
+      font-size:1.75rem;
+  }
+  h3 {
+      font-size:1.5rem;
+  }
+  h4 {
+      font-size:1.25rem;
+  }
+  p {
+    line-height:1.5;
+    margin:1rem 0;
+    font-size:1rem;
   }
   a {
     text-decoration:none;
     cursor:pointer;
-    color: ${theme.green};
+    color: ${props => props.theme.green};
   }
   a:hover {
       text-decoration: underline;
@@ -58,6 +74,7 @@ class Page extends Component {
     render() {
         return (
             <ThemeProvider theme={theme}>
+                <GlobalStyle />
                 <StyledPage>
                     <Meta />
                     <Header />

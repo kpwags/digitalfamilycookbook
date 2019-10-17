@@ -16,7 +16,7 @@ const Form = styled.form`
     background: rgba(0, 0, 0, 0.02);
     border: 5px solid white;
     padding: 20px;
-    font-size: 1.8rem;
+    font-size: 1rem;
     line-height: 1.5;
     font-weight: 600;
     width: 500px;
@@ -24,13 +24,14 @@ const Form = styled.form`
     label {
         display: block;
         margin: 1.5rem 0;
+        font-size: 1.1rem;
     }
     input,
     textarea,
     select {
         width: 100%;
-        padding: 1rem;
-        font-size: 1.8rem;
+        padding: 0.5rem;
+        font-size: 1.1rem;
         border: 1px solid black;
         &:focus {
             outline: 0;
@@ -39,6 +40,7 @@ const Form = styled.form`
     }
     textarea {
         height: 175px;
+        font-family: 'Helvetica-Neue', Arial, Helvetica, sans-serif;
     }
     label.errored {
         color: #ff0000;
@@ -55,7 +57,7 @@ const Form = styled.form`
         background: ${props => props.theme.green};
         color: white;
         border: 0;
-        font-size: 2rem;
+        font-size: 1.2rem;
         font-weight: 600;
         padding: 0.5rem 1.2rem;
         cursor: pointer;

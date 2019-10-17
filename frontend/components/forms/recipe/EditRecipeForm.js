@@ -467,7 +467,7 @@ class EditRecipeForm extends Component {
         return (
             <Mutation
                 mutation={UPDATE_RECIPE_MUTATION}
-                refetchQueries={[{ query: RECIPE_BY_ID_QUERY, variables: {id: this.state.id } }]}
+                refetchQueries={[{ query: RECIPE_BY_ID_QUERY, variables: { id: this.state.id } }]}
                 onCompleted={() => {
                     if (this.state.error === null) {
                         this.setState({

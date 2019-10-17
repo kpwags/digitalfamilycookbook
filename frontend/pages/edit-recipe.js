@@ -15,6 +15,17 @@ const EditRecipe = props => (
                     {({ data, recipeError }) => {
                         if (recipeError) return <PageError error={{ Title: 'Error', Message: recipeError.message }} />;
 
+                        if (!data.recipe) {
+                            return (
+                                <PageError
+                                    error={{
+                                        Title: 'Can\'t Find Recipe',
+                                        Message: 'The recipe cannot be found.'
+                                    }}
+                                />
+                            );
+                        }
+
                         if (
                             me &&
                             (me.permissions.includes('ADMIN') || me.id === data.recipe.user.id || editMode === 'ALL')

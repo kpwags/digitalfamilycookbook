@@ -25,7 +25,7 @@ class MeatGrid extends Component {
 
     render() {
         const gridStyle = {
-            width: '500px'
+            width: '550px'
         };
         return (
             <>
@@ -36,13 +36,13 @@ class MeatGrid extends Component {
                 <AdminGrid cellPadding="0" cellSpacing="0" id="meatadmingrid" style={gridStyle}>
                     <thead>
                         <tr>
-                            <th width="70%" className="no-border">
+                            <th width="64%" className="no-border">
                                 Name
                             </th>
-                            <th width="15%" className="no-border">
+                            <th width="18%" className="no-border">
                                 &nbsp;
                             </th>
-                            <th width="15%">&nbsp;</th>
+                            <th width="18%">&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>

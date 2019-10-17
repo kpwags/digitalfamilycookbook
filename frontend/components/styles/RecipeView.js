@@ -17,7 +17,7 @@ const RecipeView = styled.div`
     }
 
     p.details {
-        font-size: 1.25em;
+        font-size: 1.1rem;
         line-height: 1;
         margin-bottom: 10px;
     }
@@ -42,8 +42,8 @@ const RecipeView = styled.div`
                 padding: 0;
 
                 li {
-                    font-size: 1.15em;
-                    margin: 0.5em 0;
+                    font-size: 1rem;
+                    margin: 0.35em 0;
                 }
             }
 
@@ -52,9 +52,9 @@ const RecipeView = styled.div`
                 padding: 0;
 
                 li {
-                    font-size: 1.3em;
+                    font-size: 1rem;
                     line-height: 1.75;
-                    margin: 1.3em 0;
+                    margin: 0.25rem 0;
                 }
             }
         }
@@ -77,7 +77,6 @@ const RecipeView = styled.div`
                         padding: 0;
                         font-weight: bold;
                         border-bottom: 8px solid ${props => props.theme.black};
-                        font-size: 1.6em;
                     }
 
                     .nutrition-data {
@@ -86,7 +85,9 @@ const RecipeView = styled.div`
                         grid-template-rows: 1fr;
                         grid-column-gap: 10px;
                         grid-row-gap: 10px;
+                        font-size: 1rem;
                         border-bottom: 1px solid ${props => props.theme.black};
+                        padding: 0.25rem 0;
 
                         .item {
                             grid-column-start: 1;
@@ -108,8 +109,9 @@ const RecipeView = styled.div`
                         grid-column-gap: 10px;
                         grid-row-gap: 10px;
                         border-bottom: 5px solid ${props => props.theme.black};
-                        font-size: 1.25em;
+                        font-size: 1.2rem;
                         font-weight: bold;
+                        padding: 0.25rem 0;
 
                         .item {
                             grid-column-start: 1;

@@ -131,7 +131,6 @@ class ChangePasswordForm extends Component {
                                                 type="password"
                                                 name="currentPassword"
                                                 id="currentPassword"
-                                                placeholder="Current Password"
                                                 value={this.state.currentPassword}
                                                 onChange={this.saveToState}
                                                 onBlur={this.validate}
@@ -144,7 +143,6 @@ class ChangePasswordForm extends Component {
                                                 type="password"
                                                 name="password"
                                                 id="password"
-                                                placeholder="New Password"
                                                 value={this.state.password}
                                                 onChange={this.saveToState}
                                                 onBlur={this.validate}
@@ -157,7 +155,6 @@ class ChangePasswordForm extends Component {
                                                 type="password"
                                                 name="confirmPassword"
                                                 id="confirmPassword"
-                                                placeholder="Confirm New Password"
                                                 value={this.state.confirmPassword}
                                                 onChange={this.saveToState}
                                                 onBlur={this.validate}
