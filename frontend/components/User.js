@@ -4,7 +4,11 @@ import { CURRENT_USER_QUERY } from '../queries/User';
 
 const User = props => (
     <Query {...props} query={CURRENT_USER_QUERY}>
-        {payload => props.children(payload)}
+        {({ data, error, loading }) => {
+            if (loading) return props.children({ data: { me: null }, error, loading });
+            if (error) return props.children({ data: { me: null }, error, loading });
+            return props.children({ data, error, loading });
+        }}
     </Query>
 );
 
