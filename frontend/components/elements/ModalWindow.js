@@ -44,18 +44,18 @@ const Window = styled.div`
 `;
 
 class ModalWindow extends Component {
+    static closePopup(e, id) {
+        e.preventDefault();
+        document.getElementById(id).style.display = 'none';
+        document.getElementById('page-overlay').style.display = 'none';
+    }
+
     static propTypes = {
         id: PropTypes.string,
         width: PropTypes.string,
         height: PropTypes.string,
         children: PropTypes.node
     };
-
-    static closePopup(e, id) {
-        e.preventDefault();
-        document.getElementById(id).style.display = 'none';
-        document.getElementById('page-overlay').style.display = 'none';
-    }
 
     render() {
         const { id, width = 500, height = 300 } = this.props;

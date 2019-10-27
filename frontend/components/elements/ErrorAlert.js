@@ -45,14 +45,14 @@ const AlertError = styled.div`
 `;
 
 class ErrorAlert extends Component {
+    static closeAlert(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+
     static propTypes = {
         id: PropTypes.string,
         error: PropTypes.object
     };
-
-    static closeAlert(id) {
-        document.getElementById(id).style.display = 'none';
-    }
 
     render() {
         const { id, error } = this.props;

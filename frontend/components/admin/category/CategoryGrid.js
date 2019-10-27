@@ -5,6 +5,7 @@ import { AdminGrid } from '../../styles/AdminGrid';
 import { ModalWindow } from '../../elements/ModalWindow';
 import { EditCategory } from './EditCategory';
 import { DeleteCategory } from './DeleteCategory';
+import { LoadingBox } from '../../elements/LoadingBox';
 
 class CategoryGrid extends Component {
     state = {
@@ -50,7 +51,9 @@ class CategoryGrid extends Component {
                                 if (loading)
                                     return (
                                         <tr>
-                                            <td colSpan="3">Loading...</td>
+                                            <td colSpan="3">
+                                                <LoadingBox />
+                                            </td>
                                         </tr>
                                     );
                                 if (error)

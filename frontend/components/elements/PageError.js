@@ -10,7 +10,7 @@ const PageErrorStyles = styled.div`
     border: 1px solid rgba(0, 0, 0, 0.05);
     border-left: 5px solid red;
     h1 {
-        margin:0 0 20px;
+        margin: 0 0 20px;
     }
     p {
         margin: 0;
@@ -26,7 +26,16 @@ const PageError = ({ error }) => {
         <PageErrorStyles>
             <h1>{error.Title}</h1>
             <p data-test="page-error">{error.Message}</p>
-            <p><a onClick={() => {Router.back()}}>Go Back</a></p>
+            <p>
+                <a
+                    role="button"
+                    onClick={() => {
+                        Router.back();
+                    }}
+                >
+                    Go Back
+                </a>
+            </p>
         </PageErrorStyles>
     );
 };
