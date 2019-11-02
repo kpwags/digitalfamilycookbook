@@ -5,6 +5,7 @@ import { AdminGrid } from '../../styles/AdminGrid';
 import { DeleteMeat } from './DeleteMeat';
 import { EditMeat } from './EditMeat';
 import { ModalWindow } from '../../elements/ModalWindow';
+import { LoadingBox } from '../../elements/LoadingBox';
 
 class MeatGrid extends Component {
     state = {
@@ -51,7 +52,9 @@ class MeatGrid extends Component {
                                 if (loading)
                                     return (
                                         <tr>
-                                            <td colSpan="3">Loading...</td>
+                                            <td colSpan="3">
+                                                <LoadingBox />
+                                            </td>
                                         </tr>
                                     );
                                 if (error)

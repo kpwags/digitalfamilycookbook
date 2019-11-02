@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
-import { Query } from 'react-apollo';
+import React from 'react';
+import { useQuery } from '@apollo/react-hooks';
 import Head from 'next/head';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { SINGLE_USER_USERNAME_QUERY } from '../queries/User';
-import { ErrorMessage } from './elements/ErrorMessage';
+import { LoadingBox } from './elements/LoadingBox';
+import { PageError } from './elements/PageError';
 
 const ProfileDetails = styled.div`
     width: 800px;
@@ -45,46 +46,51 @@ const ProfileDetails = styled.div`
     }
 `;
 
-class ViewProfile extends Component {
-    static propTypes = {
-        username: PropTypes.string.isRequired
-    };
+const ViewProfile = props => {
+    const { data, error, loading } = useQuery(SINGLE_USER_USERNAME_QUERY, { variables: { username: props.username } });
 
-    render() {
+    if (loading) return <LoadingBox />;
+    if (error)
         return (
-            <Query
-                query={SINGLE_USER_USERNAME_QUERY}
-                variables={{
-                    username: this.props.username
+            <PageError
+                error={{
+                    Title: 'Error Viewing Profile',
+                    Message: error
                 }}
-            >
-                {({ error, loading, data }) => {
-                    if (error) return <ErrorMessage error={error} />;
-                    if (loading) return <p>Loading...</p>;
-                    if (!data.user) return <p>No User Found for {this.props.username}</p>;
-
-                    const { user } = data;
-                    return (
-                        <ProfileDetails>
-                            <Head>
-                                <title>Digital Family Cookbook | {user.name}</title>
-                            </Head>
-                            <div className="user-details">
-                                <div className="image">
-                                    <img src={user.image} alt={user.name} />
-                                </div>
-                                <div className="details">
-                                    <h2>{user.name}</h2>
-                                    <div className="username">@{user.username}</div>
-                                    <p>{user.bio}</p>
-                                </div>
-                            </div>
-                        </ProfileDetails>
-                    );
-                }}
-            </Query>
+            />
         );
-    }
-}
+    if (!data.user)
+        return (
+            <PageError
+                error={{
+                    Title: 'Error Viewing Profile',
+                    Message: `No User Found for ${props.username}`
+                }}
+            />
+        );
+
+    const { user } = data;
+    return (
+        <ProfileDetails>
+            <Head>
+                <title>Digital Family Cookbook | {user.name}</title>
+            </Head>
+            <div className="user-details">
+                <div className="image">
+                    <img src={user.image} alt={user.name} />
+                </div>
+                <div className="details">
+                    <h2>{user.name}</h2>
+                    <div className="username">@{user.username}</div>
+                    <p>{user.bio}</p>
+                </div>
+            </div>
+        </ProfileDetails>
+    );
+};
+
+ViewProfile.propTypes = {
+    username: PropTypes.string.isRequired
+};
 
 export { ViewProfile };

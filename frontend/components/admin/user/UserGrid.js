@@ -6,6 +6,7 @@ import { ErrorMessage } from '../../elements/ErrorMessage';
 import { User } from '../../User';
 import { ToggleAdmin } from './ToggleAdmin';
 import { DeleteUser } from './DeleteUser';
+import { LoadingBox } from '../../elements/LoadingBox';
 
 class UserGrid extends Component {
     state = {
@@ -49,7 +50,9 @@ class UserGrid extends Component {
                                         if (loading)
                                             return (
                                                 <tr>
-                                                    <td colSpan="3">Loading...</td>
+                                                    <td colSpan="3">
+                                                        <LoadingBox />
+                                                    </td>
                                                 </tr>
                                             );
                                         if (error)

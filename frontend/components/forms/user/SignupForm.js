@@ -62,8 +62,8 @@ class SignupForm extends Component {
             await signupMutation({
                 variables: {
                     ...args,
-                    image: '/static/images/user.jpg',
-                    largeImage: '/static/images/user-lg.jpg'
+                    image: '/public/images/user.jpg',
+                    largeImage: '/public/images/user-lg.jpg'
                 }
             }).catch(err => {
                 this.setState({ error: err });

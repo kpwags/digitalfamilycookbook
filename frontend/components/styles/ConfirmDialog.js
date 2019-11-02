@@ -37,6 +37,12 @@ const DialogWindow = styled.div`
 `;
 
 class ConfirmDialog extends Component {
+    static closeConfirmDialog(e, id) {
+        e.preventDefault();
+        document.getElementById(id).style.display = 'none';
+        document.getElementById('page-overlay').style.display = 'none';
+    }
+
     static propTypes = {
         id: PropTypes.string.isRequired,
         width: PropTypes.string,
@@ -46,12 +52,6 @@ class ConfirmDialog extends Component {
         message: PropTypes.string.isRequired,
         continue: PropTypes.func.isRequired
     };
-
-    static closeConfirmDialog(e, id) {
-        e.preventDefault();
-        document.getElementById(id).style.display = 'none';
-        document.getElementById('page-overlay').style.display = 'none';
-    }
 
     render() {
         const { id, width = 500, height = 300, yesText = 'Yes', noText = 'No' } = this.props;

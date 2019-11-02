@@ -1,5 +1,5 @@
 import React from 'react';
-import { Query } from 'react-apollo';
+import { useQuery } from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { CURRENT_USER_QUERY } from '../queries/User';
@@ -19,47 +19,40 @@ const InvalidPermissionsMessage = styled.p`
     font-style: italic;
 `;
 
-const AuthGateway = props => (
-    <Query query={CURRENT_USER_QUERY}>
-        {({ data, loading }) => {
-            if (loading) return <></>;
+const AuthGateway = props => {
+    const { data, loading } = useQuery(CURRENT_USER_QUERY);
 
-            if (requireLogin && !data.me) {
-                return (
-                    <div>
-                        <ContinueMessage>Please sign in to continue</ContinueMessage>
-                        <LoginForm redirectUrl={props.redirectUrl} />
-                    </div>
-                );
-            }
+    if (loading) return <></>;
 
-            if (typeof props.permissionNeeded !== 'undefined' && !data.me) {
-                return (
-                    <div>
-                        <ContinueMessage>Please sign in to continue</ContinueMessage>
-                        <LoginForm redirectUrl={props.redirectUrl} />
-                    </div>
-                );
-            }
+    if (requireLogin && !data.me) {
+        return (
+            <div>
+                <ContinueMessage>Please sign in to continue</ContinueMessage>
+                <LoginForm redirectUrl={props.redirectUrl} />
+            </div>
+        );
+    }
 
-            if (
-                typeof props.permissionNeeded !== 'undefined' &&
-                !data.me.permissions.includes(props.permissionNeeded)
-            ) {
-                return (
-                    <>
-                        <InvalidPermissionsMessage>
-                            You do not have permission to access this page.
-                        </InvalidPermissionsMessage>
-                        <Homepage />
-                    </>
-                );
-            }
+    if (typeof props.permissionNeeded !== 'undefined' && !data.me) {
+        return (
+            <div>
+                <ContinueMessage>Please sign in to continue</ContinueMessage>
+                <LoginForm redirectUrl={props.redirectUrl} />
+            </div>
+        );
+    }
 
-            return props.children;
-        }}
-    </Query>
-);
+    if (typeof props.permissionNeeded !== 'undefined' && !data.me.permissions.includes(props.permissionNeeded)) {
+        return (
+            <>
+                <InvalidPermissionsMessage>You do not have permission to access this page.</InvalidPermissionsMessage>
+                <Homepage />
+            </>
+        );
+    }
+
+    return props.children;
+};
 
 AuthGateway.propTypes = {
     redirectUrl: PropTypes.string,

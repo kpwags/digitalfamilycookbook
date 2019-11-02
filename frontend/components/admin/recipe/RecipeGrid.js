@@ -5,6 +5,7 @@ import { ALL_RECIPES_QUERY } from '../../../queries/Recipe';
 import { AdminGrid } from '../../styles/AdminGrid';
 import { ErrorMessage } from '../../elements/ErrorMessage';
 import { DeleteRecipe } from './DeleteRecipe';
+import { LoadingBox } from '../../elements/LoadingBox';
 
 class RecipeGrid extends Component {
     state = {
@@ -43,7 +44,9 @@ class RecipeGrid extends Component {
                                 if (loading)
                                     return (
                                         <tr>
-                                            <td colSpan="3">Loading...</td>
+                                            <td colSpan="3">
+                                                <LoadingBox />
+                                            </td>
                                         </tr>
                                     );
 

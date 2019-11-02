@@ -77,61 +77,65 @@ const UserMenu = styled.ul`
 
 const UserHeaderMenu = () => (
     <User>
-        {({ data: { me } }) => (
-            <UserMenu>
-                {me && (
-                    <>
-                        <li>
-                            <img src={me.image} alt={me.name} /> {`${me.name} `}
-                            <DownArrow width={15} height={15} fill="#fff" viewbox="0 0 129 129" />
-                            <ul className="child-list">
+        {({ data: { me }, loading }) => (
+            <>
+                {!loading && (
+                    <UserMenu>
+                        {me && (
+                            <>
                                 <li>
-                                    <Link href="/create-recipe">
-                                        <a>Add New Recipe</a>
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link href="/edit-profile">
-                                        <a>Profile</a>
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link href="/account">
-                                        <a>Settings</a>
-                                    </Link>
-                                </li>
+                                    <img src={me.image} alt={me.name} /> {`${me.name} `}
+                                    <DownArrow width={15} height={15} fill="#fff" viewbox="0 0 129 129" />
+                                    <ul className="child-list">
+                                        <li>
+                                            <Link href="/create-recipe">
+                                                <a>Add New Recipe</a>
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link href="/edit-profile">
+                                                <a>Profile</a>
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link href="/account">
+                                                <a>Settings</a>
+                                            </Link>
+                                        </li>
 
-                                {me.permissions.includes('ADMIN') && (
-                                    <li>
-                                        <Link href="/admin">
-                                            <a>Administration</a>
-                                        </Link>
-                                    </li>
-                                )}
+                                        {me.permissions.includes('ADMIN') && (
+                                            <li>
+                                                <Link href="/admin">
+                                                    <a>Administration</a>
+                                                </Link>
+                                            </li>
+                                        )}
 
-                                <li>
-                                    <Logout />
+                                        <li>
+                                            <Logout />
+                                        </li>
+                                    </ul>
                                 </li>
-                            </ul>
-                        </li>
-                    </>
+                            </>
+                        )}
+
+                        {!me && (
+                            <>
+                                <li>
+                                    <Link href="/signup">
+                                        <a>Sign Up</a>
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link href="/login">
+                                        <a>Sign In</a>
+                                    </Link>
+                                </li>
+                            </>
+                        )}
+                    </UserMenu>
                 )}
-
-                {!me && (
-                    <>
-                        <li>
-                            <Link href="/signup">
-                                <a>Sign Up</a>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="/login">
-                                <a>Sign In</a>
-                            </Link>
-                        </li>
-                    </>
-                )}
-            </UserMenu>
+            </>
         )}
     </User>
 );

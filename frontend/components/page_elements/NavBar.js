@@ -1,9 +1,7 @@
 import Link from 'next/link';
-import { Query } from 'react-apollo';
 import styled from 'styled-components';
-import { ALL_CATEGORIES_QUERY } from '../../queries/Category';
-import { ALL_MEATS_QUERY } from '../../queries/Meat';
-import { DownArrow } from '../svg/DownArrow';
+import { CategoriesNav } from './CategoriesNav';
+import { MeatsNav } from './MeatsNav';
 
 const StyledNavBar = styled.ul`
     float: left;
@@ -92,66 +90,9 @@ const NavBar = () => (
                 <a>Recipes</a>
             </Link>
         </li>
-        <li>
-            <Link href="/">
-                <a>
-                    Categories <DownArrow width={15} height={15} fill="#fff" viewbox="0 0 129 129" />
-                </a>
-            </Link>
-            <Query query={ALL_CATEGORIES_QUERY}>
-                {({ data, error, loading }) => {
-                    if (loading) return <></>;
-                    if (error) return <></>;
-                    return (
-                        <ul className="child-list">
-                            {data.categories.length > 0 ? (
-                                data.categories.map(category => (
-                                    <li key={category.id}>
-                                        <Link href="/">
-                                            <a>{category.name}</a>
-                                        </Link>
-                                    </li>
-                                ))
-                            ) : (
-                                <li>
-                                    <em>No Categories Defined</em>
-                                </li>
-                            )}
-                        </ul>
-                    );
-                }}
-            </Query>
-        </li>
-        <li>
-            <Link href="/">
-                <a>
-                    Meats <DownArrow width={15} height={15} fill="#fff" viewbox="0 0 129 129" />
-                </a>
-            </Link>
-            <Query query={ALL_MEATS_QUERY}>
-                {({ data, error, loading }) => {
-                    if (loading) return <></>;
-                    if (error) return <></>;
-                    return (
-                        <ul className="child-list">
-                            {data.meats.length > 0 ? (
-                                data.meats.map(meat => (
-                                    <li key={meat.id}>
-                                        <Link href="/">
-                                            <a>{meat.name}</a>
-                                        </Link>
-                                    </li>
-                                ))
-                            ) : (
-                                <li>
-                                    <em>No Meats Defined</em>
-                                </li>
-                            )}
-                        </ul>
-                    );
-                }}
-            </Query>
-        </li>
+
+        <CategoriesNav />
+        <MeatsNav />
     </StyledNavBar>
 );
 
