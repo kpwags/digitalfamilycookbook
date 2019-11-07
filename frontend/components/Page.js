@@ -19,7 +19,9 @@ const StyledPage = styled.div`
     color: ${props => props.theme.black};
 `;
 
-const Inner = styled.div``;
+const Inner = styled.div`
+    margin: 15px;
+`;
 
 const GlobalStyle = createGlobalStyle`
   html {
@@ -37,6 +39,7 @@ const GlobalStyle = createGlobalStyle`
   }
   h1 {
       font-size:2rem;
+      color: ${props => props.theme.green};
   }
   h2 {
       font-size:1.75rem;

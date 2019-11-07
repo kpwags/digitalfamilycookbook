@@ -56,11 +56,9 @@ const Recipe = props => {
                         <p className="details">
                             <strong>Source:</strong>&nbsp;
                             {data.recipe.sourceUrl ? (
-                                <Link href={data.recipe.sourceUrl}>
-                                    <a target="_blank" rel="nofollow">
-                                        {data.recipe.source}
-                                    </a>
-                                </Link>
+                                <a href={data.recipe.sourceUrl} target="_blank" rel="noopener noreferrer">
+                                    {data.recipe.source}
+                                </a>
                             ) : (
                                 <>{data.recipe.source}</>
                             )}
