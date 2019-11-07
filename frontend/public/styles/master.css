@@ -14,3 +14,7 @@
 .hidden {
   display: none;
 }
+
+.clearfix {
+  clear: both;
+}

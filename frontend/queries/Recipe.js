@@ -5,6 +5,7 @@ const ALL_RECIPES_QUERY = gql`
         recipes(orderBy: name_ASC) {
             id
             name
+            image
             user {
                 id
                 name
@@ -57,5 +58,20 @@ const RECIPE_BY_ID_QUERY = gql`
     }
 `;
 
+const MOST_RECENT_QUERY = gql`
+    query {
+        recipes(first: 15, skip: 0, orderBy: createdAt_DESC) {
+            id
+            name
+            image
+            user {
+                id
+                name
+            }
+        }
+    }
+`;
+
 export { ALL_RECIPES_QUERY };
 export { RECIPE_BY_ID_QUERY };
+export { MOST_RECENT_QUERY };
