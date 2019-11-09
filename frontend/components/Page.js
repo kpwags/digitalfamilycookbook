@@ -11,7 +11,7 @@ const theme = {
     lightGreen: 'hsl(136, 44%, 47%)',
     paleGreen: 'hsl(136, 100%, 88%)',
     darkGreen: 'hsl(140, 100%, 15%)',
-    bs: '0 12px 24px 0 rgba(0, 0, 0, 0.09)'
+    bs: '0 12px 24px 0 rgba(0, 0, 0, 0.2)'
 };
 
 const StyledPage = styled.div`

@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 const RecipeLink = styled.div`
     border: 1px solid #989898;
+    box-shadow: ${props => props.theme.bs};
     cursor: pointer;
 
     h2 {
