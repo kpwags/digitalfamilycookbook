@@ -3,6 +3,7 @@ import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import PropTypes from 'prop-types';
 import Meta from './page_elements/Meta';
 import Header from './page_elements/Header';
+import { ClearFix } from './styles/ClearFix';
 
 const theme = {
     black: '#393939',
@@ -10,8 +11,7 @@ const theme = {
     lightGreen: 'hsl(136, 44%, 47%)',
     paleGreen: 'hsl(136, 100%, 88%)',
     darkGreen: 'hsl(140, 100%, 15%)',
-    maxWidth: '1000px',
-    bs: '0 12px 24px 0 rgba(0, 0, 0, 0.09)'
+    bs: '0 12px 24px 0 rgba(0, 0, 0, 0.2)'
 };
 
 const StyledPage = styled.div`
@@ -20,9 +20,7 @@ const StyledPage = styled.div`
 `;
 
 const Inner = styled.div`
-    max-width: ${props => props.theme.maxWidth};
-    margin: 0 auto;
-    padding: 2rem;
+    margin: 15px;
 `;
 
 const GlobalStyle = createGlobalStyle`
@@ -41,6 +39,7 @@ const GlobalStyle = createGlobalStyle`
   }
   h1 {
       font-size:2rem;
+      color: ${props => props.theme.green};
   }
   h2 {
       font-size:1.75rem;
@@ -78,6 +77,7 @@ class Page extends Component {
                 <StyledPage>
                     <Meta />
                     <Header />
+                    <ClearFix />
                     <Inner>{this.props.children}</Inner>
                 </StyledPage>
             </ThemeProvider>

@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 
 const RecipeView = styled.div`
+    width: 1000px;
+    margin: 0 auto;
+
     h1,
     h2 {
         color: ${props => props.theme.green};

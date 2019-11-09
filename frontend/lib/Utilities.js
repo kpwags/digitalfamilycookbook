@@ -1,3 +1,5 @@
+import Router from 'next/router';
+
 class Utilities {
     static setTableRowActive(tableId, rowId) {
         const table = document.getElementById(tableId);
@@ -111,6 +113,13 @@ class Utilities {
                 return word.replace(word[0], word[0].toUpperCase());
             })
             .join(' ');
+    }
+
+    static goToRecipe(id) {
+        Router.push({
+            pathname: '/recipe',
+            query: { id }
+        });
     }
 }
 

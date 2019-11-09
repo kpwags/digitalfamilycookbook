@@ -1,3 +1,7 @@
-const Homepage = () => <div>DIGITAL FAMILY COOKBOOK</div>;
+import { MostRecent } from './recipes/MostRecent';
+
+const Homepage = () => {
+    return <MostRecent />;
+};
 
 export { Homepage };
