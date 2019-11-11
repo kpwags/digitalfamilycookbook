@@ -86,7 +86,7 @@ const StyledNavBar = styled.ul`
 const NavBar = () => (
     <StyledNavBar>
         <li>
-            <Link href="/">
+            <Link href="/recipes">
                 <a>Recipes</a>
             </Link>
         </li>

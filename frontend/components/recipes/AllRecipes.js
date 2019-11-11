@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useQuery } from '@apollo/react-hooks';
-import { MOST_RECENT_QUERY } from '../../queries/Recipe';
+import { ALL_RECIPES_QUERY } from '../../queries/Recipe';
 import { LoadingBox } from '../elements/LoadingBox';
 import { PageError } from '../elements/PageError';
 import { RecipeBox } from './RecipeBox';
@@ -8,12 +8,12 @@ import { RecipeIndex } from '../styles/RecipeIndex';
 import { perPage } from '../../config';
 import { Pagination } from './Pagination';
 
-const MostRecent = props => {
+const AllRecipes = props => {
     const { page } = props;
 
     const skip = page * perPage - perPage;
 
-    const { data, error, loading } = useQuery(MOST_RECENT_QUERY, { variables: { skip } });
+    const { data, error, loading } = useQuery(ALL_RECIPES_QUERY, { variables: { skip } });
 
     if (loading) return <LoadingBox />;
     if (error)
@@ -28,9 +28,9 @@ const MostRecent = props => {
 
     return (
         <>
-            <h1>Most Recent Recipes</h1>
+            <h1>Recipes</h1>
 
-            <Pagination type="MOSTRECENT" page={page} />
+            <Pagination type="ALL" page={page} title="Recipes" />
 
             <RecipeIndex>
                 {data.recipes.map(recipe => (
@@ -38,13 +38,13 @@ const MostRecent = props => {
                 ))}
             </RecipeIndex>
 
-            <Pagination type="MOSTRECENT" page={page} />
+            <Pagination type="ALL" page={page} title="Recipes" />
         </>
     );
 };
 
-MostRecent.propTypes = {
+AllRecipes.propTypes = {
     page: PropTypes.number
 };
 
-export { MostRecent };
+export { AllRecipes };

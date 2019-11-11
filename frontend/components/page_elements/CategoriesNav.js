@@ -21,7 +21,7 @@ const CategoriesNav = () => {
                 {data.categories.length > 0 ? (
                     data.categories.map(category => (
                         <li key={category.id}>
-                            <Link href="/">
+                            <Link href={`/category?id=${category.id}`}>
                                 <a>{category.name}</a>
                             </Link>
                         </li>
