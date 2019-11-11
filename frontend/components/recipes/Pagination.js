@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import Head from 'next/head';
 import Link from 'next/link';
 import { perPage, siteTitle } from '../../config';
+import { Center } from '../styles/Center';
 import {
     RECIPE_BY_CATEGORY_PAGINATION_QUERY,
     ALL_RECIPES_PAGINATION_QUERY,
@@ -15,7 +16,7 @@ import { ErrorMessage } from '../elements/ErrorMessage';
 const PaginationStyles = styled.div`
     text-align: center;
     display: inline-grid;
-    grid-template-columns: repeat(4, auto);
+    grid-template-columns: repeat(4, 1fr);
     align-items: stretch;
     justify-content: center;
     align-content: center;
@@ -33,6 +34,9 @@ const PaginationStyles = styled.div`
     a[aria-disabled='true'] {
         color: grey;
         pointer-events: none;
+    }
+    p {
+        line-height: 2;
     }
 `;
 
@@ -88,32 +92,38 @@ const Pagination = props => {
                 </title>
             </Head>
             {pages > 1 && (
-                <PaginationStyles data-test="pagination">
-                    <Link
-                        href={{
-                            pathname: url,
-                            query: { page: page - 1 }
-                        }}
-                    >
-                        <a className="prev" aria-disabled={page <= 1}>
-                            &larr; Prev
-                        </a>
-                    </Link>
-                    <p>
-                        Page {page} of <span className="totalPages">{pages > 0 ? pages : 1}</span>
-                    </p>
-                    <p>{count} Items Total</p>
-                    <Link
-                        href={{
-                            pathname: url,
-                            query: { page: page + 1 }
-                        }}
-                    >
-                        <a className="next" aria-disabled={page >= pages}>
-                            Next &rarr;
-                        </a>
-                    </Link>
-                </PaginationStyles>
+                <Center>
+                    <PaginationStyles data-test="pagination">
+                        <p>
+                            <Link
+                                href={{
+                                    pathname: url,
+                                    query: { page: page - 1 }
+                                }}
+                            >
+                                <a className="prev" aria-disabled={page <= 1}>
+                                    &larr; Prev
+                                </a>
+                            </Link>
+                        </p>
+                        <p>
+                            Page {page} of <span className="totalPages">{pages > 0 ? pages : 1}</span>
+                        </p>
+                        <p>{count} Items Total</p>
+                        <p>
+                            <Link
+                                href={{
+                                    pathname: url,
+                                    query: { page: page + 1 }
+                                }}
+                            >
+                                <a className="next" aria-disabled={page >= pages}>
+                                    Next &rarr;
+                                </a>
+                            </Link>
+                        </p>
+                    </PaginationStyles>
+                </Center>
             )}
         </>
     );
