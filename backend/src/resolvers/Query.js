@@ -42,6 +42,7 @@ const Query = {
 
   recipe: forwardTo('db'),
   recipes: forwardTo('db'),
+  recipesConnection: forwardTo('db'),
 
   user: forwardTo('db'),
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import PropTypes from 'prop-types';
 import { DELETE_RECIPE_MUTATION } from '../../../mutations/Recipe';
-import { ALL_RECIPES_QUERY } from '../../../queries/Recipe';
+import { ADMIN_ALL_RECIPES_QUERY } from '../../../queries/Recipe';
 import { ConfirmDialog } from '../../styles/ConfirmDialog';
 import { ErrorAlert } from '../../elements/ErrorAlert';
 
@@ -18,11 +18,11 @@ class DeleteRecipe extends Component {
     };
 
     update = (cache, payload) => {
-        const data = cache.readQuery({ query: ALL_RECIPES_QUERY });
+        const data = cache.readQuery({ query: ADMIN_ALL_RECIPES_QUERY });
 
         data.recipes = data.recipes.filter(recipe => recipe.id !== payload.data.deleteRecipe.id);
 
-        cache.writeQuery({ query: ALL_RECIPES_QUERY, data });
+        cache.writeQuery({ query: ADMIN_ALL_RECIPES_QUERY, data });
     };
 
     confirmDelete = e => {

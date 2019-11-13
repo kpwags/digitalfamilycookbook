@@ -21,7 +21,7 @@ const MeatsNav = () => {
                 {data.meats.length > 0 ? (
                     data.meats.map(meat => (
                         <li key={meat.id}>
-                            <Link href="/">
+                            <Link href={`/meat?id=${meat.id}`}>
                                 <a>{meat.name}</a>
                             </Link>
                         </li>

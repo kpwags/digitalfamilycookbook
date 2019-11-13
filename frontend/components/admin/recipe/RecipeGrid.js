@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
 import Router from 'next/router';
-import { ALL_RECIPES_QUERY } from '../../../queries/Recipe';
+import { ADMIN_ALL_RECIPES_QUERY } from '../../../queries/Recipe';
 import { AdminGrid } from '../../styles/AdminGrid';
 import { ErrorMessage } from '../../elements/ErrorMessage';
 import { DeleteRecipe } from './DeleteRecipe';
@@ -39,7 +39,7 @@ class RecipeGrid extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        <Query query={ALL_RECIPES_QUERY}>
+                        <Query query={ADMIN_ALL_RECIPES_QUERY}>
                             {({ data, error, loading }) => {
                                 if (loading)
                                     return (
