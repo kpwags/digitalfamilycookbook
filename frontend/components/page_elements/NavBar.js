@@ -81,6 +81,11 @@ const StyledNavBar = styled.ul`
             display: block;
         }
     }
+
+    @media all and (max-width: 768px) {
+        float: none;
+        display: none;
+    }
 `;
 
 const NavBar = () => (

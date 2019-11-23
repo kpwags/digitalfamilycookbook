@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { siteTitle } from '../../config';
 import NavBar from './NavBar';
 import UserHeaderMenu from './UserHeaderMenu';
+import { HamburgerMenu } from './HamburgerMenu';
 
 const StyledHeader = styled.header`
     margin: 0px;
@@ -12,12 +13,25 @@ const StyledHeader = styled.header`
     background-image: -ms-linear-gradient(top, #43ab5e 0%, #00802b 100%);
     background-image: -moz-linear-gradient(top, #43ab5e 0%, #00802b 100%);
     background-image: -o-linear-gradient(top, #43ab5e 0%, #00802b 100%);
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #43ab5e), color-stop(100, #00802b));
+    background-image: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0, #43ab5e),
+        color-stop(100, #00802b)
+    );
     background-image: -webkit-linear-gradient(top, #43ab5e 0%, #00802b 100%);
     background-image: linear-gradient(to bottom, #43ab5e 0%, #00802b 100%);
 
     @media print {
         display: none;
+    }
+
+    @media all and (max-width: 768px) {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
     }
 `;
 
@@ -27,16 +41,23 @@ const Logo = styled.h1`
     padding: 0;
     line-height: 50px;
     float: left;
+
     a {
         color: #ffffff;
     }
+
     a:hover {
         text-decoration: none;
+    }
+
+    @media all and (max-width: 768px) {
+        float: none;
     }
 `;
 
 const Header = () => (
     <StyledHeader>
+        <HamburgerMenu />
         <Logo>
             <Link href="/">
                 <a>{siteTitle}</a>

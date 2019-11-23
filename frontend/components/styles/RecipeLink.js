@@ -29,6 +29,14 @@ const RecipeLink = styled.div`
             text-decoration: none;
         }
     }
+
+    @media all and (max-width: 414px) {
+        box-shadow: none;
+
+        h2 {
+            font-size: 1.2rem;
+        }
+    }
 `;
 
 export { RecipeLink };

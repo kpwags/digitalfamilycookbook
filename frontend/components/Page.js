@@ -3,6 +3,7 @@ import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import PropTypes from 'prop-types';
 import Meta from './page_elements/Meta';
 import Header from './page_elements/Header';
+import { MobileMenu } from './page_elements/MobileMenu';
 import { ClearFix } from './styles/ClearFix';
 
 const theme = {
@@ -63,6 +64,13 @@ const GlobalStyle = createGlobalStyle`
   a:hover {
       text-decoration: underline;
   }
+
+  @media all and (max-width: 414px) {
+        h1 { font-size: 1.6rem; }
+        h2 { font-size: 1.45rem; }
+        h3 { font-size: 1.3rem; }
+        h4 { font-size: 1.15rem; }
+    }
 `;
 
 class Page extends Component {
@@ -78,6 +86,7 @@ class Page extends Component {
                     <Meta />
                     <Header />
                     <ClearFix />
+                    <MobileMenu />
                     <Inner>{this.props.children}</Inner>
                 </StyledPage>
             </ThemeProvider>
