@@ -141,6 +141,40 @@ const RecipeView = styled.div`
             display: none;
         }
     }
+
+    @media all and (max-width: 800px) {
+        width: 100%;
+
+        .recipe-image {
+            width: 100%;
+            margin: 10px auto 25px;
+            text-align: center;
+
+            img {
+                max-width: 100%;
+            }
+        }
+    }
+
+    @media all and (max-width: 767px) {
+        width: 100%;
+
+        .recipe-image {
+            display: none;
+        }
+
+        .main,
+        .nutrition-data,
+        .nutrition-data-calories {
+            display: block;
+        }
+
+        .nutrition {
+            margin: 30px 0 0 0;
+            padding: 30px 0 0 0;
+            border-top: 1px solid ${props => props.theme.black};
+        }
+    }
 `;
 
 export { RecipeView };

@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/react-hooks';
 import Link from 'next/link';
-import { DownArrow } from '../svg/DownArrow';
 import { ALL_CATEGORIES_QUERY } from '../../queries/Category';
+import { Utilities } from '../../lib/Utilities';
 
 const CategoriesNav = () => {
     const { data, loading, error } = useQuery(ALL_CATEGORIES_QUERY);
@@ -11,18 +11,42 @@ const CategoriesNav = () => {
 
     return (
         <li>
-            <Link href="/">
-                <a>
-                    Categories <DownArrow width={15} height={15} fill="#fff" viewbox="0 0 129 129" />
-                </a>
-            </Link>
+            <a
+                role="button"
+                tabIndex="0"
+                onClick={e => {
+                    e.preventDefault();
+                    Utilities.toggleHeaderMenu('categories-header-menu');
+                }}
+                onKeyDown={e => {
+                    e.preventDefault();
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        Utilities.toggleHeaderMenu('categories-header-menu');
+                    }
+                }}
+            >
+                Categories <i className="arrow down" />
+            </a>
 
-            <ul className="child-list">
+            <ul className="child-list" id="categories-header-menu">
                 {data.categories.length > 0 ? (
                     data.categories.map(category => (
                         <li key={category.id}>
                             <Link href={`/category?id=${category.id}`}>
-                                <a>{category.name}</a>
+                                <a
+                                    role="button"
+                                    tabIndex="0"
+                                    onClick={() => {
+                                        Utilities.hideHeaderMenu('categories-header-menu');
+                                    }}
+                                    onKeyDown={e => {
+                                        if (e.keyCode === 13 || e.keyCode === 32) {
+                                            Utilities.hideHeaderMenu('categories-header-menu');
+                                        }
+                                    }}
+                                >
+                                    {category.name}
+                                </a>
                             </Link>
                         </li>
                     ))

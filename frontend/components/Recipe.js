@@ -90,7 +90,7 @@ const Recipe = props => {
                             <strong>Categories:</strong>&nbsp;
                             {data.recipe.categories.map((category, idx) => (
                                 <span key={category.id}>
-                                    <Link href={`/recipes?categoryid=${category.id}`}>
+                                    <Link href={`/category?id=${category.id}`}>
                                         <a>{category.name}</a>
                                     </Link>
                                     {idx !== data.recipe.categories.length - 1 ? ', ' : ''}
@@ -104,7 +104,7 @@ const Recipe = props => {
                             <strong>Meats:</strong>&nbsp;
                             {data.recipe.meats.map((meat, idx) => (
                                 <span key={meat.id}>
-                                    <Link href={`/recipes?meatid=${meat.id}`}>
+                                    <Link href={`/meat?id=${meat.id}`}>
                                         <a>{meat.name}</a>
                                     </Link>
                                     {idx !== data.recipe.meats.length - 1 ? ', ' : ''}

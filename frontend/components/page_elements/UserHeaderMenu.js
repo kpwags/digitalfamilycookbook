@@ -73,6 +73,11 @@ const UserMenu = styled.ul`
             display: block;
         }
     }
+
+    @media all and (max-width: 800px) {
+        float: none;
+        display: none;
+    }
 `;
 
 const UserHeaderMenu = () => (

@@ -21,11 +21,17 @@ const Form = styled.form`
     font-weight: 600;
     width: 500px;
     margin: 30px auto 0;
+
+    @media all and (max-width: 800px) {
+        width: 350px;
+    }
+
     label {
         display: block;
         margin: 1.5rem 0;
         font-size: 1.1rem;
     }
+
     input,
     textarea,
     select {
@@ -38,10 +44,12 @@ const Form = styled.form`
             border-color: ${props => props.theme.green};
         }
     }
+
     textarea {
         height: 175px;
         font-family: 'Helvetica-Neue', Arial, Helvetica, sans-serif;
     }
+
     label.errored {
         color: #ff0000;
     }

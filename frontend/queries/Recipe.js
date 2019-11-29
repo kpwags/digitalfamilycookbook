@@ -159,6 +159,16 @@ const RECIPE_BY_STARTING_LETTER_QUERY = gql`
     }
 `;
 
+const RECIPE_BY_USER_QUERY = gql`
+    query RECIPE_BY_USER_QUERY($userId: ID!) {
+        recipes(orderBy: name_ASC, where: { user: { id: $userId } }) {
+            id
+            name
+            image
+        }
+    }
+`;
+
 export { ADMIN_ALL_RECIPES_QUERY };
 export { ALL_RECIPES_PAGINATION_QUERY };
 export { ALL_RECIPES_QUERY };
@@ -169,3 +179,4 @@ export { RECIPE_BY_ID_QUERY };
 export { RECIPE_BY_MEAT_PAGINATION_QUERY };
 export { RECIPE_BY_MEAT_QUERY };
 export { RECIPE_BY_STARTING_LETTER_QUERY };
+export { RECIPE_BY_USER_QUERY };

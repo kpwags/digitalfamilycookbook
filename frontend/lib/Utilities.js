@@ -121,6 +121,39 @@ class Utilities {
             query: { id }
         });
     }
+
+    static toggleElement(elementId) {
+        if (document.getElementById(elementId).style.display !== 'none') {
+            document.getElementById(elementId).style.display = 'none';
+        } else {
+            document.getElementById(elementId).style.display = 'block';
+        }
+    }
+
+    static toggleMobileMenu() {
+        document.getElementById('hamburgermenu').classList.toggle('change');
+
+        if (document.getElementById('mobilemenu').style.left === '0px') {
+            document.getElementById('mobilemenu').style.left = '-250px';
+        } else {
+            document.getElementById('mobilemenu').style.left = '0px';
+        }
+    }
+
+    static toggleHeaderMenu(menuId) {
+        if (
+            document.getElementById(menuId).style.display === 'none' ||
+            document.getElementById(menuId).style.display === ''
+        ) {
+            document.getElementById(menuId).style.display = 'block';
+        } else {
+            document.getElementById(menuId).style.display = 'none';
+        }
+    }
+
+    static hideHeaderMenu(menuId) {
+        document.getElementById(menuId).style.display = 'none';
+    }
 }
 
 export { Utilities };
