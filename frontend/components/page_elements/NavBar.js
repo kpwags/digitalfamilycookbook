@@ -82,7 +82,7 @@ const StyledNavBar = styled.ul`
         }
     }
 
-    @media all and (max-width: 768px) {
+    @media all and (max-width: 800px) {
         float: none;
         display: none;
     }

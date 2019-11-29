@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
 import styled from 'styled-components';
+import { Utilities } from '../../lib/Utilities';
 
 const HamburgerContainer = styled.div`
     display: none;
@@ -34,42 +34,37 @@ const HamburgerContainer = styled.div`
         transform: rotate(45deg) translate(-10px, -6px);
     }
 
-    @media all and (max-width: 768px) {
+    @media all and (max-width: 800px) {
         display: inline-block;
         float: left;
     }
 `;
 
-class HamburgerMenu extends Component {
-    toggleMenu = () => {
-        document.getElementById('hamburgermenu').classList.toggle('change');
-
-        if (document.getElementById('mobilemenu').style.left === '0px') {
-            document.getElementById('mobilemenu').style.left = '-250px';
-        } else {
-            document.getElementById('mobilemenu').style.left = '0px';
-        }
-    };
-
-    render() {
-        return (
-            <HamburgerContainer>
-                <div
-                    className="container"
-                    id="hamburgermenu"
-                    role="button"
-                    onClick={e => {
-                        e.preventDefault();
-                        this.toggleMenu();
-                    }}
-                >
-                    <div className="bar1" />
-                    <div className="bar2" />
-                    <div className="bar3" />
-                </div>
-            </HamburgerContainer>
-        );
-    }
-}
+const HamburgerMenu = () => {
+    return (
+        <HamburgerContainer>
+            <div
+                className="container"
+                id="hamburgermenu"
+                role="button"
+                tabIndex="0"
+                onClick={e => {
+                    e.preventDefault();
+                    Utilities.toggleMobileMenu();
+                }}
+                onKeyDown={e => {
+                    e.preventDefault();
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        Utilities.toggleMobileMenu();
+                    }
+                }}
+            >
+                <div className="bar1" />
+                <div className="bar2" />
+                <div className="bar3" />
+            </div>
+        </HamburgerContainer>
+    );
+};
 
 export { HamburgerMenu };

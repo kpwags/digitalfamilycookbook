@@ -38,7 +38,7 @@ const PaginationStyles = styled.div`
     p {
         line-height: 2;
     }
-    @media all and (max-width: 768px) {
+    @media all and (max-width: 800px) {
         grid-template-columns: repeat(2, 1fr);
         .hide-mobile {
             display: none;
@@ -113,10 +113,7 @@ const Pagination = props => {
                             </Link>
                         </p>
                         <p className="hide-mobile">
-                            Page {page} of{' '}
-                            <span className="totalPages">
-                                {pages > 0 ? pages : 1}
-                            </span>
+                            Page {page} of <span className="totalPages">{pages > 0 ? pages : 1}</span>
                         </p>
                         <p className="hide-mobile">{count} Items Total</p>
                         <p>
@@ -126,10 +123,7 @@ const Pagination = props => {
                                     query: { page: page + 1 }
                                 }}
                             >
-                                <a
-                                    className="next"
-                                    aria-disabled={page >= pages}
-                                >
+                                <a className="next" aria-disabled={page >= pages}>
                                     Next &rarr;
                                 </a>
                             </Link>

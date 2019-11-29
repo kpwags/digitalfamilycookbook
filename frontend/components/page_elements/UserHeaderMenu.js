@@ -74,7 +74,7 @@ const UserMenu = styled.ul`
         }
     }
 
-    @media all and (max-width: 768px) {
+    @media all and (max-width: 800px) {
         float: none;
         display: none;
     }
@@ -89,14 +89,8 @@ const UserHeaderMenu = () => (
                         {me && (
                             <>
                                 <li>
-                                    <img src={me.image} alt={me.name} />{' '}
-                                    {`${me.name} `}
-                                    <DownArrow
-                                        width={15}
-                                        height={15}
-                                        fill="#fff"
-                                        viewbox="0 0 129 129"
-                                    />
+                                    <img src={me.image} alt={me.name} /> {`${me.name} `}
+                                    <DownArrow width={15} height={15} fill="#fff" viewbox="0 0 129 129" />
                                     <ul className="child-list">
                                         <li>
                                             <Link href="/create-recipe">

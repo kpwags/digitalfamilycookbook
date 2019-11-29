@@ -13,13 +13,7 @@ const StyledHeader = styled.header`
     background-image: -ms-linear-gradient(top, #43ab5e 0%, #00802b 100%);
     background-image: -moz-linear-gradient(top, #43ab5e 0%, #00802b 100%);
     background-image: -o-linear-gradient(top, #43ab5e 0%, #00802b 100%);
-    background-image: -webkit-gradient(
-        linear,
-        left top,
-        left bottom,
-        color-stop(0, #43ab5e),
-        color-stop(100, #00802b)
-    );
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #43ab5e), color-stop(100, #00802b));
     background-image: -webkit-linear-gradient(top, #43ab5e 0%, #00802b 100%);
     background-image: linear-gradient(to bottom, #43ab5e 0%, #00802b 100%);
 
@@ -27,11 +21,12 @@ const StyledHeader = styled.header`
         display: none;
     }
 
-    @media all and (max-width: 768px) {
+    @media all and (max-width: 800px) {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
+        height: 50px;
     }
 `;
 
@@ -50,7 +45,7 @@ const Logo = styled.h1`
         text-decoration: none;
     }
 
-    @media all and (max-width: 768px) {
+    @media all and (max-width: 800px) {
         float: none;
     }
 `;
