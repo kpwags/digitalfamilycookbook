@@ -11,13 +11,13 @@ const DialogWindow = styled.div`
     width: 400px;
     margin-left: -200px;
     z-index: 10;
-    border-radius: 4px;
+    border-radius: 6px;
     box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.05);
 
     .message {
         padding: 12px 0;
         text-align: center;
-        font-size: 2rem;
+        font-size: 1.2rem;
     }
 
     .buttons {
@@ -25,13 +25,17 @@ const DialogWindow = styled.div`
         text-align: center;
 
         button.confirm-button {
+            color: white;
+            border-radius: 6px;
+            margin: 0 15px;
+            border-radius: 6px;
+            border-width: 1px;
+            border-style: solid;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-size: 1rem;
             background: ${props => props.theme.green};
-            color: #ffffff;
-            font-size: 2rem;
-            font-weight: 600;
-            padding: 0.5rem 1.2rem;
-            border: 0;
-            margin: 0 12px;
+            border-color: ${props => props.theme.green};
         }
     }
 `;

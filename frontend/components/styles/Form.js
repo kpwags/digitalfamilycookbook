@@ -61,19 +61,29 @@ const Form = styled.form`
     }
     button,
     input[type='submit'] {
-        width: auto;
-        background: ${props => props.theme.green};
+        /* width: auto; */
         color: white;
-        border: 0;
-        font-size: 1.2rem;
-        font-weight: 600;
-        padding: 0.5rem 1.2rem;
+        border-radius: 6px;
+        margin: 0 15px;
+        border-radius: 6px;
+        border-width: 1px;
+        border-style: solid;
+        padding: 5px 15px;
         cursor: pointer;
+        font-size: 1rem;
+        background: ${props => props.theme.green};
+        border-color: ${props => props.theme.green};
     }
 
     button[type='button'] {
         margin-left: 10px;
         cursor: pointer;
+    }
+
+    button.save,
+    input[type='submit'] {
+        background: ${props => props.theme.green};
+        border-color: ${props => props.theme.green};
     }
 
     fieldset {
@@ -99,7 +109,7 @@ const Form = styled.form`
     div.error-text {
         color: #ff0000;
         display: none;
-        font-size: 1.4rem;
+        font-size: 1rem;
         font-weight: normal;
         margin-top: 5px;
     }

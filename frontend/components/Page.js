@@ -87,6 +87,8 @@ const GlobalStyle = createGlobalStyle`
         -webkit-transform: rotate(45deg);
     }
 
+    .error { color: #f00; }
+
     @media all and (max-width: 414px) {
         h1 { font-size: 1.6rem; }
         h2 { font-size: 1.45rem; }

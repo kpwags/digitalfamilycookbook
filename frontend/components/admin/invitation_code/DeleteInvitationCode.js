@@ -45,18 +45,24 @@ class DeleteInvitationCode extends Component {
                         <ConfirmDialog
                             id={`confirm-invitation-code-delete-${id}`}
                             message={`Are you sure you want to delete the invitation code: ${code}?`}
-                            height="180"
+                            height="150"
                             continue={async () => {
                                 await deleteInvitationCode().catch(err => {
                                     this.setState({ error: err });
                                 });
 
                                 if (this.state.error === null) {
+                                    document.getElementById(`confirm-invitation-code-delete-${id}`).style.display =
+                                        'none';
                                     document.getElementById('page-overlay').style.display = 'none';
+
+                                    // remove row from table
+                                    const tr = document.querySelector(`#${id}`);
+                                    tr.parentNode.removeChild(tr);
                                 }
                             }}
                         />
-                        <button type="button" onClick={this.confirmDelete}>
+                        <button type="button" onClick={this.confirmDelete} className="delete">
                             {this.props.children}
                         </button>
                     </>

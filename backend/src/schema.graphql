@@ -1,139 +1,139 @@
 # import * from './generated/prisma.graphql'
 
 type SuccessMessage {
-  message: String
+    message: String
 }
 
 type Mutation {
-  changePassword(id: ID!, currentPassword: String!, password: String!): User!
-  createCategory(name: String!): Category!
-  createDirection(direction: String!, sortOrder: Int): Direction!
-  createIngredient(name: String!): Ingredient!
-  createInvitationCode(code: String!): InvitationCode!
-  createMeat(name: String!): Meat!
-  createRecipe(
-    name: String!
-    public: Boolean!
-    source: String
-    sourceUrl: String
-    time: Int
-    activeTime: Int
-    servings: Float
-    calories: Float
-    carbohydrates: Float
-    protein: Float
-    fat: Float
-    sugar: Float
-    cholesterol: Float
-    fiber: Float
-    image: String
-    largeImage: String
-    ingredients: [IngredientInput]
-    directions: [DirectionInput]
-    meats: [MeatInput]
-    categories: [CategoryInput]
-  ): Recipe!
-  deleteCategory(id: ID!): Category
-  deleteDirection(id: ID!): Direction
-  deleteDirections(ids: [ID]!): Direction
-  deleteIngredient(id: ID!): Ingredient
-  deleteIngredients(ids: [ID]!): Ingredient
-  deleteInvitationCode(id: ID!): InvitationCode
-  deleteMeat(id: ID!): Meat
-  deleteRecipe(id: ID!): Recipe
-  deleteUser(id: ID!): User
-  login(email: String!, password: String!): User!
-  logout: SuccessMessage
-  requestPasswordReset(email: String!): SuccessMessage
-  resetPassword(resetToken: String!, password: String!): User
-  signup(
-    email: String!
-    username: String!
-    password: String!
-    name: String!
-    bio: String
-    invitationCode: String!
-    image: String
-    largeImage: String
-  ): User!
-  toggleAdmin(id: ID!): User!
-  updateCategory(id: ID!, name: String): Category!
-  updateInvitationCode(id: ID!, code: String): InvitationCode!
-  updateMeat(id: ID!, name: String): Meat!
-  updateRecipe(
-    id: ID!
-    name: String!
-    public: Boolean!
-    source: String
-    sourceUrl: String
-    time: Int
-    activeTime: Int
-    servings: Float
-    calories: Float
-    carbohydrates: Float
-    protein: Float
-    fat: Float
-    sugar: Float
-    cholesterol: Float
-    fiber: Float
-    image: String
-    largeImage: String
-    ingredients: [IngredientInput]
-    directions: [DirectionInput]
-    meats: [MeatInput]
-    categories: [CategoryInput]
-  ): Recipe!
-  updateUser(
-    id: ID!
-    name: String!
-    username: String!
-    email: String!
-    bio: String
-    image: String
-    largeImage: String
-  ): User!
+    changePassword(id: ID!, currentPassword: String!, password: String!): User!
+    createCategory(name: String!): Category!
+    createDirection(direction: String!, sortOrder: Int): Direction!
+    createIngredient(name: String!): Ingredient!
+    createInvitationCode(code: String!): InvitationCode!
+    createMeat(name: String!): Meat!
+    createRecipe(
+        name: String!
+        public: Boolean!
+        source: String
+        sourceUrl: String
+        time: Int
+        activeTime: Int
+        servings: Float
+        calories: Float
+        carbohydrates: Float
+        protein: Float
+        fat: Float
+        sugar: Float
+        cholesterol: Float
+        fiber: Float
+        image: String
+        largeImage: String
+        ingredients: [IngredientInput]
+        directions: [DirectionInput]
+        meats: [MeatInput]
+        categories: [CategoryInput]
+    ): Recipe!
+    deleteCategory(id: ID!): Category
+    deleteDirection(id: ID!): Direction
+    deleteDirections(ids: [ID]!): Direction
+    deleteIngredient(id: ID!): Ingredient
+    deleteIngredients(ids: [ID]!): Ingredient
+    deleteInvitationCode(id: ID!): InvitationCode
+    deleteMeat(id: ID!): Meat
+    deleteRecipe(id: ID!): Recipe
+    deleteUser(id: ID!): User
+    login(email: String!, password: String!): User!
+    logout: SuccessMessage
+    requestPasswordReset(email: String!): SuccessMessage
+    resetPassword(resetToken: String!, password: String!): User
+    signup(
+        email: String!
+        username: String!
+        password: String!
+        name: String!
+        bio: String
+        invitationCode: String!
+        image: String
+        largeImage: String
+    ): User!
+    toggleAdmin(id: ID!): User!
+    updateCategory(id: ID!, name: String): Category!
+    updateInvitationCode(id: ID!, code: String): InvitationCode!
+    updateMeat(id: ID!, name: String): Meat!
+    updateRecipe(
+        id: ID!
+        name: String!
+        public: Boolean!
+        source: String
+        sourceUrl: String
+        time: Int
+        activeTime: Int
+        servings: Float
+        calories: Float
+        carbohydrates: Float
+        protein: Float
+        fat: Float
+        sugar: Float
+        cholesterol: Float
+        fiber: Float
+        image: String
+        largeImage: String
+        ingredients: [IngredientInput]
+        directions: [DirectionInput]
+        meats: [MeatInput]
+        categories: [CategoryInput]
+    ): Recipe!
+    updateUser(
+        id: ID!
+        name: String!
+        username: String!
+        email: String!
+        bio: String
+        image: String
+        largeImage: String
+    ): User!
 }
 
 type Query {
-  categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput): [Category]!
-  category(where: CategoryWhereUniqueInput!): Category
-  invitationCode(where: InvitationCodeWhereUniqueInput!): InvitationCode
-  invitationCodes: [InvitationCode]
-  me: User
-  meat(where: MeatWhereUniqueInput!): Meat
-  meats(where: MeatWhereInput, orderBy: MeatOrderByInput): [Meat]!
-  recipe(where: RecipeWhereUniqueInput!): Recipe
-  recipesConnection(where: RecipeWhereInput): RecipeConnection!
-  recipes(where: RecipeWhereInput, orderBy: RecipeOrderByInput, skip: Int, first: Int): [Recipe]!
-  user(where: UserWhereUniqueInput!): User
-  users(where: UserWhereInput, orderBy: UserOrderByInput): [User]!
+    categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput): [Category]!
+    category(where: CategoryWhereUniqueInput!): Category
+    invitationCode(where: InvitationCodeWhereUniqueInput!): InvitationCode
+    invitationCodes(orderBy: InvitationCodeOrderByInput): [InvitationCode]
+    me: User
+    meat(where: MeatWhereUniqueInput!): Meat
+    meats(where: MeatWhereInput, orderBy: MeatOrderByInput): [Meat]!
+    recipe(where: RecipeWhereUniqueInput!): Recipe
+    recipesConnection(where: RecipeWhereInput): RecipeConnection!
+    recipes(where: RecipeWhereInput, orderBy: RecipeOrderByInput, skip: Int, first: Int): [Recipe]!
+    user(where: UserWhereUniqueInput!): User
+    users(where: UserWhereInput, orderBy: UserOrderByInput): [User]!
 }
 
 type User {
-  id: ID!
-  name: String!
-  username: String!
-  email: String!
-  bio: String
-  image: String
-  largeImage: String
-  permissions: [Permission!]!
+    id: ID!
+    name: String!
+    username: String!
+    email: String!
+    bio: String
+    image: String
+    largeImage: String
+    permissions: [Permission!]!
 }
 
 input IngredientInput {
-  name: String!
-  sortOrder: Int!
+    name: String!
+    sortOrder: Int!
 }
 
 input DirectionInput {
-  direction: String!
-  sortOrder: Int!
+    direction: String!
+    sortOrder: Int!
 }
 
 input CategoryInput {
-  id: ID!
+    id: ID!
 }
 
 input MeatInput {
-  id: ID!
+    id: ID!
 }

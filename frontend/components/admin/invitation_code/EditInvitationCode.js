@@ -10,17 +10,6 @@ import { FormValidator } from '../../../lib/FormValidator';
 import { Utilities } from '../../../lib/Utilities';
 
 class EditInvitationCode extends Component {
-    static propTypes = {
-        id: PropTypes.string.isRequired,
-        code: PropTypes.string.isRequired
-    };
-
-    state = {
-        id: this.props.id,
-        code: this.props.code,
-        error: null
-    };
-
     handleCodeChange = debounce(async (e, client) => {
         this.setState({ code: e.target.value });
 
@@ -40,19 +29,45 @@ class EditInvitationCode extends Component {
         }
     }, 350);
 
+    static propTypes = {
+        id: PropTypes.string.isRequired,
+        code: PropTypes.string.isRequired
+    };
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.id !== prevState.id) {
+            return { id: nextProps.id, code: nextProps.code };
+        }
+        return null;
+    }
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            id: this.props.id,
+            code: this.props.code,
+            error: null
+        };
+    }
+
     componentDidUpdate(prevProps) {
         if (this.props.id !== prevProps.id) {
             // eslint-disable-next-line react/no-did-update-set-state
-            this.setState({
-                id: this.props.id,
-                code: this.props.code
-            });
+            this.setState(
+                {
+                    id: this.props.id,
+                    code: this.props.code
+                },
+                () => {
+                    document.getElementById('edit-invitation-code-code').value = this.props.code;
+                }
+            );
         }
     }
 
     cancelEdit = () => {
-        document.getElementById('edit-invitation-code-window').style.display = 'none';
-        document.getElementById('page-overlay').style.display = 'none';
+        Utilities.resetField('edit-invitation-code-code');
+        document.getElementById('edit-invitation-code-header-form').style.display = 'none';
     };
 
     updateInvitationCode = async (e, updateInvitationCodeMutation) => {
@@ -71,8 +86,8 @@ class EditInvitationCode extends Component {
             });
 
             if (this.state.error === null) {
-                document.getElementById('edit-invitation-code-window').style.display = 'none';
-                document.getElementById('page-overlay').style.display = 'none';
+                Utilities.resetField('edit-invitation-code-code');
+                document.getElementById('edit-invitation-code-header-form').style.display = 'none';
             }
         }
     };
@@ -111,7 +126,7 @@ class EditInvitationCode extends Component {
                                             id="edit-invitation-code-code"
                                             name="code"
                                             maxLength="20"
-                                            defaultValue={this.state.code}
+                                            defaultValue={this.props.code}
                                             onChange={e => {
                                                 e.persist();
                                                 this.handleCodeChange(e, client);

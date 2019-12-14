@@ -36,8 +36,7 @@ class CreateInvitationCode extends Component {
     }, 350);
 
     hideAddForm = () => {
-        document.getElementById('add-invitation-code-window').style.display = 'none';
-        document.getElementById('page-overlay').style.display = 'none';
+        document.getElementById('create-invitation-code-header-form').style.display = 'none';
         this.setState({ code: '' });
         document.getElementById('create-invitation-code-form').reset();
     };
