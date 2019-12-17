@@ -75,7 +75,7 @@ class AdminMeats extends Component {
 
                             return (
                                 <AdminGrid>
-                                    <table cellPadding="0" cellSpacing="0" id="invitationcodeadmingrid">
+                                    <table cellPadding="0" cellSpacing="0" id="meats_admin_grid">
                                         <thead>
                                             <tr>
                                                 <th width="50%" className="no-border">

@@ -4,6 +4,8 @@ import { Form } from '../../styles/Form';
 import { ErrorMessage } from '../../elements/ErrorMessage';
 import { CREATE_CATEGORY_MUTATION } from '../../../mutations/Category';
 import { ALL_CATEGORIES_QUERY } from '../../../queries/Category';
+import { FormValidator } from '../../../lib/FormValidator';
+import { Utilities } from '../../../lib/Utilities';
 
 class CreateCategory extends Component {
     state = {
@@ -12,14 +14,44 @@ class CreateCategory extends Component {
     };
 
     handleChange = e => {
-        const { name, type, value } = e.target;
+        const { id, name, type, value } = e.target;
         const val = type === 'number' ? parseFloat(value) : value;
-        this.setState({ [name]: val });
+        this.setState({ [name]: val }, () => {
+            this.validate(id, val);
+        });
+    };
+
+    validate = (fieldId, value) => {
+        // eslint-disable-next-line default-case
+        switch (fieldId) {
+            case 'add-category-name':
+                if (!FormValidator.validateNotEmpty(value)) {
+                    Utilities.invalidateField('add-category-name', 'Name is required.');
+                } else {
+                    Utilities.resetField('add-category-name');
+                }
+                break;
+        }
+    };
+
+    validateForm = () => {
+        let isValid = true;
+
+        let { name } = this.state;
+        if (name === '') {
+            name = document.getElementById('add-category-name').value;
+        }
+
+        if (!FormValidator.validateNotEmpty(name)) {
+            Utilities.invalidateField('add-category-name', 'Name is required.');
+            isValid = false;
+        }
+
+        return isValid;
     };
 
     hideAddForm = () => {
-        document.getElementById('add-category-window').style.display = 'none';
-        document.getElementById('page-overlay').style.display = 'none';
+        document.getElementById('create-category-header-form').style.display = 'none';
         this.setState({ name: '' });
         document.getElementById('create-category-form').reset();
     };
@@ -45,12 +77,14 @@ class CreateCategory extends Component {
 
                             this.setState({ error: null });
 
-                            await createCategory().catch(err => {
-                                this.setState({ error: err });
-                            });
+                            if (this.validateForm()) {
+                                await createCategory().catch(err => {
+                                    this.setState({ error: err });
+                                });
 
-                            if (this.state.error === null) {
-                                this.hideAddForm();
+                                if (this.state.error === null) {
+                                    this.hideAddForm();
+                                }
                             }
                         }}
                     >
@@ -66,7 +100,12 @@ class CreateCategory extends Component {
                                     required
                                     value={this.state.name}
                                     onChange={this.handleChange}
+                                    onBlur={e => {
+                                        e.preventDefault();
+                                        this.validate('add-category-name', this.state.name);
+                                    }}
                                 />
+                                <div className="error-text" id="add-category-name-message" />
                             </label>
                             <button type="submit">Sav{loading ? 'ing' : 'e'}</button>
                             <button type="button" onClick={this.cancelAdd}>

@@ -135,6 +135,10 @@ class EditMeat extends Component {
                                     required
                                     value={this.state.name}
                                     onChange={this.handleChange}
+                                    onBlur={e => {
+                                        e.preventDefault();
+                                        this.validate('edit-meat-name', this.state.name);
+                                    }}
                                 />
                                 <div className="error-text" id="edit-meat-name-message" />
                             </label>

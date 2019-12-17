@@ -5,6 +5,7 @@ import { DELETE_CATEGORY_MUTATION } from '../../../mutations/Category';
 import { ALL_CATEGORIES_QUERY } from '../../../queries/Category';
 import { ConfirmDialog } from '../../styles/ConfirmDialog';
 import { ErrorAlert } from '../../elements/ErrorAlert';
+import { Utilities } from '../../../lib/Utilities';
 
 class DeleteCategory extends Component {
     static propTypes = {
@@ -43,18 +44,21 @@ class DeleteCategory extends Component {
                         <ConfirmDialog
                             id={`confirm-category-delete-${id}`}
                             message={`Are you sure you want to delete ${name}?`}
-                            height="130"
                             continue={async () => {
                                 await deleteCategory().catch(err => {
                                     this.setState({ error: err });
                                 });
 
                                 if (this.state.error === null) {
+                                    document.getElementById(`confirm-category-delete-${id}`).style.display = 'none';
                                     document.getElementById('page-overlay').style.display = 'none';
+
+                                    // remove row from table
+                                    Utilities.deleteTableRow(`row_${id}`);
                                 }
                             }}
                         />
-                        <button type="button" onClick={this.confirmDelete}>
+                        <button type="button" onClick={this.confirmDelete} className="delete">
                             {this.props.children}
                         </button>
                     </>
