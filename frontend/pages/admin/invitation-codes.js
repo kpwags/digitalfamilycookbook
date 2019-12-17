@@ -4,6 +4,7 @@ import { AuthGateway } from '../../components/AuthGateway';
 import { DeleteInvitationCode } from '../../components/admin/invitation_code/DeleteInvitationCode';
 import { EditInvitationCode } from '../../components/admin/invitation_code/EditInvitationCode';
 import { CreateInvitationCode } from '../../components/admin/invitation_code/CreateInvitationCode';
+import { AdminLayout } from '../../components/admin/AdminLayout/AdminLayout';
 import { ALL_INVITATION_CODES_QUERY } from '../../queries/InvitationCode';
 import { LoadingBox } from '../../components/elements/LoadingBox';
 import { PageError } from '../../components/elements/PageError';
@@ -39,98 +40,100 @@ class InvitationCodes extends Component {
         return (
             <>
                 <AuthGateway redirectUrl="/admin/invitation-codes" permissionNeeded="ADMIN">
-                    <PageHeader title="Invitation Codes">
-                        <AddButton>
-                            <button onClick={InvitationCodes.showCreateInvitationCodeForm} type="button">
-                                + Add
-                            </button>
-                        </AddButton>
-                    </PageHeader>
+                    <AdminLayout activePage="invitationcodes">
+                        <PageHeader title="Invitation Codes">
+                            <AddButton>
+                                <button onClick={InvitationCodes.showCreateInvitationCodeForm} type="button">
+                                    + Add
+                                </button>
+                            </AddButton>
+                        </PageHeader>
 
-                    <HeaderForm id="create-invitation-code-header-form" width="500">
-                        <CreateInvitationCode />
-                    </HeaderForm>
+                        <HeaderForm id="create-invitation-code-header-form" width="500">
+                            <CreateInvitationCode />
+                        </HeaderForm>
 
-                    <HeaderForm id="edit-invitation-code-header-form" width="500">
-                        <EditInvitationCode id={this.state.selected.id} code={this.state.selected.code} />
-                    </HeaderForm>
+                        <HeaderForm id="edit-invitation-code-header-form" width="500">
+                            <EditInvitationCode id={this.state.selected.id} code={this.state.selected.code} />
+                        </HeaderForm>
 
-                    <Query query={ALL_INVITATION_CODES_QUERY}>
-                        {({ data, error, loading }) => {
-                            if (loading)
+                        <Query query={ALL_INVITATION_CODES_QUERY}>
+                            {({ data, error, loading }) => {
+                                if (loading)
+                                    return (
+                                        <div>
+                                            <LoadingBox />
+                                        </div>
+                                    );
+                                if (error)
+                                    return (
+                                        <PageError
+                                            error={{
+                                                Title: 'Error Loading Invitation Codes',
+                                                Message: error
+                                            }}
+                                        />
+                                    );
+
                                 return (
-                                    <div>
-                                        <LoadingBox />
-                                    </div>
-                                );
-                            if (error)
-                                return (
-                                    <PageError
-                                        error={{
-                                            Title: 'Error Loading Invitation Codes',
-                                            Message: error
-                                        }}
-                                    />
-                                );
-
-                            return (
-                                <AdminGrid>
-                                    <table cellPadding="0" cellSpacing="0" id="invitationcodeadmingrid">
-                                        <thead>
-                                            <tr>
-                                                <th width="50%" className="no-border">
-                                                    Code
-                                                </th>
-                                                <th width="20%" className="no-border">
-                                                    Created
-                                                </th>
-                                                <th width="15%" className="no-border">
-                                                    &nbsp;
-                                                </th>
-                                                <th width="15%">&nbsp;</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {data.invitationCodes.length > 0 ? (
-                                                data.invitationCodes.map(invitationCode => (
-                                                    <tr key={invitationCode.id} id={`row_${invitationCode.id}`}>
-                                                        <td>{invitationCode.code}</td>
-                                                        <td>{Utilities.formatDate(invitationCode.createdAt)}</td>
-                                                        <td align="center">
-                                                            <button
-                                                                type="button"
-                                                                data-id={invitationCode.id}
-                                                                onClick={e => {
-                                                                    e.preventDefault();
-                                                                    this.showEditInvitationCodeForm(invitationCode);
-                                                                }}
-                                                            >
-                                                                Edit
-                                                            </button>
-                                                        </td>
-                                                        <td align="center">
-                                                            <DeleteInvitationCode
-                                                                id={invitationCode.id}
-                                                                code={invitationCode.code}
-                                                            >
-                                                                Delete
-                                                            </DeleteInvitationCode>
+                                    <AdminGrid>
+                                        <table cellPadding="0" cellSpacing="0" id="invitationcodeadmingrid">
+                                            <thead>
+                                                <tr>
+                                                    <th width="50%" className="no-border">
+                                                        Code
+                                                    </th>
+                                                    <th width="20%" className="no-border">
+                                                        Created
+                                                    </th>
+                                                    <th width="15%" className="no-border">
+                                                        &nbsp;
+                                                    </th>
+                                                    <th width="15%">&nbsp;</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {data.invitationCodes.length > 0 ? (
+                                                    data.invitationCodes.map(invitationCode => (
+                                                        <tr key={invitationCode.id} id={`row_${invitationCode.id}`}>
+                                                            <td>{invitationCode.code}</td>
+                                                            <td>{Utilities.formatDate(invitationCode.createdAt)}</td>
+                                                            <td align="center">
+                                                                <button
+                                                                    type="button"
+                                                                    data-id={invitationCode.id}
+                                                                    onClick={e => {
+                                                                        e.preventDefault();
+                                                                        this.showEditInvitationCodeForm(invitationCode);
+                                                                    }}
+                                                                >
+                                                                    Edit
+                                                                </button>
+                                                            </td>
+                                                            <td align="center">
+                                                                <DeleteInvitationCode
+                                                                    id={invitationCode.id}
+                                                                    code={invitationCode.code}
+                                                                >
+                                                                    Delete
+                                                                </DeleteInvitationCode>
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                ) : (
+                                                    <tr>
+                                                        <td colSpan="4" className="no-rows">
+                                                            No Invitation Codes Defined
                                                         </td>
                                                     </tr>
-                                                ))
-                                            ) : (
-                                                <tr>
-                                                    <td colSpan="4" className="no-rows">
-                                                        No Invitation Codes Defined
-                                                    </td>
-                                                </tr>
-                                            )}
-                                        </tbody>
-                                    </table>
-                                </AdminGrid>
-                            );
-                        }}
-                    </Query>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </AdminGrid>
+                                );
+                            }}
+                        </Query>
+                    </AdminLayout>
                 </AuthGateway>
             </>
         );
