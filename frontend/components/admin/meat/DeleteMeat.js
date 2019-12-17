@@ -5,6 +5,7 @@ import { DELETE_MEAT_MUTATION } from '../../../mutations/Meat';
 import { ALL_MEATS_QUERY } from '../../../queries/Meat';
 import { ConfirmDialog } from '../../styles/ConfirmDialog';
 import { ErrorAlert } from '../../elements/ErrorAlert';
+import { Utilities } from '../../../lib/Utilities';
 
 class DeleteMeat extends Component {
     static propTypes = {
@@ -43,18 +44,22 @@ class DeleteMeat extends Component {
                         <ConfirmDialog
                             id={`confirm-meat-delete-${id}`}
                             message={`Are you sure you want to delete ${name}?`}
-                            height="130"
+                            height="auto"
                             continue={async () => {
                                 await deleteMeat().catch(err => {
                                     this.setState({ error: err });
                                 });
 
                                 if (this.state.error === null) {
+                                    document.getElementById(`confirm-meat-delete-${id}`).style.display = 'none';
                                     document.getElementById('page-overlay').style.display = 'none';
+
+                                    // remove row from table
+                                    Utilities.deleteTableRow(`row_${id}`);
                                 }
                             }}
                         />
-                        <button type="button" onClick={this.confirmDelete}>
+                        <button type="button" onClick={this.confirmDelete} className="delete">
                             {this.props.children}
                         </button>
                     </>

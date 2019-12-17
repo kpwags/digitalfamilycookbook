@@ -67,7 +67,7 @@ class InvitationCodes extends Component {
                                 return (
                                     <PageError
                                         error={{
-                                            Title: 'Error Loading Recipes',
+                                            Title: 'Error Loading Invitation Codes',
                                             Message: error
                                         }}
                                     />
@@ -93,7 +93,7 @@ class InvitationCodes extends Component {
                                         <tbody>
                                             {data.invitationCodes.length > 0 ? (
                                                 data.invitationCodes.map(invitationCode => (
-                                                    <tr key={invitationCode.id} id={invitationCode.id}>
+                                                    <tr key={invitationCode.id} id={`row_${invitationCode.id}`}>
                                                         <td>{invitationCode.code}</td>
                                                         <td>{Utilities.formatDate(invitationCode.createdAt)}</td>
                                                         <td align="center">

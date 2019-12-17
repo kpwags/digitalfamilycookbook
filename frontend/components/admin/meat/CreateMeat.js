@@ -4,6 +4,8 @@ import { Form } from '../../styles/Form';
 import { ErrorMessage } from '../../elements/ErrorMessage';
 import { CREATE_MEAT_MUTATION } from '../../../mutations/Meat';
 import { ALL_MEATS_QUERY } from '../../../queries/Meat';
+import { FormValidator } from '../../../lib/FormValidator';
+import { Utilities } from '../../../lib/Utilities';
 
 class CreateMeat extends Component {
     state = {
@@ -12,14 +14,44 @@ class CreateMeat extends Component {
     };
 
     handleChange = e => {
-        const { name, type, value } = e.target;
+        const { id, name, type, value } = e.target;
         const val = type === 'number' ? parseFloat(value) : value;
-        this.setState({ [name]: val });
+        this.setState({ [name]: val }, () => {
+            this.validate(id, val);
+        });
+    };
+
+    validate = (fieldId, value) => {
+        // eslint-disable-next-line default-case
+        switch (fieldId) {
+        case 'add-meat-name':
+            if (!FormValidator.validateNotEmpty(value)) {
+                Utilities.invalidateField('add-meat-name', 'Name is required.');
+            } else {
+                Utilities.resetField('add-meat-name');
+            }
+            break;
+        }
+    };
+
+    validateForm = () => {
+        let isValid = true;
+
+        let { name } = this.state;
+        if (name === '') {
+            name = document.getElementById('add-meat-name').value;
+        }
+
+        if (!FormValidator.validateNotEmpty(name)) {
+            Utilities.invalidateField('add-meat-name', 'Name is required.');
+            isValid = false;
+        }
+
+        return isValid;
     };
 
     hideAddForm = () => {
-        document.getElementById('add-meat-window').style.display = 'none';
-        document.getElementById('page-overlay').style.display = 'none';
+        document.getElementById('create-meat-header-form').style.display = 'none';
         this.setState({ name: '' });
         document.getElementById('create-meat-form').reset();
     };
@@ -46,12 +78,14 @@ class CreateMeat extends Component {
 
                             this.setState({ error: null });
 
-                            await createMeat().catch(err => {
-                                this.setState({ error: err });
-                            });
+                            if (this.validateForm()) {
+                                await createMeat().catch(err => {
+                                    this.setState({ error: err });
+                                });
 
-                            if (this.state.error === null) {
-                                this.hideAddForm();
+                                if (this.state.error === null) {
+                                    this.hideAddForm();
+                                }
                             }
                         }}
                     >
@@ -67,7 +101,12 @@ class CreateMeat extends Component {
                                     required
                                     value={this.state.name}
                                     onChange={this.handleChange}
+                                    onBlur={e => {
+                                        e.preventDefault();
+                                        this.validate('add-meat-name', this.state.name);
+                                    }}
                                 />
+                                <div className="error-text" id="add-meat-name-message" />
                             </label>
                             <button type="submit">Sav{loading ? 'ing' : 'e'}</button>
                             <button type="button" onClick={this.cancelAddMeat}>

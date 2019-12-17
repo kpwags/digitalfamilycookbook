@@ -5,6 +5,7 @@ const ALL_MEATS_QUERY = gql`
         meats {
             id
             name
+            createdAt
         }
     }
 `;

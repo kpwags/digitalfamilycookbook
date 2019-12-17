@@ -5,6 +5,7 @@ import { DELETE_INVITATION_CODE_MUTATION } from '../../../mutations/InvitationCo
 import { ALL_INVITATION_CODES_QUERY } from '../../../queries/InvitationCode';
 import { ConfirmDialog } from '../../styles/ConfirmDialog';
 import { ErrorAlert } from '../../elements/ErrorAlert';
+import { Utilities } from '../../../lib/Utilities';
 
 class DeleteInvitationCode extends Component {
     static propTypes = {
@@ -57,8 +58,7 @@ class DeleteInvitationCode extends Component {
                                     document.getElementById('page-overlay').style.display = 'none';
 
                                     // remove row from table
-                                    const tr = document.querySelector(`#${id}`);
-                                    tr.parentNode.removeChild(tr);
+                                    Utilities.deleteTableRow(`row_${id}`);
                                 }
                             }}
                         />

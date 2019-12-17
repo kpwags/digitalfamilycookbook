@@ -160,6 +160,11 @@ class Utilities {
         return formattedDate.toLocaleDateString('en-US');
     }
 
+    static deleteTableRow(rowId) {
+        const tr = document.querySelector(`#${rowId}`);
+        tr.parentNode.removeChild(tr);
+    }
+
     static boxColors = ['gray', 'blue', 'green', 'orange', 'purple'];
 }
 

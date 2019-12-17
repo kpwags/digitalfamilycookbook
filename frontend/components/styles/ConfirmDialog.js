@@ -58,12 +58,17 @@ class ConfirmDialog extends Component {
     };
 
     render() {
-        const { id, width = 500, height = 300, yesText = 'Yes', noText = 'No' } = this.props;
+        const { id, width = 500, yesText = 'Yes', noText = 'No' } = this.props;
         const marginLeftVal = `${(width / 2) * -1}px`;
+
+        let { height = 'auto' } = this.props;
+        if (!Number.isNaN(height)) {
+            height = `${height}px`;
+        }
 
         const popupStyle = {
             margin: `0 0 0 ${marginLeftVal}`,
-            height: `${height}px`,
+            height,
             width: `${width}px`
         };
 
