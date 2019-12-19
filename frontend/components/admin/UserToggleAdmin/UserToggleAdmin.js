@@ -5,7 +5,7 @@ import { TOGGLE_ADMIN_MUTATION } from '../../../mutations/User';
 import { ALL_USERS_QUERY } from '../../../queries/User';
 import { ErrorAlert } from '../../elements/ErrorAlert';
 
-class ToggleAdmin extends Component {
+class UserToggleAdmin extends Component {
     static propTypes = {
         userId: PropTypes.string.isRequired,
         children: PropTypes.node
@@ -56,4 +56,4 @@ class ToggleAdmin extends Component {
     }
 }
 
-export { ToggleAdmin };
+export { UserToggleAdmin };

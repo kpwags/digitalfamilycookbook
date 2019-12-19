@@ -8,7 +8,7 @@ import { ALL_INVITATION_CODES_QUERY, SINGLE_INVITATION_CODE_CODE_QUERY } from '.
 import { FormValidator } from '../../../lib/FormValidator';
 import { Utilities } from '../../../lib/Utilities';
 
-class CreateInvitationCode extends Component {
+class AddInvitationCode extends Component {
     state = {
         code: '',
         error: null
@@ -114,4 +114,4 @@ class CreateInvitationCode extends Component {
     }
 }
 
-export { CreateInvitationCode };
+export { AddInvitationCode };

@@ -7,7 +7,7 @@ import { ALL_CATEGORIES_QUERY } from '../../../queries/Category';
 import { FormValidator } from '../../../lib/FormValidator';
 import { Utilities } from '../../../lib/Utilities';
 
-class CreateCategory extends Component {
+class AddCategory extends Component {
     state = {
         name: '',
         error: null
@@ -24,13 +24,13 @@ class CreateCategory extends Component {
     validate = (fieldId, value) => {
         // eslint-disable-next-line default-case
         switch (fieldId) {
-            case 'add-category-name':
-                if (!FormValidator.validateNotEmpty(value)) {
-                    Utilities.invalidateField('add-category-name', 'Name is required.');
-                } else {
-                    Utilities.resetField('add-category-name');
-                }
-                break;
+        case 'add-category-name':
+            if (!FormValidator.validateNotEmpty(value)) {
+                Utilities.invalidateField('add-category-name', 'Name is required.');
+            } else {
+                Utilities.resetField('add-category-name');
+            }
+            break;
         }
     };
 
@@ -119,4 +119,4 @@ class CreateCategory extends Component {
     }
 }
 
-export { CreateCategory };
+export { AddCategory };

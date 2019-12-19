@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
+import { MobileAlertBox } from '../../MobileAlertBox/MobileAlertBox';
 
 const Layout = styled.div`
     display: grid;
@@ -8,6 +9,10 @@ const Layout = styled.div`
     grid-template-rows: 1fr;
     grid-column-gap: 10px;
     grid-row-gap: 0px;
+
+    @media all and (max-width: 800px) {
+        display: block;
+    }
 `;
 
 const Sidebar = styled.div`
@@ -32,6 +37,10 @@ const Sidebar = styled.div`
     li.active a {
         font-weight: bold;
         color: ${props => props.theme.darkGreen};
+    }
+
+    @media all and (max-width: 800px) {
+        display: none;
     }
 `;
 
@@ -72,7 +81,10 @@ const AdminLayout = props => {
                     </li>
                 </ul>
             </Sidebar>
-            <Main>{props.children}</Main>
+            <Main>
+                <MobileAlertBox message="This is best viewed in landscape mode" />
+                {props.children}
+            </Main>
         </Layout>
     );
 };

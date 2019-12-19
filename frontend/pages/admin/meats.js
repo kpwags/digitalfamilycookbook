@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
-import { CreateMeat } from '../../components/admin/meat/CreateMeat';
+import { AddMeat } from '../../components/admin/AddMeat/AddMeat';
 import { AuthGateway } from '../../components/AuthGateway';
 import { ALL_MEATS_QUERY } from '../../queries/Meat';
 import { LoadingBox } from '../../components/elements/LoadingBox';
 import { PageError } from '../../components/elements/PageError';
 import { AdminGrid } from '../../components/styles/AdminGrid';
-import { PageHeader } from '../../components/admin/elements/PageHeader';
+import { PageHeader } from '../../components/admin/PageHeader/PageHeader';
 import { AddButton } from '../../components/styles/AddButton';
 import { HeaderForm } from '../../components/styles/HeaderForm';
 import { Utilities } from '../../lib/Utilities';
-import { DeleteMeat } from '../../components/admin/meat/DeleteMeat';
-import { EditMeat } from '../../components/admin/meat/EditMeat';
+import { DeleteMeat } from '../../components/admin/DeleteMeat/DeleteMeat';
+import { EditMeat } from '../../components/admin/EditMeat/EditMeat';
 import { AdminLayout } from '../../components/admin/AdminLayout/AdminLayout';
 
 class AdminMeats extends Component {
-    static showCreateMeatForm(e) {
+    static showAddMeatForm(e) {
         e.preventDefault();
 
         document.getElementById('create-meat-header-form').style.display = 'block';
@@ -43,14 +43,14 @@ class AdminMeats extends Component {
                     <AdminLayout activePage="meats">
                         <PageHeader title="Meats">
                             <AddButton>
-                                <button onClick={AdminMeats.showCreateMeatForm} type="button">
+                                <button onClick={AdminMeats.showAddMeatForm} type="button">
                                     + Add
                                 </button>
                             </AddButton>
                         </PageHeader>
 
                         <HeaderForm id="create-meat-header-form" width="500">
-                            <CreateMeat />
+                            <AddMeat />
                         </HeaderForm>
 
                         <HeaderForm id="edit-meat-header-form" width="500">

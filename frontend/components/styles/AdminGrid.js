@@ -3,9 +3,9 @@ import styled from 'styled-components';
 const AdminGrid = styled.div`
     border: 1px solid #cccccc;
     border-radius: 10px;
-    padding: 20px 50px;
-    width: 1000px;
-    margin: 0 auto;
+    padding: 20px;
+    margin: 0 2%;
+    width: 96%;
     box-shadow: ${props => props.theme.bs};
 
     table {

@@ -5,8 +5,9 @@ import { DELETE_USER_MUTATION } from '../../../mutations/User';
 import { ALL_USERS_QUERY } from '../../../queries/User';
 import { ConfirmDialog } from '../../styles/ConfirmDialog';
 import { ErrorAlert } from '../../elements/ErrorAlert';
+import { Utilities } from '../../../lib/Utilities';
 
-class DeleteUser extends Component {
+class UserDelete extends Component {
     static propTypes = {
         id: PropTypes.string,
         name: PropTypes.string,
@@ -29,7 +30,7 @@ class DeleteUser extends Component {
         e.preventDefault();
 
         document.getElementById('page-overlay').style.display = 'block';
-        document.getElementById(`confirm-meat-delete-${this.props.id}`).style.display = 'block';
+        document.getElementById(`confirm-user-delete-${this.props.id}`).style.display = 'block';
     };
 
     render() {
@@ -41,9 +42,8 @@ class DeleteUser extends Component {
                     <>
                         <ErrorAlert id={`delete-user-error-${id}`} error={error || this.state.error} />
                         <ConfirmDialog
-                            id={`confirm-meat-delete-${id}`}
+                            id={`confirm-user-delete-${id}`}
                             message={`Are you sure you want to delete ${name}?`}
-                            height="130"
                             continue={async () => {
                                 await deleteUser().catch(err => {
                                     this.setState({ error: err });
@@ -51,10 +51,15 @@ class DeleteUser extends Component {
 
                                 if (this.state.error === null) {
                                     document.getElementById('page-overlay').style.display = 'none';
+                                    document.getElementById(`confirm-user-delete-${this.props.id}`).style.display =
+                                        'none';
+
+                                    // remove row from table
+                                    Utilities.deleteTableRow(`row_${id}`);
                                 }
                             }}
                         />
-                        <button type="button" onClick={this.confirmDelete}>
+                        <button type="button" onClick={this.confirmDelete} className="delete">
                             {this.props.children}
                         </button>
                     </>
@@ -64,4 +69,4 @@ class DeleteUser extends Component {
     }
 }
 
-export { DeleteUser };
+export { UserDelete };

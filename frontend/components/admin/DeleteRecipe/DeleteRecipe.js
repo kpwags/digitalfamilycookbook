@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import PropTypes from 'prop-types';
-import { DELETE_INVITATION_CODE_MUTATION } from '../../../mutations/InvitationCode';
-import { ALL_INVITATION_CODES_QUERY } from '../../../queries/InvitationCode';
+import { DELETE_RECIPE_MUTATION } from '../../../mutations/Recipe';
+import { ADMIN_ALL_RECIPES_QUERY } from '../../../queries/Recipe';
 import { ConfirmDialog } from '../../styles/ConfirmDialog';
 import { ErrorAlert } from '../../elements/ErrorAlert';
 import { Utilities } from '../../../lib/Utilities';
 
-class DeleteInvitationCode extends Component {
+class DeleteRecipe extends Component {
     static propTypes = {
         id: PropTypes.string,
-        code: PropTypes.string,
+        name: PropTypes.string,
         children: PropTypes.node
     };
 
@@ -19,43 +19,41 @@ class DeleteInvitationCode extends Component {
     };
 
     update = (cache, payload) => {
-        const data = cache.readQuery({ query: ALL_INVITATION_CODES_QUERY });
+        const data = cache.readQuery({ query: ADMIN_ALL_RECIPES_QUERY });
 
-        data.invitationCodes = data.invitationCodes.filter(
-            invitationCode => invitationCode.id !== payload.data.deleteInvitationCode.id
-        );
+        data.recipes = data.recipes.filter(recipe => recipe.id !== payload.data.deleteRecipe.id);
 
-        cache.writeQuery({ query: ALL_INVITATION_CODES_QUERY, data });
+        cache.writeQuery({ query: ADMIN_ALL_RECIPES_QUERY, data });
     };
 
     confirmDelete = e => {
         e.preventDefault();
 
         document.getElementById('page-overlay').style.display = 'block';
-        document.getElementById(`confirm-invitation-code-delete-${this.props.id}`).style.display = 'block';
+        document.getElementById(`confirm-recipe-delete-${this.props.id}`).style.display = 'block';
     };
 
     render() {
-        const { id, code } = this.props;
+        const { id, name } = this.props;
 
         return (
-            <Mutation mutation={DELETE_INVITATION_CODE_MUTATION} variables={{ id }} update={this.update}>
-                {(deleteInvitationCode, { error }) => (
+            <Mutation mutation={DELETE_RECIPE_MUTATION} variables={{ id }} update={this.update}>
+                {(deleteRecipe, { error }) => (
                     <>
-                        <ErrorAlert id={`delete-invitation-code-error-${id}`} error={error || this.state.error} />
+                        <ErrorAlert id={`delete-recipe-error-${id}`} error={error || this.state.error} />
                         <ConfirmDialog
-                            id={`confirm-invitation-code-delete-${id}`}
-                            message={`Are you sure you want to delete the invitation code: ${code}?`}
-                            height="150"
+                            id={`confirm-recipe-delete-${id}`}
+                            message={`Are you sure you want to delete ${name}?`}
+                            height="130"
                             continue={async () => {
-                                await deleteInvitationCode().catch(err => {
+                                await deleteRecipe().catch(err => {
                                     this.setState({ error: err });
                                 });
 
                                 if (this.state.error === null) {
-                                    document.getElementById(`confirm-invitation-code-delete-${id}`).style.display =
-                                        'none';
                                     document.getElementById('page-overlay').style.display = 'none';
+                                    document.getElementById(`confirm-recipe-delete-${this.props.id}`).style.display =
+                                        'none';
 
                                     // remove row from table
                                     Utilities.deleteTableRow(`row_${id}`);
@@ -72,4 +70,4 @@ class DeleteInvitationCode extends Component {
     }
 }
 
-export { DeleteInvitationCode };
+export { DeleteRecipe };

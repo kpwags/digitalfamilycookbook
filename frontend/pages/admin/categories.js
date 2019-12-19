@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
-import { CreateCategory } from '../../components/admin/category/CreateCategory';
+import { AddCategory } from '../../components/admin/AddCategory/AddCategory';
 import { AuthGateway } from '../../components/AuthGateway';
 import { ALL_CATEGORIES_QUERY } from '../../queries/Category';
 import { LoadingBox } from '../../components/elements/LoadingBox';
 import { PageError } from '../../components/elements/PageError';
 import { AdminGrid } from '../../components/styles/AdminGrid';
-import { PageHeader } from '../../components/admin/elements/PageHeader';
+import { PageHeader } from '../../components/admin/PageHeader/PageHeader';
 import { AddButton } from '../../components/styles/AddButton';
 import { HeaderForm } from '../../components/styles/HeaderForm';
 import { Utilities } from '../../lib/Utilities';
-import { DeleteCategory } from '../../components/admin/category/DeleteCategory';
-import { EditCategory } from '../../components/admin/category/EditCategory';
+import { DeleteCategory } from '../../components/admin/DeleteCategory/DeleteCategory';
+import { EditCategory } from '../../components/admin/EditCategory/EditCategory';
 import { AdminLayout } from '../../components/admin/AdminLayout/AdminLayout';
 
 class AdminCategories extends Component {
-    static showCreateCategoryForm(e) {
+    static showAddCategoryForm(e) {
         e.preventDefault();
 
         document.getElementById('create-category-header-form').style.display = 'block';
@@ -43,14 +43,14 @@ class AdminCategories extends Component {
                     <AdminLayout activePage="categories">
                         <PageHeader title="Categories">
                             <AddButton>
-                                <button onClick={AdminCategories.showCreateCategoryForm} type="button">
+                                <button onClick={AdminCategories.showAddCategoryForm} type="button">
                                     + Add
                                 </button>
                             </AddButton>
                         </PageHeader>
 
                         <HeaderForm id="create-category-header-form" width="500">
-                            <CreateCategory />
+                            <AddCategory />
                         </HeaderForm>
 
                         <HeaderForm id="edit-category-header-form" width="500">

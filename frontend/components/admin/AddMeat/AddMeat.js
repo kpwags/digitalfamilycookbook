@@ -7,7 +7,7 @@ import { ALL_MEATS_QUERY } from '../../../queries/Meat';
 import { FormValidator } from '../../../lib/FormValidator';
 import { Utilities } from '../../../lib/Utilities';
 
-class CreateMeat extends Component {
+class AddMeat extends Component {
     state = {
         name: '',
         error: null
@@ -120,4 +120,4 @@ class CreateMeat extends Component {
     }
 }
 
-export { CreateMeat };
+export { AddMeat };

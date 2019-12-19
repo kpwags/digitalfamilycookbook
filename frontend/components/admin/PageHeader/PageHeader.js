@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const AdminHeader = styled.div`
-    width: 1000px;
-    margin: 0 auto 40px;
+    width: 96%;
+    margin: 0 2% 40px 2%;
     display: grid;
     grid-template-columns: 3fr 1fr;
 
@@ -22,6 +22,10 @@ const AdminHeader = styled.div`
         grid-column-start: 2;
         grid-column-end: 2;
         justify-self: end;
+    }
+
+    @media all and (max-width: 800px) {
+        grid-template-columns: 2fr 2fr;
     }
 `;
 

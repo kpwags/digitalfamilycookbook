@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
 import { AuthGateway } from '../../components/AuthGateway';
-import { DeleteInvitationCode } from '../../components/admin/invitation_code/DeleteInvitationCode';
-import { EditInvitationCode } from '../../components/admin/invitation_code/EditInvitationCode';
-import { CreateInvitationCode } from '../../components/admin/invitation_code/CreateInvitationCode';
+import { DeleteInvitationCode } from '../../components/admin/DeleteInvitationCode/DeleteInvitationCode';
+import { EditInvitationCode } from '../../components/admin/EditInvitationCode/EditInvitationCode';
+import { AddInvitationCode } from '../../components/admin/AddInvitationCode/AddInvitationCode';
 import { AdminLayout } from '../../components/admin/AdminLayout/AdminLayout';
 import { ALL_INVITATION_CODES_QUERY } from '../../queries/InvitationCode';
 import { LoadingBox } from '../../components/elements/LoadingBox';
 import { PageError } from '../../components/elements/PageError';
 import { AdminGrid } from '../../components/styles/AdminGrid';
-import { PageHeader } from '../../components/admin/elements/PageHeader';
+import { PageHeader } from '../../components/admin/PageHeader/PageHeader';
 import { AddButton } from '../../components/styles/AddButton';
 import { HeaderForm } from '../../components/styles/HeaderForm';
 import { Utilities } from '../../lib/Utilities';
 
 class InvitationCodes extends Component {
-    static showCreateInvitationCodeForm(e) {
+    static showAddInvitationCodeForm(e) {
         e.preventDefault();
 
         document.getElementById('create-invitation-code-header-form').style.display = 'block';
@@ -43,14 +43,14 @@ class InvitationCodes extends Component {
                     <AdminLayout activePage="invitationcodes">
                         <PageHeader title="Invitation Codes">
                             <AddButton>
-                                <button onClick={InvitationCodes.showCreateInvitationCodeForm} type="button">
+                                <button onClick={InvitationCodes.showAddInvitationCodeForm} type="button">
                                     + Add
                                 </button>
                             </AddButton>
                         </PageHeader>
 
                         <HeaderForm id="create-invitation-code-header-form" width="500">
-                            <CreateInvitationCode />
+                            <AddInvitationCode />
                         </HeaderForm>
 
                         <HeaderForm id="edit-invitation-code-header-form" width="500">
