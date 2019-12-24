@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { AuthGateway } from '../components/AuthGateway';
+import { AuthGateway } from '../components/AuthGateway/AuthGateway';
 
 const Account = () => (
     <>

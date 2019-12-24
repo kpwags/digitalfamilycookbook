@@ -1,5 +1,5 @@
-import { CreateRecipeForm } from '../components/forms/recipe/CreateRecipeForm';
-import { AuthGateway } from '../components/AuthGateway';
+import { CreateRecipeForm } from '../components/CreateRecipeForm/CreateRecipeForm';
+import { AuthGateway } from '../components/AuthGateway/AuthGateway';
 
 const CreateRecipe = () => (
     <AuthGateway redirectUrl="/create-recipe" permissionNeeded="USER">

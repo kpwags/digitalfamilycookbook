@@ -1,7 +1,7 @@
 import App from 'next/app';
 import { ApolloProvider } from 'react-apollo';
-import Page from '../components/Page';
-import { Overlay } from '../components/styles/Overlay';
+import { Page } from '../components/Page/Page';
+import { Overlay } from '../components/Overlay/Overlay';
 import withData from '../lib/withData';
 
 class DigitalFamilyCookbook extends App {

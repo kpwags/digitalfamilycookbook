@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import { MostRecent } from '../components/recipes/MostRecent';
-import { AuthGateway } from '../components/AuthGateway';
+import { MostRecentRecipes } from '../components/MostRecentRecipes/MostRecentRecipes';
+import { AuthGateway } from '../components/AuthGateway/AuthGateway';
 
 const Home = ({ query }) => (
     <AuthGateway redirectUrl="/">
-        <MostRecent page={parseInt(query.page || 1, 10)} />
+        <MostRecentRecipes page={parseInt(query.page || 1, 10)} />
     </AuthGateway>
 );
 

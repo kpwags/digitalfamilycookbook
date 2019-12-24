@@ -1,9 +1,9 @@
-import { ForgotPasswordForm } from '../components/forms/user/ForgotPasswordForm';
-import { User } from '../components/User';
-import { Homepage } from '../components/Homepage';
+import { ForgotPasswordForm } from '../components/ForgotPasswordForm/ForgotPasswordForm';
+import { LoggedInUser } from '../components/LoggedInUser/LoggedInUser';
+import { Homepage } from '../components/Homepage/Homepage';
 
 const ForgotPassword = () => (
-    <User>
+    <LoggedInUser>
         {({ data: { me } }) => {
             if (me) {
                 return <Homepage />;
@@ -11,7 +11,7 @@ const ForgotPassword = () => (
 
             return <ForgotPasswordForm />;
         }}
-    </User>
+    </LoggedInUser>
 );
 
 export default ForgotPassword;

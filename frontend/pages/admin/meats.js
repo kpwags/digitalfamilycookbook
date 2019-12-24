@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
-import { AddMeat } from '../../components/admin/AddMeat/AddMeat';
-import { AuthGateway } from '../../components/AuthGateway';
+import { AddMeat } from '../../components/AddMeat/AddMeat';
+import { AuthGateway } from '../../components/AuthGateway/AuthGateway';
 import { ALL_MEATS_QUERY } from '../../queries/Meat';
-import { LoadingBox } from '../../components/elements/LoadingBox';
-import { PageError } from '../../components/elements/PageError';
-import { AdminGrid } from '../../components/styles/AdminGrid';
-import { PageHeader } from '../../components/admin/PageHeader/PageHeader';
-import { AddButton } from '../../components/styles/AddButton';
-import { HeaderForm } from '../../components/styles/HeaderForm';
+import { LoadingBox } from '../../components/LoadingBox/LoadingBox';
+import { PageError } from '../../components/PageError/PageError';
+import { Grid } from '../../components/Grid/Grid';
+import { AdminHeader } from '../../components/AdminHeader/AdminHeader';
+import { AddButton } from '../../components/AddButton/AddButton';
+import { HeaderForm } from '../../components/HeaderForm/HeaderForm';
 import { Utilities } from '../../lib/Utilities';
-import { DeleteMeat } from '../../components/admin/DeleteMeat/DeleteMeat';
-import { EditMeat } from '../../components/admin/EditMeat/EditMeat';
-import { AdminLayout } from '../../components/admin/AdminLayout/AdminLayout';
+import { DeleteMeat } from '../../components/DeleteMeat/DeleteMeat';
+import { EditMeat } from '../../components/EditMeat/EditMeat';
+import { AdminLayout } from '../../components/AdminLayout/AdminLayout';
 
 class AdminMeats extends Component {
     static showAddMeatForm(e) {
@@ -41,13 +41,13 @@ class AdminMeats extends Component {
             <>
                 <AuthGateway redirectUrl="/admin/meats" permissionNeeded="ADMIN">
                     <AdminLayout activePage="meats">
-                        <PageHeader title="Meats">
+                        <AdminHeader title="Meats">
                             <AddButton>
                                 <button onClick={AdminMeats.showAddMeatForm} type="button">
                                     + Add
                                 </button>
                             </AddButton>
-                        </PageHeader>
+                        </AdminHeader>
 
                         <HeaderForm id="create-meat-header-form" width="500">
                             <AddMeat />
@@ -76,7 +76,7 @@ class AdminMeats extends Component {
                                     );
 
                                 return (
-                                    <AdminGrid>
+                                    <Grid>
                                         <table cellPadding="0" cellSpacing="0" id="meats_admin_grid">
                                             <thead>
                                                 <tr>
@@ -126,7 +126,7 @@ class AdminMeats extends Component {
                                                 )}
                                             </tbody>
                                         </table>
-                                    </AdminGrid>
+                                    </Grid>
                                 );
                             }}
                         </Query>

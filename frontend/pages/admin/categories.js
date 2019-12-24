@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
-import { AddCategory } from '../../components/admin/AddCategory/AddCategory';
-import { AuthGateway } from '../../components/AuthGateway';
+import { AddCategory } from '../../components/AddCategory/AddCategory';
+import { AuthGateway } from '../../components/AuthGateway/AuthGateway';
 import { ALL_CATEGORIES_QUERY } from '../../queries/Category';
-import { LoadingBox } from '../../components/elements/LoadingBox';
-import { PageError } from '../../components/elements/PageError';
-import { AdminGrid } from '../../components/styles/AdminGrid';
-import { PageHeader } from '../../components/admin/PageHeader/PageHeader';
-import { AddButton } from '../../components/styles/AddButton';
-import { HeaderForm } from '../../components/styles/HeaderForm';
+import { LoadingBox } from '../../components/LoadingBox/LoadingBox';
+import { PageError } from '../../components/PageError/PageError';
+import { Grid } from '../../components/Grid/Grid';
+import { AdminHeader } from '../../components/AdminHeader/AdminHeader';
+import { AddButton } from '../../components/AddButton/AddButton';
+import { HeaderForm } from '../../components/HeaderForm/HeaderForm';
 import { Utilities } from '../../lib/Utilities';
-import { DeleteCategory } from '../../components/admin/DeleteCategory/DeleteCategory';
-import { EditCategory } from '../../components/admin/EditCategory/EditCategory';
-import { AdminLayout } from '../../components/admin/AdminLayout/AdminLayout';
+import { DeleteCategory } from '../../components/DeleteCategory/DeleteCategory';
+import { EditCategory } from '../../components/EditCategory/EditCategory';
+import { AdminLayout } from '../../components/AdminLayout/AdminLayout';
 
 class AdminCategories extends Component {
     static showAddCategoryForm(e) {
@@ -41,13 +41,13 @@ class AdminCategories extends Component {
             <>
                 <AuthGateway redirectUrl="/admin/categories" permissionNeeded="ADMIN">
                     <AdminLayout activePage="categories">
-                        <PageHeader title="Categories">
+                        <AdminHeader title="Categories">
                             <AddButton>
                                 <button onClick={AdminCategories.showAddCategoryForm} type="button">
                                     + Add
                                 </button>
                             </AddButton>
-                        </PageHeader>
+                        </AdminHeader>
 
                         <HeaderForm id="create-category-header-form" width="500">
                             <AddCategory />
@@ -76,7 +76,7 @@ class AdminCategories extends Component {
                                     );
 
                                 return (
-                                    <AdminGrid>
+                                    <Grid>
                                         <table cellPadding="0" cellSpacing="0" id="categories_admin_grid">
                                             <thead>
                                                 <tr>
@@ -126,7 +126,7 @@ class AdminCategories extends Component {
                                                 )}
                                             </tbody>
                                         </table>
-                                    </AdminGrid>
+                                    </Grid>
                                 );
                             }}
                         </Query>

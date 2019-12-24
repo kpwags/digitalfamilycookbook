@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
-import { AuthGateway } from '../../components/AuthGateway';
+import { AuthGateway } from '../../components/AuthGateway/AuthGateway';
 
 const AdminHome = styled.div`
     text-align: center;

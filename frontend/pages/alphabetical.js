@@ -1,5 +1,5 @@
-import { AlphabeticalRecipes } from '../components/recipes/AlphabeticalRecipes';
-import { AuthGateway } from '../components/AuthGateway';
+import { AlphabeticalRecipes } from '../components/AlphabeticalRecipes/AlphabeticalRecipes';
+import { AuthGateway } from '../components/AuthGateway/AuthGateway';
 
 const Alphabetical = () => (
     <AuthGateway redirectUrl="/">

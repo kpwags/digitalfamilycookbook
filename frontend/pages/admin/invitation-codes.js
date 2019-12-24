@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
-import { AuthGateway } from '../../components/AuthGateway';
-import { DeleteInvitationCode } from '../../components/admin/DeleteInvitationCode/DeleteInvitationCode';
-import { EditInvitationCode } from '../../components/admin/EditInvitationCode/EditInvitationCode';
-import { AddInvitationCode } from '../../components/admin/AddInvitationCode/AddInvitationCode';
-import { AdminLayout } from '../../components/admin/AdminLayout/AdminLayout';
+import { AuthGateway } from '../../components/AuthGateway/AuthGateway';
+import { DeleteInvitationCode } from '../../components/DeleteInvitationCode/DeleteInvitationCode';
+import { EditInvitationCode } from '../../components/EditInvitationCode/EditInvitationCode';
+import { AddInvitationCode } from '../../components/AddInvitationCode/AddInvitationCode';
+import { AdminLayout } from '../../components/AdminLayout/AdminLayout';
 import { ALL_INVITATION_CODES_QUERY } from '../../queries/InvitationCode';
-import { LoadingBox } from '../../components/elements/LoadingBox';
-import { PageError } from '../../components/elements/PageError';
-import { AdminGrid } from '../../components/styles/AdminGrid';
-import { PageHeader } from '../../components/admin/PageHeader/PageHeader';
-import { AddButton } from '../../components/styles/AddButton';
-import { HeaderForm } from '../../components/styles/HeaderForm';
+import { LoadingBox } from '../../components/LoadingBox/LoadingBox';
+import { PageError } from '../../components/PageError/PageError';
+import { Grid } from '../../components/Grid/Grid';
+import { AdminHeader } from '../../components/AdminHeader/AdminHeader';
+import { AddButton } from '../../components/AddButton/AddButton';
+import { HeaderForm } from '../../components/HeaderForm/HeaderForm';
 import { Utilities } from '../../lib/Utilities';
 
 class InvitationCodes extends Component {
@@ -41,13 +41,13 @@ class InvitationCodes extends Component {
             <>
                 <AuthGateway redirectUrl="/admin/invitation-codes" permissionNeeded="ADMIN">
                     <AdminLayout activePage="invitationcodes">
-                        <PageHeader title="Invitation Codes">
+                        <AdminHeader title="Invitation Codes">
                             <AddButton>
                                 <button onClick={InvitationCodes.showAddInvitationCodeForm} type="button">
                                     + Add
                                 </button>
                             </AddButton>
-                        </PageHeader>
+                        </AdminHeader>
 
                         <HeaderForm id="create-invitation-code-header-form" width="500">
                             <AddInvitationCode />
@@ -76,7 +76,7 @@ class InvitationCodes extends Component {
                                     );
 
                                 return (
-                                    <AdminGrid>
+                                    <Grid>
                                         <table cellPadding="0" cellSpacing="0" id="invitationcodeadmingrid">
                                             <thead>
                                                 <tr>
@@ -129,7 +129,7 @@ class InvitationCodes extends Component {
                                                 )}
                                             </tbody>
                                         </table>
-                                    </AdminGrid>
+                                    </Grid>
                                 );
                             }}
                         </Query>

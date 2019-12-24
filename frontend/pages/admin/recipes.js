@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { Query } from 'react-apollo';
 import Router from 'next/router';
 import { ADMIN_ALL_RECIPES_QUERY } from '../../queries/Recipe';
-import { AdminGrid } from '../../components/styles/AdminGrid';
-import { PageHeader } from '../../components/admin/PageHeader/PageHeader';
-import { AuthGateway } from '../../components/AuthGateway';
-import { LoadingBox } from '../../components/elements/LoadingBox';
-import { PageError } from '../../components/elements/PageError';
-import { DeleteRecipe } from '../../components/admin/DeleteRecipe/DeleteRecipe';
-import { AdminLayout } from '../../components/admin/AdminLayout/AdminLayout';
+import { Grid } from '../../components/Grid/Grid';
+import { AdminHeader } from '../../components/AdminHeader/AdminHeader';
+import { AuthGateway } from '../../components/AuthGateway/AuthGateway';
+import { LoadingBox } from '../../components/LoadingBox/LoadingBox';
+import { PageError } from '../../components/PageError/PageError';
+import { DeleteRecipe } from '../../components/DeleteRecipe/DeleteRecipe';
+import { AdminLayout } from '../../components/AdminLayout/AdminLayout';
 
 class AdminRecipes extends Component {
     render() {
@@ -16,7 +16,7 @@ class AdminRecipes extends Component {
             <>
                 <AuthGateway redirectUrl="/admin/recipes" permissionNeeded="ADMIN">
                     <AdminLayout activePage="recipes">
-                        <PageHeader title="Recipes" />
+                        <AdminHeader title="Recipes" />
 
                         <Query query={ADMIN_ALL_RECIPES_QUERY}>
                             {({ data, error, loading }) => {
@@ -37,7 +37,7 @@ class AdminRecipes extends Component {
                                     );
 
                                 return (
-                                    <AdminGrid>
+                                    <Grid>
                                         <table cellPadding="0" cellSpacing="0" id="recipes_admin_grid">
                                             <thead>
                                                 <tr>
@@ -109,7 +109,7 @@ class AdminRecipes extends Component {
                                                 )}
                                             </tbody>
                                         </table>
-                                    </AdminGrid>
+                                    </Grid>
                                 );
                             }}
                         </Query>

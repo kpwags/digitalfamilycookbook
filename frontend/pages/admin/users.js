@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
 import { ALL_USERS_QUERY } from '../../queries/User';
-import { AdminLayout } from '../../components/admin/AdminLayout/AdminLayout';
-import { PageHeader } from '../../components/admin/elements/PageHeader';
-import { AddButton } from '../../components/styles/AddButton';
-import { AuthGateway } from '../../components/AuthGateway';
-import { AdminGrid } from '../../components/styles/AdminGrid';
-import { LoadingBox } from '../../components/elements/LoadingBox';
-import { PageError } from '../../components/elements/PageError';
-import { UserToggleAdmin } from '../../components/admin/UserToggleAdmin/UserToggleAdmin';
-import { UserDelete } from '../../components/admin/UserDelete/UserDelete';
-import { User } from '../../components/User';
+import { AdminLayout } from '../../components/AdminLayout/AdminLayout';
+import { AdminHeader } from '../../components/AdminHeader/AdminHeader';
+import { AuthGateway } from '../../components/AuthGateway/AuthGateway';
+import { Grid } from '../../components/Grid/Grid';
+import { LoadingBox } from '../../components/LoadingBox/LoadingBox';
+import { PageError } from '../../components/PageError/PageError';
+import { UserToggleAdmin } from '../../components/UserToggleAdmin/UserToggleAdmin';
+import { UserDelete } from '../../components/UserDelete/UserDelete';
+import { LoggedInUser } from '../../components/LoggedInUser/LoggedInUser';
 
 class AdminUsers extends Component {
     render() {
@@ -18,7 +17,7 @@ class AdminUsers extends Component {
             <>
                 <AuthGateway redirectUrl="/admin/users" permissionNeeded="ADMIN">
                     <AdminLayout activePage="familymembers">
-                        <PageHeader title="Family Members" />
+                        <AdminHeader title="Family Members" />
                         <Query query={ALL_USERS_QUERY}>
                             {({ data, error, loading }) => {
                                 if (loading)
@@ -38,10 +37,10 @@ class AdminUsers extends Component {
                                     );
 
                                 return (
-                                    <User>
+                                    <LoggedInUser>
                                         {({ data: { me } }) => (
                                             <>
-                                                <AdminGrid>
+                                                <Grid>
                                                     <table cellPadding="0" cellSpacing="0" id="users_admin_grid">
                                                         <thead>
                                                             <tr>
@@ -102,10 +101,10 @@ class AdminUsers extends Component {
                                                             )}
                                                         </tbody>
                                                     </table>
-                                                </AdminGrid>
+                                                </Grid>
                                             </>
                                         )}
-                                    </User>
+                                    </LoggedInUser>
                                 );
                             }}
                         </Query>

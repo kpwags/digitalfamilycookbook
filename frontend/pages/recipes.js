@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import { AllRecipes } from '../components/recipes/AllRecipes';
-import { AuthGateway } from '../components/AuthGateway';
+import { AllRecipes } from '../components/AllRecipes/AllRecipes';
+import { AuthGateway } from '../components/AuthGateway/AuthGateway';
 
 const Recipes = ({ query }) => (
     <AuthGateway redirectUrl="/">

@@ -1,15 +1,12 @@
-import { PageError } from '../components/elements/PageError';
-import { AuthGateway } from '../components/AuthGateway';
+import { PageError } from '../components/PageError/PageError';
 
 const Error = () => (
-    <AuthGateway redirectUrl="/_error">
-        <PageError
-            error={{
-                Title: 'Oops',
-                Message: 'There seems to have been an error...'
-            }}
-        />
-    </AuthGateway>
+    <PageError
+        error={{
+            Title: 'Oops',
+            Message: 'There seems to have been an error...'
+        }}
+    />
 );
 
 export default Error;
