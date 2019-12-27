@@ -1,9 +1,9 @@
-import { LoginForm } from '../components/forms/user/LoginForm';
-import { User } from '../components/User';
-import { Homepage } from '../components/Homepage';
+import { LoginForm } from '../components/LoginForm/LoginForm';
+import { LoggedInUser } from '../components/LoggedInUser/LoggedInUser';
+import { Homepage } from '../components/Homepage/Homepage';
 
 const Login = () => (
-    <User>
+    <LoggedInUser>
         {({ data: { me } }) => {
             if (me) {
                 return <Homepage />;
@@ -11,7 +11,7 @@ const Login = () => (
 
             return <LoginForm />;
         }}
-    </User>
+    </LoggedInUser>
 );
 
 export default Login;

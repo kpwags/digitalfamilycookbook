@@ -2,14 +2,14 @@ import PropTypes from 'prop-types';
 import { Query } from 'react-apollo';
 import { editMode } from '../config';
 import { RECIPE_BY_ID_QUERY } from '../queries/Recipe';
-import { AuthGateway } from '../components/AuthGateway';
-import { EditRecipeForm } from '../components/forms/recipe/EditRecipeForm';
-import { User } from '../components/User';
-import { PageError } from '../components/elements/PageError';
+import { AuthGateway } from '../components/AuthGateway/AuthGateway';
+import { EditRecipeForm } from '../components/EditRecipeForm/EditRecipeForm';
+import { LoggedInUser } from '../components/LoggedInUser/LoggedInUser';
+import { PageError } from '../components/PageError/PageError';
 
 const EditRecipe = props => (
     <AuthGateway redirectUrl={`/edit-recipe?id=${props.query.id}`} permissionNeeded="USER">
-        <User>
+        <LoggedInUser>
             {({ data: { me } }) => (
                 <Query query={RECIPE_BY_ID_QUERY} variables={{ id: props.query.id }}>
                     {({ data, recipeError }) => {
@@ -43,7 +43,7 @@ const EditRecipe = props => (
                     }}
                 </Query>
             )}
-        </User>
+        </LoggedInUser>
     </AuthGateway>
 );
 

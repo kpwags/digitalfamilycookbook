@@ -2,9 +2,10 @@ import gql from 'graphql-tag';
 
 const ALL_INVITATION_CODES_QUERY = gql`
     query {
-        invitationCodes {
+        invitationCodes(orderBy: code_ASC) {
             id
             code
+            createdAt
         }
     }
 `;

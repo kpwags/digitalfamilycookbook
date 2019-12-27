@@ -1,9 +1,9 @@
-import { SignupForm } from '../components/forms/user/SignupForm';
-import { User } from '../components/User';
-import { Homepage } from '../components/Homepage';
+import { SignupForm } from '../components/SignupForm/SignupForm';
+import { LoggedInUser } from '../components/LoggedInUser/LoggedInUser';
+import { Homepage } from '../components/Homepage/Homepage';
 
 const Signup = () => (
-    <User>
+    <LoggedInUser>
         {({ data: { me } }) => {
             if (me) {
                 return <Homepage />;
@@ -11,7 +11,7 @@ const Signup = () => (
 
             return <SignupForm />;
         }}
-    </User>
+    </LoggedInUser>
 );
 
 export default Signup;

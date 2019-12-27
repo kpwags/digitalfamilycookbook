@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import { Meat } from '../components/recipes/Meat';
-import { AuthGateway } from '../components/AuthGateway';
+import { RecipesByMeat } from '../components/RecipesByMeat/RecipesByMeat';
+import { AuthGateway } from '../components/AuthGateway/AuthGateway';
 
 const MeatPage = ({ query }) => (
     <AuthGateway redirectUrl={`/category?id=${query.id}`}>
-        <Meat id={query.id} page={parseInt(query.page || 1, 10)} />
+        <RecipesByMeat id={query.id} page={parseInt(query.page || 1, 10)} />
     </AuthGateway>
 );
 

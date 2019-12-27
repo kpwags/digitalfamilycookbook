@@ -154,6 +154,18 @@ class Utilities {
     static hideHeaderMenu(menuId) {
         document.getElementById(menuId).style.display = 'none';
     }
+
+    static formatDate(date) {
+        const formattedDate = new Date(date);
+        return formattedDate.toLocaleDateString('en-US');
+    }
+
+    static deleteTableRow(rowId) {
+        const tr = document.querySelector(`#${rowId}`);
+        tr.parentNode.removeChild(tr);
+    }
+
+    static boxColors = ['gray', 'blue', 'green', 'orange', 'purple'];
 }
 
 export { Utilities };

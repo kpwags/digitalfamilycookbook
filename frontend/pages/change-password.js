@@ -1,5 +1,5 @@
-import { ChangePasswordForm } from '../components/forms/user/ChangePasswordForm';
-import { AuthGateway } from '../components/AuthGateway';
+import { ChangePasswordForm } from '../components/ChangePasswordForm/ChangePasswordForm';
+import { AuthGateway } from '../components/AuthGateway/AuthGateway';
 
 const EditProfile = () => (
     <>

@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import { ResetPasswordForm } from '../components/forms/user/ResetPasswordForm';
-import { User } from '../components/User';
-import { Homepage } from '../components/Homepage';
+import { ResetPasswordForm } from '../components/ResetPasswordForm/ResetPasswordForm';
+import { LoggedInUser } from '../components/LoggedInUser/LoggedInUser';
+import { Homepage } from '../components/Homepage/Homepage';
 
 const ResetPassword = props => (
-    <User>
+    <LoggedInUser>
         {({ data: { me } }) => {
             if (me || typeof props.query.resetToken === 'undefined') {
                 return <Homepage />;
@@ -12,7 +12,7 @@ const ResetPassword = props => (
 
             return <ResetPasswordForm resetToken={props.query.resetToken} />;
         }}
-    </User>
+    </LoggedInUser>
 );
 
 ResetPassword.propTypes = {
