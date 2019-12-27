@@ -22,6 +22,10 @@ const RecipeForm = styled.form`
     width: 1000px;
     margin: 30px auto 0;
 
+    @media all and (max-width: 800px) {
+        width: 100%;
+    }
+
     label {
         display: block;
         font-size: 1.1rem;
@@ -152,6 +156,10 @@ const RecipeForm = styled.form`
         grid-column-gap: 10px;
         grid-row-gap: 0px;
 
+        @media all and (max-width: 400px) {
+            display: block;
+        }
+
         div.ingredients-directions {
             grid-column-start: 1;
             grid-column-end: 1;
@@ -184,11 +192,6 @@ const RecipeForm = styled.form`
         div.input {
             grid-column-start: 1;
             grid-column-end: 1;
-
-            input.small {
-                width: 90%;
-                display: block;
-            }
         }
 
         div.delete-button {
@@ -229,9 +232,17 @@ const RecipeForm = styled.form`
         grid-row-gap: 10px;
         align-items: center;
 
+        @media all and (max-width: 400px) {
+            display: block;
+        }
+
         label {
             display: inline;
             vertical-align: middle;
+
+            @media all and (max-width: 400px) {
+                display: block;
+            }
 
             input {
                 width: auto;
