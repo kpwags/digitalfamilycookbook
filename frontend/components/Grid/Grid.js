@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const Grid = styled.div`
-    border: 1px solid #cccccc;
+    border: 1px solid hsl(0, 0%, 80%);
     border-radius: 10px;
     padding: 20px;
     margin: 0 2%;

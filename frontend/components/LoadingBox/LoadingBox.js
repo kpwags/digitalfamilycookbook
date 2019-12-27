@@ -11,9 +11,9 @@ const Box = styled.div`
 const LoadingSpinner = styled.div`
     height: 48px;
     width: 48px;
-    border: 5px solid rgba(150, 150, 150, 0.2);
+    border: 5px solid hsla(0, 0%, 59%, 0.2);
     border-radius: 50%;
-    border-top-color: rgb(150, 150, 150);
+    border-top-color: hsl(0, 0%, 59%);
     animation: rotate 1s 0s infinite linear normal;
     margin: 0 auto 12px;
 

@@ -10,12 +10,38 @@ const StyledHeader = styled.header`
     padding: 0px;
     height: 50px;
     line-height: 50px;
-    background-image: -ms-linear-gradient(top, #43ab5e 0%, #00802b 100%);
-    background-image: -moz-linear-gradient(top, #43ab5e 0%, #00802b 100%);
-    background-image: -o-linear-gradient(top, #43ab5e 0%, #00802b 100%);
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #43ab5e), color-stop(100, #00802b));
-    background-image: -webkit-linear-gradient(top, #43ab5e 0%, #00802b 100%);
-    background-image: linear-gradient(to bottom, #43ab5e 0%, #00802b 100%);
+    background-image: -ms-linear-gradient(
+        top,
+        ${props => props.theme.lightGreen} 0%,
+        ${props => props.theme.green} 100%
+    );
+    background-image: -moz-linear-gradient(
+        top,
+        ${props => props.theme.lightGreen} 0%,
+        ${props => props.theme.green} 100%
+    );
+    background-image: -o-linear-gradient(
+        top,
+        ${props => props.theme.lightGreen} 0%,
+        ${props => props.theme.green} 100%
+    );
+    background-image: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0, ${props => props.theme.lightGreen}),
+        color-stop(100, ${props => props.theme.green})
+    );
+    background-image: -webkit-linear-gradient(
+        top,
+        ${props => props.theme.lightGreen} 0%,
+        ${props => props.theme.green} 100%
+    );
+    background-image: linear-gradient(
+        to bottom,
+        ${props => props.theme.lightGreen} 0%,
+        ${props => props.theme.green} 100%
+    );
 
     @media print {
         display: none;
@@ -38,7 +64,7 @@ const Logo = styled.h1`
     float: left;
 
     a {
-        color: #ffffff;
+        color: hsl(0, 0%, 100%);
     }
 
     a:hover {

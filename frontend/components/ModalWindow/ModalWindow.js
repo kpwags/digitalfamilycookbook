@@ -5,7 +5,7 @@ import { CloseX } from '../CloseX/CloseX';
 
 const Window = styled.div`
     display: none;
-    background: #ffffff;
+    background: hsl(0, 0%, 100%);
     position: absolute;
     top: 100px;
     left: 50%;
@@ -13,11 +13,11 @@ const Window = styled.div`
     margin-left: -200px;
     z-index: 10;
     border-radius: 4px;
-    box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 5px 3px hsla(0, 0%, 0%, 0.05);
 
     form {
         box-shadow: none;
-        background: #ffffff;
+        background: hsl(0, 0%, 100%);
         padding: 0 20px 20px;
     }
 
@@ -28,16 +28,16 @@ const Window = styled.div`
 
         button {
             border: none;
-            background: #ffffff;
+            background: hsl(0, 0%, 100%);
             display: block;
             padding: 10px 10px 0 0;
             font-size: 18px;
-            color: #777888;
+            color: hsl(236.5, 6.7%, 50%);
             float: right;
         }
 
         button:hover {
-            color: #333333;
+            color: hsl(0, 0%, 20%);
             cursor: pointer;
         }
     }

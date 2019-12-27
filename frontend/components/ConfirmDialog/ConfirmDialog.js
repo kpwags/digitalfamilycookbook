@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 const DialogWindow = styled.div`
     display: none;
-    background: #ffffff;
+    background: hsl(0, 0%, 100%);
     position: absolute;
     top: 100px;
     left: 50%;
@@ -12,7 +12,7 @@ const DialogWindow = styled.div`
     margin-left: -200px;
     z-index: 10;
     border-radius: 6px;
-    box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 5px 3px hsla(0, 0%, 0%, 0.05);
 
     .message {
         padding: 12px 0;

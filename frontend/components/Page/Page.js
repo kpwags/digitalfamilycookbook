@@ -7,16 +7,16 @@ import { MobileMenu } from '../MobileMenu/MobileMenu';
 import { ClearFix } from '../ClearFix/ClearFix';
 
 const theme = {
-    black: '#393939',
+    black: 'hsl(0, 0%, 22.4%)',
     green: 'hsl(140, 100%, 25%)',
     lightGreen: 'hsl(136, 44%, 47%)',
     paleGreen: 'hsl(136, 100%, 88%)',
     darkGreen: 'hsl(140, 100%, 15%)',
-    bs: '0 12px 24px 0 rgba(0, 0, 0, 0.2)'
+    bs: '0 12px 24px 0 hsla(0, 0%, 0%, 0.2)'
 };
 
 const StyledPage = styled.div`
-    background: white;
+    background: hsl(0, 0%, 100%);
     color: ${props => props.theme.black};
 `;
 
@@ -70,7 +70,7 @@ const GlobalStyle = createGlobalStyle`
     }
 
     i {
-        border: solid #fff;
+        border: solid hsl(0, 0%, 100%);
         border-width: 0 3px 3px 0;
         display: inline-block;
         padding: 3px;
@@ -87,7 +87,7 @@ const GlobalStyle = createGlobalStyle`
         -webkit-transform: rotate(45deg);
     }
 
-    .error { color: #f00; }
+    .error { color: hsl(0, 100%, 50%); }
 
     @media all and (max-width: 414px) {
         h1 { font-size: 1.6rem; }

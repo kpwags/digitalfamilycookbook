@@ -11,9 +11,9 @@ import { RecipesByUser } from '../RecipesByUser/RecipesByUser';
 const ProfileDetails = styled.div`
     width: 800px;
     margin: 30px auto 30px;
-    box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.05);
-    background: rgba(0, 0, 0, 0.02);
-    border: 5px solid white;
+    box-shadow: 0 0 5px 3px hsla(0, 0%, 0%, 0.05);
+    background: hsla(0, 0%, 0%, 0.02);
+    border: 5px solid hsl(0, 100%, 100%);
     padding: 20px;
     font-size: 1.8rem;
     line-height: 1.5;

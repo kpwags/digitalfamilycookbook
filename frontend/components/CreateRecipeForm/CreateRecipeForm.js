@@ -267,29 +267,29 @@ class CreateRecipeForm extends Component {
 
         // eslint-disable-next-line default-case
         switch (e.target.id) {
-        case 'name':
-            if (!FormValidator.validateNotEmpty(this.state.name)) {
-                Utilities.invalidateField('name', 'Name is required.');
-            } else {
-                Utilities.resetField('name');
-            }
-            break;
-        case 'servings':
-        case 'time':
-        case 'activeTime':
-        case 'calories':
-        case 'protein':
-        case 'carbohydrates':
-        case 'fat':
-        case 'sugar':
-        case 'fiber':
-        case 'cholesterol':
-            if (!FormValidator.validateNumeric(this.state[e.target.id])) {
-                Utilities.invalidateField(e.target.id, 'Must be numeric');
-            } else {
-                Utilities.resetField(e.target.id);
-            }
-            break;
+            case 'name':
+                if (!FormValidator.validateNotEmpty(this.state.name)) {
+                    Utilities.invalidateField('name', 'Name is required.');
+                } else {
+                    Utilities.resetField('name');
+                }
+                break;
+            case 'servings':
+            case 'time':
+            case 'activeTime':
+            case 'calories':
+            case 'protein':
+            case 'carbohydrates':
+            case 'fat':
+            case 'sugar':
+            case 'fiber':
+            case 'cholesterol':
+                if (!FormValidator.validateNumeric(this.state[e.target.id])) {
+                    Utilities.invalidateField(e.target.id, 'Must be numeric');
+                } else {
+                    Utilities.resetField(e.target.id);
+                }
+                break;
         }
     };
 
@@ -724,14 +724,14 @@ class CreateRecipeForm extends Component {
                             </div>
 
                             <Query query={ALL_CATEGORIES_QUERY}>
-                                {({ data, categoryError }) => {
+                                {({ data: categoryData, categoryError }) => {
                                     if (categoryError) return <p>Error: {categoryError.message}</p>;
                                     return (
-                                        data.categories.length > 0 && (
+                                        categoryData.categories.length > 0 && (
                                             <>
                                                 <h2>Categories</h2>
                                                 <div className="categories_meats">
-                                                    {data.categories.map(category => (
+                                                    {categoryData.categories.map(category => (
                                                         <label htmlFor={`category_${category.id}`} key={category.id}>
                                                             <input
                                                                 type="checkbox"
@@ -751,14 +751,14 @@ class CreateRecipeForm extends Component {
                             </Query>
 
                             <Query query={ALL_MEATS_QUERY}>
-                                {({ data, meatError }) => {
+                                {({ data: meatData, meatError }) => {
                                     if (meatError) return <p>Error: {meatError.message}</p>;
                                     return (
-                                        data.meats.length > 0 && (
+                                        meatData.meats.length > 0 && (
                                             <>
                                                 <h2>Meats</h2>
                                                 <div className="categories_meats">
-                                                    {data.meats.map(meat => (
+                                                    {meatData.meats.map(meat => (
                                                         <label htmlFor={`meat_${meat.id}`} key={meat.id}>
                                                             <input
                                                                 type="checkbox"
