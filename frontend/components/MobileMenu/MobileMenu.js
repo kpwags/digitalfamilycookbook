@@ -8,7 +8,7 @@ import { Utilities } from '../../lib/Utilities';
 
 const Menu = styled.div`
     width: 250px;
-    background-color: #313131;
+    background-color: hsl(0, 0%, 19.2%);
     padding: 0 15px;
     position: fixed;
     left: -250px;
@@ -41,16 +41,16 @@ const Menu = styled.div`
         li.title {
             font-size: 1.4rem;
             margin: 15px 0px 0px;
-            color: #fff;
+            color: hsl(0, 0%, 100%);
         }
 
         li.bordered {
-            border-top: 1px solid #fff;
+            border-top: 1px solid hsl(0, 0%, 100%);
             padding-top: 15px;
         }
 
         a {
-            color: #fff;
+            color: hsl(0, 0%, 100%);
         }
     }
 `;

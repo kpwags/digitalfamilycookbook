@@ -14,7 +14,7 @@ const HamburgerContainer = styled.div`
         .bar3 {
             width: 35px;
             height: 5px;
-            background-color: #fff;
+            background-color: hsl(0, 0%, 100%);
             margin: 6px 0;
             transition: 0.4s;
         }

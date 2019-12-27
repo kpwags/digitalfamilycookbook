@@ -7,10 +7,10 @@ const AlertError = styled.div`
     top: 5px;
     right: 5px;
     z-index: 12;
-    border: 1px solid #ff0000;
-    box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid hsl(0, 100%, 50%);
+    box-shadow: 0 0 5px 3px hsla(0, 0%, 0%, 0.05);
     min-width: 250px;
-    background: #ffffff;
+    background: hsl(0, 0%, 100%);
     cursor: pointer;
 
     .close-button {
@@ -22,16 +22,16 @@ const AlertError = styled.div`
 
         button {
             border: none !important;
-            background: #ffffff;
+            background: hsl(0, 0%, 100%);
             display: block;
             padding: 5px 10px 0 0;
             font-size: 18px;
-            color: #777888;
+            color: hsl(237, 7%, 50%);
             float: right;
         }
 
         button:hover {
-            color: #333333;
+            color: hsl(0, 0%, 20%);
             cursor: pointer;
         }
     }
@@ -39,7 +39,7 @@ const AlertError = styled.div`
     .content {
         padding: 10px;
         float: left;
-        color: #ff0000;
+        color: hsl(0, 100%, 50%);
         font-weight: bold;
     }
 `;

@@ -12,7 +12,7 @@ const UserMenu = styled.ul`
     display: block;
     li {
         margin-right: 15px;
-        color: #ffffff;
+        color: hsl(0, 0%, 100%);
         display: block;
         font-size: 20px;
         float: left;
@@ -20,13 +20,13 @@ const UserMenu = styled.ul`
 
         a {
             display: block;
-            color: #ffffff;
+            color: hsl(0, 0%, 100%);
             float: none;
             border: none;
             padding: 0 10px;
             :hover {
                 background-image: none;
-                background: #43ab5e;
+                background: ${props => props.theme.lightGreen};
             }
         }
 
@@ -41,7 +41,7 @@ const UserMenu = styled.ul`
 
         ul.child-list {
             display: none;
-            background: #00802b;
+            background: ${props => props.theme.green};
             background-image: none;
             position: absolute;
             z-index: 2;
@@ -56,13 +56,13 @@ const UserMenu = styled.ul`
                 margin: 0;
                 a {
                     display: block;
-                    color: #ffffff;
+                    color: hsl(0, 0%, 100%);
                     float: none;
                     border: none;
                     padding: 0 10px;
                     :hover {
                         background-image: none;
-                        background: #43ab5e;
+                        background: ${props => props.theme.lightGreen};
                     }
                 }
             }

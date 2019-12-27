@@ -14,7 +14,7 @@ const ContinueMessage = styled.h2`
 `;
 
 const InvalidPermissionsMessage = styled.p`
-    color: #ff0000;
+    color: hsl(0, 100%, 50%);
     text-align: center;
     font-style: italic;
 `;

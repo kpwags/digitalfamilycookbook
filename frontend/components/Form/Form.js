@@ -12,9 +12,9 @@ const loading = keyframes`
 `;
 
 const Form = styled.form`
-    box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.05);
-    background: rgba(0, 0, 0, 0.02);
-    border: 5px solid white;
+    box-shadow: 0 0 5px 3px hsla(0, 0%, 0%, 0.05);
+    background: hsla(0, 0%, 0%, 0.02);
+    border: 5px solid hsl(0, 0%, 100%);
     padding: 20px;
     font-size: 1rem;
     line-height: 1.5;
@@ -38,7 +38,7 @@ const Form = styled.form`
         width: 100%;
         padding: 0.5rem;
         font-size: 1.1rem;
-        border: 1px solid black;
+        border: 1px solid hsl(0, 0%, 0%);
         &:focus {
             outline: 0;
             border-color: ${props => props.theme.green};
@@ -51,17 +51,17 @@ const Form = styled.form`
     }
 
     label.errored {
-        color: #ff0000;
+        color: hsl(0, 100%, 50%);
     }
     input.errored,
     textarea.errored,
     select.errored {
         border-width: 2px;
-        border-color: #ff0000;
+        border-color: hsl(0, 100%, 50%);
     }
     button,
     input[type='submit'] {
-        color: white;
+        color: hsl(0, 0%, 100%);
         border-radius: 6px;
         margin: 0 15px;
         border-radius: 6px;
@@ -96,7 +96,12 @@ const Form = styled.form`
             height: 10px;
             content: '';
             display: block;
-            background-image: linear-gradient(to right, #00802b 0%, #43ab5e 50%, #00802b 100%);
+            background-image: linear-gradient(
+                to right,
+                ${props => props.theme.green} 0%,
+                ${props => props.theme.lightGreen} 50%,
+                ${props => props.theme.green} 100%
+            );
             margin-bottom: 25px;
         }
         &[aria-busy='true']::before {
@@ -106,7 +111,7 @@ const Form = styled.form`
     }
 
     div.error-text {
-        color: #ff0000;
+        color: hsl(0, 100%, 50%);
         display: none;
         font-size: 1rem;
         font-weight: normal;
@@ -123,7 +128,7 @@ const Form = styled.form`
     }
 
     span.required {
-        color: #ff0000;
+        color: hsl(0, 100%, 50%);
         font-weight: bold;
     }
 `;

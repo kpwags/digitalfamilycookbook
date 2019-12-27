@@ -17,36 +17,56 @@ const StyledNavBar = styled.ul`
         position: relative;
         :first-child {
             a {
-                border-left: 1px solid #ffffff;
+                border-left: 1px solid hsl(0, 0%, 100%);
             }
         }
         a {
             display: block;
             float: left;
-            color: #ffffff;
+            color: hsl(0, 0%, 100%);
             font-weight: bold;
             padding: 0 10px;
-            border-right: 1px solid #ffffff;
+            border-right: 1px solid hsl(0, 0%, 100%);
             :hover {
-                background-image: -ms-linear-gradient(bottom, #43ab5e 0%, #00802b 100%);
-                background-image: -moz-linear-gradient(bottom, #43ab5e 0%, #00802b 100%);
-                background-image: -o-linear-gradient(bottom, #43ab5e 0%, #00802b 100%);
+                background-image: -ms-linear-gradient(
+                    bottom,
+                    ${props => props.theme.lightGreen} 0%,
+                    ${props => props.theme.green} 100%
+                );
+                background-image: -moz-linear-gradient(
+                    bottom,
+                    ${props => props.theme.lightGreen} 0%,
+                    ${props => props.theme.green} 100%
+                );
+                background-image: -o-linear-gradient(
+                    bottom,
+                    ${props => props.theme.lightGreen} 0%,
+                    ${props => props.theme.green} 100%
+                );
                 background-image: -webkit-gradient(
                     linear,
                     left bottom,
                     left top,
-                    color-stop(0, #43ab5e),
-                    color-stop(100, #00802b)
+                    color-stop(0, ${props => props.theme.lightGreen}),
+                    color-stop(100, ${props => props.theme.green})
                 );
-                background-image: -webkit-linear-gradient(bottom, #43ab5e 0%, #00802b 100%);
-                background-image: linear-gradient(to top, #43ab5e 0%, #00802b 100%);
+                background-image: -webkit-linear-gradient(
+                    bottom,
+                    ${props => props.theme.lightGreen} 0%,
+                    ${props => props.theme.green} 100%
+                );
+                background-image: linear-gradient(
+                    to top,
+                    ${props => props.theme.lightGreen} 0%,
+                    ${props => props.theme.green} 100%
+                );
                 text-decoration: none;
             }
         }
 
         ul.child-list {
             display: none;
-            background: #00802b;
+            background: ${props => props.theme.green};
             background-image: none;
             position: absolute;
             z-index: 2;
@@ -64,13 +84,13 @@ const StyledNavBar = styled.ul`
                     padding: 0 10px;
                     :hover {
                         background-image: none;
-                        background: #43ab5e;
+                        background: ${props => props.theme.lightGreen};
                     }
                 }
                 em {
                     float: none;
                     border: none;
-                    color: #ffffff;
+                    color: hsl(0, 0%, 100%);
                     padding: 0 10px;
                     font-size: -2;
                 }
