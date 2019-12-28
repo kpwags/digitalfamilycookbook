@@ -2,6 +2,7 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import { CategoriesNav } from '../CategoriesNav/CategoriesNav';
 import { MeatsNav } from '../MeatsNav/MeatsNav';
+import { SearchIcon } from '../SearchIcon/SearchIcon';
 
 const StyledNavBar = styled.ul`
     float: left;
@@ -102,6 +103,15 @@ const StyledNavBar = styled.ul`
         }
     }
 
+    li.search-button {
+        margin: 8px 12px 0;
+
+        svg {
+            cursor: pointer;
+            fill: hsl(0, 0%, 100%);
+        }
+    }
+
     @media all and (max-width: 800px) {
         float: none;
         display: none;
@@ -118,6 +128,9 @@ const NavBar = () => (
 
         <CategoriesNav />
         <MeatsNav />
+        <li className="search-button">
+            <SearchIcon width="30" height="30" />
+        </li>
     </StyledNavBar>
 );
 

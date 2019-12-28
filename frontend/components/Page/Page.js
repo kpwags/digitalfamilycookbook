@@ -5,6 +5,7 @@ import { Meta } from '../Meta/Meta';
 import { Header } from '../Header/Header';
 import { MobileMenu } from '../MobileMenu/MobileMenu';
 import { ClearFix } from '../ClearFix/ClearFix';
+import { SearchBar } from '../SearchBar/SearchBar';
 
 const theme = {
     black: 'hsl(0, 0%, 22.4%)',
@@ -21,7 +22,7 @@ const StyledPage = styled.div`
 `;
 
 const Inner = styled.div`
-    margin: 15px;
+    margin: 85px 15px 15px;
 
     @media all and (max-width: 800px) {
         margin-top: 75px;
@@ -110,6 +111,7 @@ class Page extends Component {
                     <Meta />
                     <Header />
                     <ClearFix />
+                    <SearchBar />
                     <MobileMenu />
                     <Inner>{this.props.children}</Inner>
                 </StyledPage>
