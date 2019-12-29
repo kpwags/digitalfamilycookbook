@@ -22,7 +22,7 @@ const StyledPage = styled.div`
 `;
 
 const Inner = styled.div`
-    margin: 85px 15px 15px;
+    margin: 15px;
 
     @media all and (max-width: 800px) {
         margin-top: 75px;

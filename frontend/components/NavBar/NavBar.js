@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { CategoriesNav } from '../CategoriesNav/CategoriesNav';
 import { MeatsNav } from '../MeatsNav/MeatsNav';
 import { SearchIcon } from '../SearchIcon/SearchIcon';
+import { Utilities } from '../../lib/Utilities';
 
 const StyledNavBar = styled.ul`
     float: left;
@@ -104,9 +105,8 @@ const StyledNavBar = styled.ul`
     }
 
     li.search-button {
-        margin: 8px 12px 0;
-
         svg {
+            vertical-align: middle;
             cursor: pointer;
             fill: hsl(0, 0%, 100%);
         }
@@ -129,7 +129,23 @@ const NavBar = () => (
         <CategoriesNav />
         <MeatsNav />
         <li className="search-button">
-            <SearchIcon width="30" height="30" />
+            <a
+                role="button"
+                title="Search"
+                tabIndex="0"
+                onClick={e => {
+                    e.preventDefault();
+                    Utilities.toggleSearchBar();
+                }}
+                onKeyDown={e => {
+                    e.preventDefault();
+                    if (e.keyCode === 13 || e.keyCode === 32) {
+                        Utilities.toggleSearchBar();
+                    }
+                }}
+            >
+                <SearchIcon width="30" height="30" />
+            </a>
         </li>
     </StyledNavBar>
 );

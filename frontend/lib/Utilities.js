@@ -165,6 +165,17 @@ class Utilities {
         tr.parentNode.removeChild(tr);
     }
 
+    static toggleSearchBar() {
+        if (
+            document.getElementById('search-main').style.display === 'none' ||
+            document.getElementById('search-main').style.display === ''
+        ) {
+            document.getElementById('search-main').style.display = 'block';
+        } else {
+            document.getElementById('search-main').style.display = 'none';
+        }
+    }
+
     static boxColors = ['gray', 'blue', 'green', 'orange', 'purple'];
 }
 

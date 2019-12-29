@@ -9,7 +9,8 @@ import { Center } from '../Center/Center';
 import {
     RECIPE_BY_CATEGORY_PAGINATION_QUERY,
     ALL_RECIPES_PAGINATION_QUERY,
-    RECIPE_BY_MEAT_PAGINATION_QUERY
+    RECIPE_BY_MEAT_PAGINATION_QUERY,
+    SEARCH_RECIPES_PAGINATION_QUERY
 } from '../../queries/Recipe';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 
@@ -47,37 +48,44 @@ const PaginationStyles = styled.div`
 `;
 
 const Pagination = props => {
-    const { id, page, type = 'ALL', title = siteTitle } = props;
+    const { id, page, keywords = '', type = 'ALL', title = siteTitle } = props;
 
     let query;
     let variables;
     let url;
 
     switch (type) {
-    case 'CATEGORY':
-        query = RECIPE_BY_CATEGORY_PAGINATION_QUERY;
-        variables = {
-            variables: { categoryId: id }
-        };
-        url = 'category';
-        break;
-    case 'MEAT':
-        query = RECIPE_BY_MEAT_PAGINATION_QUERY;
-        variables = {
-            variables: { meatId: id }
-        };
-        url = 'meat';
-        break;
-    case 'ALL':
-        query = ALL_RECIPES_PAGINATION_QUERY;
-        variables = null;
-        url = 'recipes';
-        break;
-    default:
-        query = ALL_RECIPES_PAGINATION_QUERY;
-        variables = null;
-        url = 'index';
-        break;
+        case 'CATEGORY':
+            query = RECIPE_BY_CATEGORY_PAGINATION_QUERY;
+            variables = {
+                variables: { categoryId: id }
+            };
+            url = 'category';
+            break;
+        case 'MEAT':
+            query = RECIPE_BY_MEAT_PAGINATION_QUERY;
+            variables = {
+                variables: { meatId: id }
+            };
+            url = 'meat';
+            break;
+        case 'ALL':
+            query = ALL_RECIPES_PAGINATION_QUERY;
+            variables = null;
+            url = 'recipes';
+            break;
+        case 'SEARCH':
+            query = SEARCH_RECIPES_PAGINATION_QUERY;
+            variables = {
+                variables: { keywords }
+            };
+            url = 'search';
+            break;
+        default:
+            query = ALL_RECIPES_PAGINATION_QUERY;
+            variables = null;
+            url = 'index';
+            break;
     }
 
     const { data, error, loading } = useQuery(query, variables);
@@ -137,6 +145,7 @@ const Pagination = props => {
 
 Pagination.propTypes = {
     id: PropTypes.string,
+    keywords: PropTypes.string,
     page: PropTypes.number,
     title: PropTypes.string,
     type: PropTypes.string
