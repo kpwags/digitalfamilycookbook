@@ -8,7 +8,6 @@ const SearchIcon = ({ width = '40px', height = '40px' }) => (
         x="0px"
         y="0px"
         viewBox="0 0 451 451"
-        style={{ 'enable-background': 'new 0 0 451 451' }}
         xmlSpace="preserve"
         width={width}
         height={height}
