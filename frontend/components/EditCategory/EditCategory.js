@@ -56,13 +56,13 @@ class EditCategory extends Component {
     validate = (fieldId, value) => {
         // eslint-disable-next-line default-case
         switch (fieldId) {
-        case 'edit-category-name':
-            if (!FormValidator.validateNotEmpty(value)) {
-                Utilities.invalidateField('edit-category-name', 'Name is required.');
-            } else {
-                Utilities.resetField('edit-category-name');
-            }
-            break;
+            case 'edit-category-name':
+                if (!FormValidator.validateNotEmpty(value)) {
+                    Utilities.invalidateField('edit-category-name', 'Name is required.');
+                } else {
+                    Utilities.resetField('edit-category-name');
+                }
+                break;
         }
     };
 

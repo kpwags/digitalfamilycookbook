@@ -169,6 +169,30 @@ const RECIPE_BY_USER_QUERY = gql`
     }
 `;
 
+const SEARCH_RECIPES_QUERY = gql`
+    query SEARCH_RECIPES_QUERY($keywords: String!, $first: Int = ${perPage}, $skip: Int = 0) {
+        recipes(first: $first, skip: $skip, orderBy: name_ASC, where:{ name_contains: $keywords }) {
+            id
+            name
+            image
+            user {
+                id
+                name
+            }
+        }
+    }
+`;
+
+const SEARCH_RECIPES_PAGINATION_QUERY = gql`
+    query SEARCH_RECIPES_PAGINATION_QUERY($keywords: String!) {
+        recipesConnection(where: { name_contains: $keywords }) {
+            aggregate {
+                count
+            }
+        }
+    }
+`;
+
 export { ADMIN_ALL_RECIPES_QUERY };
 export { ALL_RECIPES_PAGINATION_QUERY };
 export { ALL_RECIPES_QUERY };
@@ -180,3 +204,5 @@ export { RECIPE_BY_MEAT_PAGINATION_QUERY };
 export { RECIPE_BY_MEAT_QUERY };
 export { RECIPE_BY_STARTING_LETTER_QUERY };
 export { RECIPE_BY_USER_QUERY };
+export { SEARCH_RECIPES_QUERY };
+export { SEARCH_RECIPES_PAGINATION_QUERY };
