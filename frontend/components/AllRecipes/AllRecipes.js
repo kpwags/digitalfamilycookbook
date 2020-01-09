@@ -3,10 +3,8 @@ import { useQuery } from '@apollo/react-hooks';
 import { ALL_RECIPES_QUERY } from '../../queries/Recipe';
 import { LoadingBox } from '../LoadingBox/LoadingBox';
 import { PageError } from '../PageError/PageError';
-import { RecipeBox } from '../RecipeBox/RecipeBox';
-import { RecipeIndex } from '../RecipeIndex/RecipeIndex';
 import { perPage } from '../../config';
-import { Pagination } from '../Pagination/Pagination';
+import { RecipesList } from '../RecipesList/RecipesList';
 
 const AllRecipes = props => {
     const { page } = props;
@@ -28,17 +26,7 @@ const AllRecipes = props => {
 
     return (
         <>
-            <h1>Recipes</h1>
-
-            <Pagination type="ALL" page={page} title="Recipes" />
-
-            <RecipeIndex>
-                {data.recipes.map(recipe => (
-                    <RecipeBox key={recipe.id} recipe={recipe} />
-                ))}
-            </RecipeIndex>
-
-            <Pagination type="ALL" page={page} title="Recipes" />
+            <RecipesList page={page} recipes={data.recipes} title="Recipes" type="ALL" />
         </>
     );
 };

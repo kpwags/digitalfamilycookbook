@@ -4,9 +4,7 @@ import { RECIPE_BY_MEAT_QUERY } from '../../queries/Recipe';
 import { MEAT_BY_ID_QUERY } from '../../queries/Meat';
 import { LoadingBox } from '../LoadingBox/LoadingBox';
 import { PageError } from '../PageError/PageError';
-import { RecipeBox } from '../RecipeBox/RecipeBox';
-import { RecipeIndex } from '../RecipeIndex/RecipeIndex';
-import { Pagination } from '../Pagination/Pagination';
+import { RecipesList } from '../RecipesList/RecipesList';
 import { perPage } from '../../config';
 
 const RecipesByMeat = props => {
@@ -42,21 +40,7 @@ const RecipesByMeat = props => {
 
     return (
         <>
-            <h1>{meatData.meat.name}</h1>
-
-            <Pagination type="MEAT" id={id} page={page} title={meatData.meat.name} />
-
-            {data.recipes.length > 0 && (
-                <RecipeIndex>
-                    {data.recipes.map(recipe => (
-                        <RecipeBox key={recipe.id} recipe={recipe} />
-                    ))}
-                </RecipeIndex>
-            )}
-
-            {data.recipes.length === 0 && <p>No {meatData.meat.name} Recipes</p>}
-
-            <Pagination type="MEAT" id={id} page={page} title={meatData.meat.name} />
+            <RecipesList page={page} recipes={data.recipes} title={meatData.meat.name} type="MEAT" id={id} />
         </>
     );
 };

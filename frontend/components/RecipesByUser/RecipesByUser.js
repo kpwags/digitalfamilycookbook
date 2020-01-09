@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { RECIPE_BY_USER_QUERY } from '../../queries/Recipe';
 import { LoadingBox } from '../LoadingBox/LoadingBox';
 import { PageError } from '../PageError/PageError';
-import { RecipeBox } from '../RecipeBox/RecipeBox';
-import { RecipeIndex } from '../RecipeIndex/RecipeIndex';
+import { RecipesList } from '../RecipesList/RecipesList';
 
 const RecipesByUser = props => {
     const { id } = props;
@@ -24,13 +23,7 @@ const RecipesByUser = props => {
 
     return (
         <>
-            {data.recipes.length > 0 && (
-                <RecipeIndex>
-                    {data.recipes.map(recipe => (
-                        <RecipeBox key={recipe.id} recipe={recipe} />
-                    ))}
-                </RecipeIndex>
-            )}
+            <RecipesList showTitle={false} recipes={data.recipes} />
         </>
     );
 };

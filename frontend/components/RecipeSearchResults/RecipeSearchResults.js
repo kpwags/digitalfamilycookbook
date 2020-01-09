@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import { SEARCH_RECIPES_QUERY } from '../../queries/Recipe';
 import { LoadingBox } from '../LoadingBox/LoadingBox';
 import { PageError } from '../PageError/PageError';
-import { RecipeBox } from '../RecipeBox/RecipeBox';
-import { RecipeIndex } from '../RecipeIndex/RecipeIndex';
-import { Pagination } from '../Pagination/Pagination';
+import { RecipesList } from '../RecipesList/RecipesList';
 import { perPage } from '../../config';
 
 const RecipeSearchResults = props => {
@@ -28,19 +26,14 @@ const RecipeSearchResults = props => {
 
     return (
         <>
-            <Pagination type="SEARCH" keywords={keywords} page={page} title={`Search Results: ${keywords}`} />
-
-            {data.recipes.length > 0 && (
-                <RecipeIndex>
-                    {data.recipes.map(recipe => (
-                        <RecipeBox key={recipe.id} recipe={recipe} />
-                    ))}
-                </RecipeIndex>
-            )}
-
-            {data.recipes.length === 0 && <p>No Recipes found for keywords {keywords}</p>}
-
-            <Pagination type="SEARCH" keywords={keywords} page={page} title={`Search Results: ${keywords}`} />
+            <RecipesList
+                page={page}
+                recipes={data.recipes}
+                keywords={keywords}
+                title={`Search Results: ${keywords}`}
+                type="SEARCH"
+                showTitle={false}
+            />
         </>
     );
 };

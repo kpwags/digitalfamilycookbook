@@ -4,10 +4,8 @@ import { RECIPE_BY_CATEGORY_QUERY } from '../../queries/Recipe';
 import { CATEGORY_BY_ID_QUERY } from '../../queries/Category';
 import { LoadingBox } from '../LoadingBox/LoadingBox';
 import { PageError } from '../PageError/PageError';
-import { RecipeBox } from '../RecipeBox/RecipeBox';
-import { RecipeIndex } from '../RecipeIndex/RecipeIndex';
-import { Pagination } from '../Pagination/Pagination';
 import { perPage } from '../../config';
+import { RecipesList } from '../RecipesList/RecipesList';
 
 const RecipesByCategory = props => {
     const { id, page } = props;
@@ -42,21 +40,13 @@ const RecipesByCategory = props => {
 
     return (
         <>
-            <h1>{categoryData.category.name}</h1>
-
-            <Pagination type="CATEGORY" id={id} page={page} title={categoryData.category.name} />
-
-            {data.recipes.length > 0 && (
-                <RecipeIndex>
-                    {data.recipes.map(recipe => (
-                        <RecipeBox key={recipe.id} recipe={recipe} />
-                    ))}
-                </RecipeIndex>
-            )}
-
-            {data.recipes.length === 0 && <p>No {categoryData.category.name} Recipes</p>}
-
-            <Pagination type="CATEGORY" id={id} page={page} title={categoryData.category.name} />
+            <RecipesList
+                page={page}
+                recipes={data.recipes}
+                title={categoryData.category.name}
+                type="CATEGORY"
+                id={id}
+            />
         </>
     );
 };
