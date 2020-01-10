@@ -129,11 +129,15 @@ class FormValidator {
     }
 
     static validateRequiredNumeric(value) {
-        if (value === null || value.trim().length === 0) {
+        if (value === null) {
             return false;
         }
 
-        return !Number.isNaN(value);
+        if (typeof value === 'string' && value.trim().length === 0) {
+            return false;
+        }
+
+        return !Number.isNaN(Number(value));
     }
 }
 
