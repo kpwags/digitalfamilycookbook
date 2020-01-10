@@ -24,13 +24,13 @@ class AddMeat extends Component {
     validate = (fieldId, value) => {
         // eslint-disable-next-line default-case
         switch (fieldId) {
-        case 'add-meat-name':
-            if (!FormValidator.validateNotEmpty(value)) {
-                Utilities.invalidateField('add-meat-name', 'Name is required.');
-            } else {
-                Utilities.resetField('add-meat-name');
-            }
-            break;
+            case 'add-meat-name':
+                if (!FormValidator.validateNotEmpty(value)) {
+                    Utilities.invalidateField('add-meat-name', 'Name is required.');
+                } else {
+                    Utilities.resetField('add-meat-name');
+                }
+                break;
         }
     };
 

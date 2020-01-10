@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<AddCategory/> should match snapshot 1`] = `
+<form
+  className="Form-sc-1jw7vbt-0 fUzCDX"
+  data-test="form"
+  id="create-category-form"
+  onSubmit={[Function]}
+>
+  <ErrorMessage
+    error={null}
+  />
+  <fieldset
+    aria-busy={false}
+    disabled={false}
+  >
+    <label
+      htmlFor="name"
+    >
+      Name
+      <input
+        id="add-category-name"
+        name="name"
+        onBlur={[Function]}
+        onChange={[Function]}
+        placeholder="Name"
+        required={true}
+        type="text"
+        value=""
+      />
+      <div
+        className="error-text"
+        id="add-category-name-message"
+      />
+    </label>
+    <button
+      type="submit"
+    >
+      Sav
+      e
+    </button>
+    <button
+      onClick={[Function]}
+      type="button"
+    >
+      Cancel
+    </button>
+  </fieldset>
+</form>
+`;

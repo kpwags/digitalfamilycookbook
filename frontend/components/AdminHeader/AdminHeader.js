@@ -31,7 +31,7 @@ const PageHeader = styled.div`
 
 const AdminHeader = props => {
     return (
-        <PageHeader>
+        <PageHeader id="admin-header">
             <div className="title">
                 <h1>{props.title}</h1>
             </div>

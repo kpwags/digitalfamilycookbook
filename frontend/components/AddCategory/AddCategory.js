@@ -24,25 +24,20 @@ class AddCategory extends Component {
     validate = (fieldId, value) => {
         // eslint-disable-next-line default-case
         switch (fieldId) {
-        case 'add-category-name':
-            if (!FormValidator.validateNotEmpty(value)) {
-                Utilities.invalidateField('add-category-name', 'Name is required.');
-            } else {
-                Utilities.resetField('add-category-name');
-            }
-            break;
+            case 'add-category-name':
+                if (!FormValidator.validateNotEmpty(value)) {
+                    Utilities.invalidateField('add-category-name', 'Name is required.');
+                } else {
+                    Utilities.resetField('add-category-name');
+                }
+                break;
         }
     };
 
     validateForm = () => {
         let isValid = true;
 
-        let { name } = this.state;
-        if (name === '') {
-            name = document.getElementById('add-category-name').value;
-        }
-
-        if (!FormValidator.validateNotEmpty(name)) {
+        if (!FormValidator.validateNotEmpty(this.state.name)) {
             Utilities.invalidateField('add-category-name', 'Name is required.');
             isValid = false;
         }
