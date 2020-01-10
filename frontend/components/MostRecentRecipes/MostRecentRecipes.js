@@ -3,10 +3,8 @@ import { useQuery } from '@apollo/react-hooks';
 import { MOST_RECENT_QUERY } from '../../queries/Recipe';
 import { LoadingBox } from '../LoadingBox/LoadingBox';
 import { PageError } from '../PageError/PageError';
-import { RecipeBox } from '../RecipeBox/RecipeBox';
-import { RecipeIndex } from '../RecipeIndex/RecipeIndex';
 import { perPage } from '../../config';
-import { Pagination } from '../Pagination/Pagination';
+import { RecipesList } from '../RecipesList/RecipesList';
 
 const MostRecentRecipes = props => {
     const { page } = props;
@@ -28,17 +26,7 @@ const MostRecentRecipes = props => {
 
     return (
         <>
-            <h1>Most Recent Recipes</h1>
-
-            <Pagination type="MOSTRECENT" page={page} />
-
-            <RecipeIndex>
-                {data.recipes.map(recipe => (
-                    <RecipeBox key={recipe.id} recipe={recipe} />
-                ))}
-            </RecipeIndex>
-
-            <Pagination type="MOSTRECENT" page={page} />
+            <RecipesList page={page} recipes={data.recipes} title="Most Recent Recipes" type="MOSTRECENT" />
         </>
     );
 };
