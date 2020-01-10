@@ -89,7 +89,11 @@ class Utilities {
             }
 
             if (timeMinutes > 0) {
-                returnString += `${timeMinutes} minutes`;
+                returnString += `${timeMinutes} minute`;
+            }
+
+            if (timeMinutes > 1) {
+                returnString += 's';
             }
         }
 
