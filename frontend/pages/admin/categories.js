@@ -15,26 +15,14 @@ import { EditCategory } from '../../components/EditCategory/EditCategory';
 import { AdminLayout } from '../../components/AdminLayout/AdminLayout';
 
 class AdminCategories extends Component {
-    static showAddCategoryForm(e) {
-        e.preventDefault();
-
-        document.getElementById('create-category-header-form').style.display = 'block';
-        document.getElementById('add-category-name').focus();
-    }
-
     state = {
         selected: {
             id: '',
             name: ''
-        }
+        },
+        addFormOpen: false,
+        editFormOpen: false
     };
-
-    showEditCatetgoryForm(category) {
-        this.setState({ selected: category });
-
-        document.getElementById('edit-category-header-form').style.display = 'block';
-        document.getElementById('edit-category-name').focus();
-    }
 
     render() {
         return (
@@ -43,18 +31,43 @@ class AdminCategories extends Component {
                     <AdminLayout activePage="categories">
                         <AdminHeader title="Categories">
                             <AddButton>
-                                <button onClick={AdminCategories.showAddCategoryForm} type="button">
+                                <button
+                                    onClick={e => {
+                                        e.preventDefault();
+                                        this.setState({ addFormOpen: true });
+                                    }}
+                                    type="button"
+                                >
                                     + Add
                                 </button>
                             </AddButton>
                         </AdminHeader>
 
-                        <HeaderForm id="create-category-header-form" width="500">
-                            <AddCategory />
+                        <HeaderForm
+                            id="create-category-header-form"
+                            width="500"
+                            style={this.state.addFormOpen ? { display: 'block' } : { display: 'none' }}
+                        >
+                            <AddCategory
+                                onDone={() => {
+                                    this.setState({ addFormOpen: false });
+                                }}
+                            />
                         </HeaderForm>
 
-                        <HeaderForm id="edit-category-header-form" width="500">
-                            <EditCategory id={this.state.selected.id} name={this.state.selected.name} />
+                        <HeaderForm
+                            id="edit-category-header-form"
+                            width="500"
+                            style={this.state.editFormOpen ? { display: 'block' } : { display: 'none' }}
+                        >
+                            <EditCategory
+                                id={this.state.selected.id}
+                                key={this.state.selected.id}
+                                name={this.state.selected.name}
+                                onDone={() => {
+                                    this.setState({ editFormOpen: false });
+                                }}
+                            />
                         </HeaderForm>
 
                         <Query query={ALL_CATEGORIES_QUERY}>
@@ -104,7 +117,10 @@ class AdminCategories extends Component {
                                                                     data-id={category.id}
                                                                     onClick={e => {
                                                                         e.preventDefault();
-                                                                        this.showEditCatetgoryForm(category);
+                                                                        this.setState({
+                                                                            selected: category,
+                                                                            editFormOpen: true
+                                                                        });
                                                                     }}
                                                                 >
                                                                     Edit

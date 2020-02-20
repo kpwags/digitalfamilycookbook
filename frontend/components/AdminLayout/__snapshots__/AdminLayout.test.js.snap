@@ -29,7 +29,6 @@ exports[`<AdminLayout/> should match snapshot 1`] = `
           "styledComponentId": "AdminLayout__Sidebar-sc-1mt2f2w-1",
           "target": "div",
           "toString": [Function],
-          "usesTheme": true,
           "warnTooManyClasses": [Function],
           "withComponent": [Function],
         }
@@ -144,7 +143,6 @@ exports[`<AdminLayout/> should match snapshot 1`] = `
           "styledComponentId": "AdminLayout__Main-sc-1mt2f2w-2",
           "target": "div",
           "toString": [Function],
-          "usesTheme": false,
           "warnTooManyClasses": [Function],
           "withComponent": [Function],
         }
@@ -179,7 +177,6 @@ exports[`<AdminLayout/> should match snapshot 1`] = `
                   "styledComponentId": "MobileAlertBox__AlertBox-sc-18higoe-0",
                   "target": "div",
                   "toString": [Function],
-                  "usesTheme": false,
                   "warnTooManyClasses": [Function],
                   "withComponent": [Function],
                 }

@@ -34,6 +34,7 @@ class LoginForm extends Component {
             <Mutation mutation={LOGIN_MUTATION} variables={this.state} refetchQueries={[{ query: CURRENT_USER_QUERY }]}>
                 {(login, { error, loading }) => (
                     <Form
+                        data-test="login-form"
                         method="post"
                         onSubmit={async e => {
                             e.preventDefault();

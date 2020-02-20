@@ -6,23 +6,38 @@ import { ThemeProvider } from 'styled-components';
 import { Theme } from './Theme';
 
 const MockedThemeProvider = props => {
-    const { mocks = null, children } = props;
+    const { mocks = null, addTypename = false, children } = props;
     return (
         <ThemeProvider theme={Theme}>
-            <MockedProvider mocks={mocks}>{children}</MockedProvider>
+            <MockedProvider mocks={mocks} addTypename={addTypename}>
+                {children}
+            </MockedProvider>
         </ThemeProvider>
     );
 };
 
 MockedThemeProvider.propTypes = {
     children: PropTypes.node,
-    mocks: PropTypes.array
+    mocks: PropTypes.array,
+    addTypename: PropTypes.bool
 };
+
+const TestAdmin = () => ({
+    __typename: 'User',
+    id: 'abc1234',
+    name: casual.name,
+    username: casual.username,
+    email: casual.email,
+    bio: 'I am just a test admin',
+    image: 'user.jpg',
+    largeImage: 'user-lg.jpg',
+    permissions: ['USER', 'ADMIN']
+});
 
 const TestCategory = () => ({
     __typename: 'Category',
     id: 'abc123',
-    name: casual.words()
+    name: casual.word
 });
 
 const TestDirection = () => ({
@@ -91,6 +106,7 @@ const TestUser = () => ({
 
 export {
     MockedThemeProvider,
+    TestAdmin,
     TestCategory,
     TestDirection,
     TestIngredient,
