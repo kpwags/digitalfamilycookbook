@@ -1,12 +1,17 @@
 import { ChangePasswordForm } from '../components/ChangePasswordForm/ChangePasswordForm';
 import { AuthGateway } from '../components/AuthGateway/AuthGateway';
+import { LoggedInUser } from '../components/LoggedInUser/LoggedInUser';
 
-const EditProfile = () => (
+const ChangePassword = () => (
     <>
         <AuthGateway redirectUrl="/change-password" permissionNeeded="USER">
-            <ChangePasswordForm />
+            <LoggedInUser>
+                {({ data: { me } }) => {
+                    return <ChangePasswordForm user={me} />;
+                }}
+            </LoggedInUser>
         </AuthGateway>
     </>
 );
 
-export default EditProfile;
+export default ChangePassword;

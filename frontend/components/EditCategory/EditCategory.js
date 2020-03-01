@@ -87,7 +87,6 @@ const EditCategory = props => {
                         name="name"
                         required
                         value={name}
-                        className={nameError !== '' ? 'errored' : ''}
                         onChange={e => {
                             setName(e.target.value);
                         }}

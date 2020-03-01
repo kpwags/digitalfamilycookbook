@@ -61,13 +61,13 @@ class EditMeat extends Component {
     validate = (fieldId, value) => {
         // eslint-disable-next-line default-case
         switch (fieldId) {
-        case 'edit-meat-name':
-            if (!FormValidator.validateNotEmpty(value)) {
-                Utilities.invalidateField('edit-meat-name', 'Name is required.');
-            } else {
-                Utilities.resetField('edit-meat-name');
-            }
-            break;
+            case 'edit-meat-name':
+                if (!FormValidator.validateNotEmpty(value)) {
+                    Utilities.invalidateField('edit-meat-name', 'Name is required.');
+                } else {
+                    Utilities.resetField('edit-meat-name');
+                }
+                break;
         }
     };
 

@@ -9,6 +9,7 @@ const RecipeBox = props => {
 
     return (
         <RecipeLink
+            data-testid="RecipeBox"
             onClick={e => {
                 e.preventDefault();
                 Utilities.goToRecipe(recipe.id);

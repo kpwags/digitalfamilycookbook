@@ -2,7 +2,7 @@
 
 exports[`<AddInvitationCode/> should match snapshot 1`] = `
 <form
-  className="Form-sc-1jw7vbt-0 fUzCDX"
+  className="Form-sc-1jw7vbt-0 jSygZL"
   data-test="form"
   id="create-invitation-code-form"
   onSubmit={[Function]}

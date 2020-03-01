@@ -52,7 +52,15 @@ const Form = styled.form`
 
     label.errored {
         color: hsl(0, 100%, 50%);
+
+        input,
+        textarea,
+        select {
+            border-width: 2px;
+            border-color: hsl(0, 100%, 50%);
+        }
     }
+
     input.errored,
     textarea.errored,
     select.errored {

@@ -80,7 +80,7 @@ const AddCategory = props => {
         >
             <ErrorMessage error={error || createCategoryError} />
             <fieldset disabled={createCategoryLoading} aria-busy={createCategoryLoading}>
-                <label htmlFor="name" className={nameError !== '' ? 'errored' : ''}>
+                <label htmlFor="add-category-name" className={nameError !== '' ? 'errored' : ''}>
                     Name
                     <input
                         type="text"
@@ -89,7 +89,6 @@ const AddCategory = props => {
                         data-testid="add-category-name"
                         placeholder="Name"
                         required
-                        className={nameError !== '' ? 'errored' : ''}
                         value={name}
                         onChange={e => {
                             setName(e.target.value);

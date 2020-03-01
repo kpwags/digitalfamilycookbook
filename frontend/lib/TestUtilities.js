@@ -24,7 +24,7 @@ MockedThemeProvider.propTypes = {
 
 const TestAdmin = () => ({
     __typename: 'User',
-    id: 'abc1234',
+    id: casual.uuid,
     name: casual.name,
     username: casual.username,
     email: casual.email,
@@ -36,7 +36,7 @@ const TestAdmin = () => ({
 
 const TestCategory = () => ({
     __typename: 'Category',
-    id: 'abc123',
+    id: casual.uuid,
     name: casual.word
 });
 
@@ -56,19 +56,31 @@ const TestIngredient = () => ({
 
 const TestInvitationCode = () => ({
     __typename: 'InvitationCode',
-    id: 'abc123',
+    id: casual.uuid,
     code: casual.username
 });
 
 const TestMeat = () => ({
     __typename: 'Meat',
-    id: 'abc123',
+    id: casual.uuid,
     name: casual.words()
+});
+
+const TestUser = () => ({
+    __typename: 'User',
+    id: casual.uuid,
+    name: casual.name,
+    username: casual.username,
+    email: casual.email,
+    bio: 'I am just a test user',
+    image: 'user.jpg',
+    largeImage: 'user-lg.jpg',
+    permissions: ['USER']
 });
 
 const TestRecipe = () => ({
     __typename: 'Recipe',
-    id: 'abc123',
+    id: casual.uuid,
     name: casual.name,
     public: casual.boolean,
     source: casual.words(),
@@ -87,22 +99,11 @@ const TestRecipe = () => ({
     ingredients: [TestIngredient(), TestIngredient()],
     directions: [TestDirection(), TestDirection()],
     meats: [TestMeat(), TestMeat()],
-    categories: [TestCategory(), TestCategory()]
+    categories: [TestCategory(), TestCategory()],
+    user: TestUser()
 });
 
 const TestRecipesList = () => [TestRecipe(), TestRecipe(), TestRecipe(), TestRecipe(), TestRecipe()];
-
-const TestUser = () => ({
-    __typename: 'User',
-    id: 'abc123',
-    name: casual.name,
-    username: casual.username,
-    email: casual.email,
-    bio: 'I am just a test user',
-    image: 'user.jpg',
-    largeImage: 'user-lg.jpg',
-    permissions: ['USER']
-});
 
 export {
     MockedThemeProvider,

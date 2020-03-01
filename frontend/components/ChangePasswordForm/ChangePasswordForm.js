@@ -1,176 +1,184 @@
-import React, { Component } from 'react';
-import { Query, Mutation } from 'react-apollo';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { useMutation } from '@apollo/react-hooks';
 import { CURRENT_USER_QUERY } from '../../queries/User';
 import { CHANGE_PASSWORD_MUTATION } from '../../mutations/User';
 import { Form } from '../Form/Form';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { SuccessMessage } from '../SuccessMessage/SuccessMessage';
 import { FormValidator } from '../../lib/FormValidator';
-import { Utilities } from '../../lib/Utilities';
 
-class ChangePasswordForm extends Component {
-    state = {
-        currentPassword: '',
-        password: '',
-        confirmPassword: '',
-        successMessage: null,
-        error: null
-    };
+const ChangePasswordForm = props => {
+    const [user] = useState(props.user);
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
+    const [successMessage, setSuccessMessage] = useState(null);
+    const [error, setError] = useState(null);
 
-    saveToState = e => {
-        this.setState({ [e.target.name]: e.target.value });
-    };
+    const [currentPasswordValidationError, setCurrentPasswordValidationError] = useState('');
+    const [newPasswordValidationError, setNewPasswordValidationError] = useState('');
+    const [confirmNewPasswordValidationError, setConfirmNewPasswordValidationError] = useState('');
 
-    changePassword = async (e, changePasswordMutation) => {
-        e.preventDefault();
+    const [
+        changePassword,
+        { loading: changePasswordLoading, error: changePasswordError }
+    ] = useMutation(CHANGE_PASSWORD_MUTATION, { refetchQueries: [{ query: CURRENT_USER_QUERY }] });
 
-        if (this.validateForm()) {
-            const id = document.getElementById('user_id').value;
-
-            await changePasswordMutation({
-                variables: {
-                    id,
-                    currentPassword: this.state.currentPassword,
-                    password: this.state.password
-                }
-            }).catch(err => {
-                this.setState({ error: err });
-            });
-
-            if (this.state.error === null) {
-                this.setState({
-                    currentPassword: '',
-                    password: '',
-                    confirmPassword: '',
-                    successMessage: 'Password changed successfully',
-                    error: null
-                });
-            }
-        }
-    };
-
-    validate = e => {
-        e.preventDefault();
-
-        const { valid: passwordsValid, message } = FormValidator.validatePassword(
-            this.state.password,
-            this.state.confirmPassword
-        );
+    const validate = (fieldId, value) => {
+        const { valid: passwordsValid, message } = FormValidator.validatePassword(newPassword, confirmNewPassword);
 
         // eslint-disable-next-line default-case
-        switch (e.target.id) {
-        case 'currentPassword':
-            if (!FormValidator.validateNotEmpty(this.state.currentPassword)) {
-                Utilities.invalidateField('currentPassword', 'Current password is required.');
-            } else {
-                Utilities.resetField('currentPassword');
-            }
-            break;
+        switch (fieldId) {
+            case 'current-password':
+                if (!FormValidator.validateNotEmpty(value)) {
+                    setCurrentPasswordValidationError('Current password is required');
+                } else {
+                    setCurrentPasswordValidationError('');
+                }
+                break;
 
-        case 'password':
-        case 'confirmPassword':
-            if (!passwordsValid) {
-                Utilities.invalidateField('password');
-                Utilities.invalidateField('confirmPassword', message);
-            } else {
-                Utilities.resetField('password');
-                Utilities.resetField('confirmPassword');
-            }
-            break;
+            case 'password':
+            case 'confirm-password':
+                if (!passwordsValid) {
+                    setNewPasswordValidationError(message);
+                    setConfirmNewPasswordValidationError(message);
+                } else {
+                    setNewPasswordValidationError('');
+                    setConfirmNewPasswordValidationError('');
+                }
+                break;
         }
     };
 
-    validateForm = () => {
+    const validateForm = () => {
         let isValid = true;
+        const { valid: passwordsValid, message } = FormValidator.validatePassword(newPassword, confirmNewPassword);
 
-        if (!FormValidator.validateNotEmpty(this.state.currentPassword)) {
-            Utilities.invalidateField('name', 'Current password is required.');
+        if (!FormValidator.validateNotEmpty(currentPassword)) {
+            setCurrentPasswordValidationError('Current password is required');
             isValid = false;
         }
 
-        const { valid: passwordsValid, message } = FormValidator.validatePassword(
-            this.state.password,
-            this.state.confirmPassword
-        );
-
         if (!passwordsValid) {
-            Utilities.invalidateField('password');
-            Utilities.invalidateField('confirmPassword', message);
+            setNewPasswordValidationError(message);
+            setConfirmNewPasswordValidationError(message);
+
             isValid = false;
         }
 
         return isValid;
     };
 
-    render() {
-        return (
-            <Query query={CURRENT_USER_QUERY}>
-                {({ data: { me } }) => {
-                    return (
-                        <Mutation
-                            mutation={CHANGE_PASSWORD_MUTATION}
-                            variables={this.state}
-                            refetchQueries={[{ query: CURRENT_USER_QUERY }]}
-                        >
-                            {(changePassword, { error, mutationLoading }) => (
-                                <Form
-                                    data-test="form"
-                                    method="post"
-                                    onSubmit={async e => {
-                                        this.changePassword(e, changePassword);
-                                    }}
-                                >
-                                    <SuccessMessage message={this.state.successMessage} />
-                                    <ErrorMessage error={error || this.state.error} />
-                                    <fieldset disabled={mutationLoading} aria-busy={mutationLoading}>
-                                        <h2>Change Password</h2>
-                                        <input type="hidden" name="id" id="user_id" defaultValue={me.id} />
-                                        <label htmlFor="currentPassword">
-                                            Password
-                                            <input
-                                                type="password"
-                                                name="currentPassword"
-                                                id="currentPassword"
-                                                value={this.state.currentPassword}
-                                                onChange={this.saveToState}
-                                                onBlur={this.validate}
-                                            />
-                                            <div className="error-text" id="currentPassword-message" />
-                                        </label>
-                                        <label htmlFor="password">
-                                            Password
-                                            <input
-                                                type="password"
-                                                name="password"
-                                                id="password"
-                                                value={this.state.password}
-                                                onChange={this.saveToState}
-                                                onBlur={this.validate}
-                                            />
-                                            <div className="error-text" id="password-message" />
-                                        </label>
-                                        <label htmlFor="confirmPassword">
-                                            Confirm Password
-                                            <input
-                                                type="password"
-                                                name="confirmPassword"
-                                                id="confirmPassword"
-                                                value={this.state.confirmPassword}
-                                                onChange={this.saveToState}
-                                                onBlur={this.validate}
-                                            />
-                                            <div className="error-text" id="confirmPassword-message" />
-                                        </label>
-                                        <button type="submit">Submit{mutationLoading ? 'ting' : ''}</button>
-                                    </fieldset>
-                                </Form>
-                            )}
-                        </Mutation>
-                    );
-                }}
-            </Query>
-        );
-    }
-}
+    return (
+        <Form
+            data-test="form"
+            method="post"
+            onSubmit={async e => {
+                e.preventDefault();
+
+                setError(null);
+
+                if (validateForm()) {
+                    await changePassword({
+                        variables: {
+                            id: user.id,
+                            currentPassword,
+                            password: newPassword
+                        }
+                    }).catch(err => {
+                        setError(err);
+                    });
+
+                    if (error === null) {
+                        setCurrentPassword('');
+                        setNewPassword('');
+                        setConfirmNewPassword('');
+                        setSuccessMessage('Password changed successfully');
+                        setError(null);
+                    }
+                }
+            }}
+        >
+            <SuccessMessage message={successMessage} />
+            <ErrorMessage error={error || changePasswordError} />
+            <fieldset disabled={changePasswordLoading} aria-busy={changePasswordLoading}>
+                <h2>Change Password</h2>
+
+                <label htmlFor="current-password" className={currentPasswordValidationError !== '' ? 'errored' : ''}>
+                    Current Password
+                    <input
+                        type="password"
+                        name="current-password"
+                        id="current-password"
+                        value={currentPassword}
+                        onChange={e => {
+                            setCurrentPassword(e.target.value);
+                        }}
+                        onBlur={e => {
+                            e.preventDefault();
+                            validate('current-password', currentPassword);
+                        }}
+                    />
+                    <div
+                        className="error-text"
+                        style={currentPasswordValidationError !== '' ? { display: 'block' } : {}}
+                    >
+                        {currentPasswordValidationError}
+                    </div>
+                </label>
+
+                <label htmlFor="password" className={newPasswordValidationError !== '' ? 'errored' : ''}>
+                    New Password
+                    <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        value={newPassword}
+                        onChange={e => {
+                            setNewPassword(e.target.value);
+                        }}
+                        onBlur={e => {
+                            e.preventDefault();
+                            validate('password', newPassword);
+                        }}
+                    />
+                    <div className="error-text" style={newPasswordValidationError !== '' ? { display: 'block' } : {}}>
+                        {newPasswordValidationError}
+                    </div>
+                </label>
+
+                <label htmlFor="confirm-password" className={confirmNewPasswordValidationError !== '' ? 'errored' : ''}>
+                    Confirm Password
+                    <input
+                        type="password"
+                        name="confirm-password"
+                        id="confirm-password"
+                        value={confirmNewPassword}
+                        onChange={e => {
+                            setConfirmNewPassword(e.target.value);
+                        }}
+                        onBlur={e => {
+                            e.preventDefault();
+                            validate('confirm-password', confirmNewPassword);
+                        }}
+                    />
+                    <div
+                        className="error-text"
+                        style={confirmNewPasswordValidationError !== '' ? { display: 'block' } : {}}
+                    >
+                        {confirmNewPasswordValidationError}
+                    </div>
+                </label>
+
+                <button type="submit">Submit{changePasswordLoading ? 'ting' : ''}</button>
+            </fieldset>
+        </Form>
+    );
+};
+
+ChangePasswordForm.propTypes = {
+    user: PropTypes.object
+};
 
 export { ChangePasswordForm };
