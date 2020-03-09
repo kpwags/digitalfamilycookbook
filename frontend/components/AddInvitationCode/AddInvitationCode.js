@@ -1,117 +1,135 @@
-import React, { Component } from 'react';
-import { Mutation, ApolloConsumer } from 'react-apollo';
+import React, { useState } from 'react';
+import { useMutation, useApolloClient } from '@apollo/react-hooks';
 import debounce from 'lodash.debounce';
+import PropTypes from 'prop-types';
 import { Form } from '../Form/Form';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { CREATE_INVITATION_CODE_MUTATION } from '../../mutations/InvitationCode';
 import { ALL_INVITATION_CODES_QUERY, SINGLE_INVITATION_CODE_CODE_QUERY } from '../../queries/InvitationCode';
 import { FormValidator } from '../../lib/FormValidator';
-import { Utilities } from '../../lib/Utilities';
 
-class AddInvitationCode extends Component {
-    state = {
-        code: '',
-        error: null
-    };
+const AddInvitationCode = props => {
+    const [code, setCode] = useState('');
+    const [error, setError] = useState(null);
+    const [codeError, setCodeError] = useState('');
 
-    handleCodeChange = debounce(async (e, client) => {
-        e.preventDefault();
+    const client = useApolloClient();
+    const [createInvitationCode, { loading: addLoading, error: addError }] = useMutation(
+        CREATE_INVITATION_CODE_MUTATION,
+        {
+            refetchQueries: [{ query: ALL_INVITATION_CODES_QUERY }]
+        }
+    );
 
-        this.setState({ code: e.target.value });
-
+    const validate = debounce(async () => {
         const res = await client.query({
             query: SINGLE_INVITATION_CODE_CODE_QUERY,
-            variables: { code: this.state.code }
+            variables: { code }
         });
 
-        const { valid, message } = FormValidator.validateInvitationCode(this.state.code);
+        const { valid, message } = FormValidator.validateInvitationCode(code);
 
         if (res.data.invitationCode !== null) {
-            Utilities.invalidateField('add-invitation-code-code', 'Inivation code already exists');
+            setCodeError('Inivation code already exists');
         } else if (!valid) {
-            Utilities.invalidateField('add-invitation-code-code', message);
+            setCodeError(message);
         } else {
-            Utilities.resetField('add-invitation-code-code');
+            setCodeError('');
         }
     }, 350);
 
-    hideAddForm = () => {
-        document.getElementById('create-invitation-code-header-form').style.display = 'none';
-        this.setState({ code: '' });
-        document.getElementById('create-invitation-code-form').reset();
-    };
-
-    cancelAddInvitationCode = e => {
+    const cancelAdd = e => {
         e.preventDefault();
-        this.hideAddForm();
+        setCode('');
+        setCodeError('');
+
+        if (typeof props.onDone === 'function') {
+            props.onDone();
+        }
     };
 
-    validateForm = () => {
-        const { valid, message } = FormValidator.validateInvitationCode(this.state.code);
-        if (!valid) {
-            Utilities.invalidateField('add-invitation-code-code', message);
+    const validateForm = async () => {
+        let isValid = true;
+
+        const res = await client.query({
+            query: SINGLE_INVITATION_CODE_CODE_QUERY,
+            variables: { code }
+        });
+
+        const { valid, message } = FormValidator.validateInvitationCode(code);
+
+        if (res.data.invitationCode !== null) {
+            setCodeError('Inivation code already exists');
+            isValid = false;
+        } else if (!valid) {
+            setCodeError(message);
+            isValid = false;
+        } else {
+            setCodeError('');
         }
 
-        return valid;
+        return isValid;
     };
 
-    render() {
-        return (
-            <Mutation
-                mutation={CREATE_INVITATION_CODE_MUTATION}
-                variables={this.state}
-                refetchQueries={[{ query: ALL_INVITATION_CODES_QUERY }]}
-            >
-                {(createInvitationCode, { loading, error }) => (
-                    <Form
-                        data-test="form"
-                        id="create-invitation-code-form"
-                        onSubmit={async e => {
-                            e.preventDefault();
+    return (
+        <Form
+            data-test="form"
+            id="create-invitation-code-form"
+            onSubmit={async e => {
+                e.preventDefault();
 
-                            this.setState({ error: null });
+                setError(null);
 
-                            if (this.validateForm()) {
-                                await createInvitationCode().catch(err => {
-                                    this.setState({ error: err });
-                                });
+                const isValid = await validateForm();
+                if (isValid) {
+                    await createInvitationCode({ variables: { code } }).catch(err => {
+                        setError(err);
+                    });
 
-                                if (this.state.error === null) {
-                                    this.hideAddForm();
-                                }
-                            }
+                    if (error === null) {
+                        setCode('');
+                        setCodeError('');
+
+                        if (typeof props.onDone === 'function') {
+                            props.onDone();
+                        }
+                    }
+                }
+            }}
+        >
+            <ErrorMessage error={addError || error} />
+            <fieldset disabled={addLoading} aria-busy={addLoading}>
+                <label htmlFor="add-invitation-code-code" className={codeError !== '' ? 'errored' : ''}>
+                    Code
+                    <input
+                        type="text"
+                        id="add-invitation-code-code"
+                        name="code"
+                        required
+                        maxLength="20"
+                        onChange={e => {
+                            setCode(e.target.value);
                         }}
-                    >
-                        <ErrorMessage error={error || this.state.error} />
-                        <fieldset disabled={loading} aria-busy={loading}>
-                            <ApolloConsumer>
-                                {client => (
-                                    <label htmlFor="code">
-                                        Code
-                                        <input
-                                            type="text"
-                                            id="add-invitation-code-code"
-                                            name="code"
-                                            maxLength="20"
-                                            onChange={e => {
-                                                e.persist();
-                                                this.handleCodeChange(e, client);
-                                            }}
-                                        />
-                                        <div className="error-text" id="add-invitation-code-code-message" />
-                                    </label>
-                                )}
-                            </ApolloConsumer>
-                            <button type="submit">Sav{loading ? 'ing' : 'e'}</button>
-                            <button type="button" onClick={this.cancelAddInvitationCode}>
-                                Cancel
-                            </button>
-                        </fieldset>
-                    </Form>
-                )}
-            </Mutation>
-        );
-    }
-}
+                        onBlur={e => {
+                            e.preventDefault();
+                            validate();
+                        }}
+                    />
+                    <div className="error-text" style={codeError !== '' ? { display: 'block' } : {}}>
+                        {codeError}
+                    </div>
+                </label>
+                <button type="submit">Sav{addLoading ? 'ing' : 'e'}</button>
+                <button type="button" onClick={cancelAdd}>
+                    Cancel
+                </button>
+            </fieldset>
+        </Form>
+    );
+};
+
+AddInvitationCode.propTypes = {
+    onDone: PropTypes.func
+};
 
 export { AddInvitationCode };

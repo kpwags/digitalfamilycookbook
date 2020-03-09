@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
@@ -40,58 +40,57 @@ const DialogWindow = styled.div`
     }
 `;
 
-class ConfirmDialog extends Component {
-    static closeConfirmDialog(e, id) {
-        e.preventDefault();
-        document.getElementById(id).style.display = 'none';
-        document.getElementById('page-overlay').style.display = 'none';
+const ConfirmDialog = props => {
+    const [visible, setVisible] = useState(props.open);
+    const [initialLoad, setInitialLoad] = useState(true);
+
+    const { width = 500, yesText = 'Yes', noText = 'No' } = props;
+    const marginLeftVal = `${(width / 2) * -1}px`;
+
+    let { height = 'auto' } = props;
+    if (!Number.isNaN(height)) {
+        height = `${height}px`;
     }
 
-    static propTypes = {
-        id: PropTypes.string.isRequired,
-        width: PropTypes.string,
-        height: PropTypes.string,
-        yesText: PropTypes.string,
-        noText: PropTypes.string,
-        message: PropTypes.string.isRequired,
-        continue: PropTypes.func.isRequired
+    const popupStyle = {
+        margin: `0 0 0 ${marginLeftVal}`,
+        height,
+        width: `${width}px`,
+        display: visible ? 'block' : 'none'
     };
 
-    render() {
-        const { id, width = 500, yesText = 'Yes', noText = 'No' } = this.props;
-        const marginLeftVal = `${(width / 2) * -1}px`;
-
-        let { height = 'auto' } = this.props;
-        if (!Number.isNaN(height)) {
-            height = `${height}px`;
+    useEffect(() => {
+        if (!initialLoad) {
+            setVisible(!visible);
+        } else {
+            setInitialLoad(false);
         }
+    }, [props.open]);
 
-        const popupStyle = {
-            margin: `0 0 0 ${marginLeftVal}`,
-            height,
-            width: `${width}px`
-        };
+    return (
+        <DialogWindow style={popupStyle}>
+            <div className="message">{props.message}</div>
+            <div className="buttons">
+                <button className="confirm-button" type="button" onClick={props.continue}>
+                    {yesText}
+                </button>
+                <button className="confirm-button" type="button" onClick={props.cancel}>
+                    {noText}
+                </button>
+            </div>
+        </DialogWindow>
+    );
+};
 
-        return (
-            <DialogWindow id={id} style={popupStyle}>
-                <div className="message">{this.props.message}</div>
-                <div className="buttons">
-                    <button className="confirm-button" type="button" onClick={this.props.continue}>
-                        {yesText}
-                    </button>
-                    <button
-                        className="confirm-button"
-                        type="button"
-                        onClick={e => {
-                            ConfirmDialog.closeConfirmDialog(e, id);
-                        }}
-                    >
-                        {noText}
-                    </button>
-                </div>
-            </DialogWindow>
-        );
-    }
-}
+ConfirmDialog.propTypes = {
+    width: PropTypes.string,
+    height: PropTypes.string,
+    yesText: PropTypes.string,
+    noText: PropTypes.string,
+    message: PropTypes.string.isRequired,
+    continue: PropTypes.func.isRequired,
+    cancel: PropTypes.func.isRequired,
+    open: PropTypes.bool
+};
 
 export { ConfirmDialog };

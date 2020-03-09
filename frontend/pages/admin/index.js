@@ -7,11 +7,9 @@ const AdminHome = styled.div`
     text-align: center;
 
     div.admin-links {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        grid-column-gap: 10px;
-        grid-row-gap: 10px;
-        margin: 25px 0;
+        width: 300px;
+        margin: 25px auto;
+        text-align: center;
 
         a {
             display: block;
@@ -19,6 +17,8 @@ const AdminHome = styled.div`
             border-width: 2px;
             border-style: solid;
             padding: 15px 25px;
+            margin: 15px 0;
+            width: 300px;
         }
 
         a.gray {

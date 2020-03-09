@@ -20,16 +20,11 @@ const EditCategory = props => {
         }
     );
 
-    const validate = (fieldId, value) => {
-        // eslint-disable-next-line default-case
-        switch (fieldId) {
-            case 'edit-category-name':
-                if (!FormValidator.validateNotEmpty(value)) {
-                    setNameError('Name is required');
-                } else {
-                    setNameError('');
-                }
-                break;
+    const validate = () => {
+        if (!FormValidator.validateNotEmpty(name)) {
+            setNameError('Name is required');
+        } else {
+            setNameError('');
         }
     };
 
@@ -46,7 +41,6 @@ const EditCategory = props => {
 
     const cancelEdit = e => {
         e.preventDefault();
-        setName('');
         setNameError('');
         props.onDone();
     };
@@ -70,8 +64,7 @@ const EditCategory = props => {
                     });
 
                     if (error === null) {
-                        setName('');
-                        setId('');
+                        setNameError('');
                         props.onDone();
                     }
                 }
@@ -92,7 +85,7 @@ const EditCategory = props => {
                         }}
                         onBlur={e => {
                             e.preventDefault();
-                            validate('edit-category-name', name);
+                            validate();
                         }}
                     />
                     <div className="error-text" style={nameError !== '' ? { display: 'block' } : {}}>

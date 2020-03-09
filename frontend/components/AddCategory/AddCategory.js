@@ -87,7 +87,6 @@ const AddCategory = props => {
                         id="add-category-name"
                         name="name"
                         data-testid="add-category-name"
-                        placeholder="Name"
                         required
                         value={name}
                         onChange={e => {

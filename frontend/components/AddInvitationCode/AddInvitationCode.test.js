@@ -1,102 +1,58 @@
-import { mount } from 'enzyme';
-import wait from 'waait';
-import toJSON from 'enzyme-to-json';
-import { act } from 'react-dom/test-utils';
-import { MockedProvider } from '@apollo/react-testing';
-import { ThemeProvider } from 'styled-components';
+import { render, waitForElement } from '@testing-library/react';
+// import { render, screen, wait, fireEvent, waitForElement } from '@testing-library/react';
+// import user from '@testing-library/user-event';
 import { CREATE_INVITATION_CODE_MUTATION } from '../../mutations/InvitationCode';
-import { TestInvitationCode } from '../../lib/TestUtilities';
-import { Theme } from '../../lib/Theme';
+import { TestInvitationCode, MockedThemeProvider } from '../../lib/TestUtilities';
 import { AddInvitationCode } from './AddInvitationCode';
 
 describe('<AddInvitationCode/>', () => {
-    beforeEach(() => {
-        // Avoid `attachTo: document.body` Warning
-        const div = document.createElement('div');
-        div.setAttribute('id', 'container');
-        document.body.appendChild(div);
-    });
-
-    afterEach(() => {
-        const div = document.getElementById('container');
-        if (div) {
-            document.body.removeChild(div);
-        }
-    });
-
-    it('should match snapshot', () => {
-        const wrapper = mount(
-            <ThemeProvider theme={Theme}>
-                <MockedProvider>
-                    <AddInvitationCode />
-                </MockedProvider>
-            </ThemeProvider>
-        );
-
-        const form = wrapper.find('form[data-test="form"]');
-        expect(toJSON(form)).toMatchSnapshot();
-    });
-
-    // it('updates the state', async () => {
-    //     const wrapper = mount(
-    //         <ThemeProvider theme={Theme}>
-    //             <MockedProvider>
-    //                 <AddInvitationCode />
-    //             </MockedProvider>
-    //         </ThemeProvider>,
-    //         { attachTo: document.getElementById('container') }
-    //     );
-
-    //     wrapper.find('input[name="code"]').simulate('change', { target: { value: 'test code', name: 'code' } });
-
-    //     await wait(100);
-
-    //     expect(wrapper.find('AddInvitationCode').instance().state).toMatchObject({
-    //         code: 'test code',
-    //         error: null
-    //     });
-    // });
-
-    it('creates an invitation code when the form is submitted', async () => {
-        const invitationCode = TestInvitationCode();
-        const mocks = [
-            {
-                request: {
-                    query: CREATE_INVITATION_CODE_MUTATION,
-                    variables: {
-                        name: invitationCode.code
-                    }
-                },
-                result: {
-                    data: {
-                        createCategory: {
-                            ...TestInvitationCode,
-                            id: 'abc123',
-                            __typename: 'InvitationCode'
-                        }
+    const code = TestInvitationCode();
+    const mocks = [
+        {
+            request: {
+                query: CREATE_INVITATION_CODE_MUTATION,
+                variables: {
+                    code: code.code
+                }
+            },
+            createInvitationCode: jest.fn(() => ({
+                data: {
+                    createInvitationCode: {
+                        id: code.id,
+                        code: code.code
                     }
                 }
-            }
-        ];
+            }))
+        }
+    ];
 
-        const wrapper = mount(
-            <ThemeProvider theme={Theme}>
-                <MockedProvider mocks={mocks}>
-                    <AddInvitationCode />
-                </MockedProvider>
-            </ThemeProvider>,
-            { attachTo: document.getElementById('container') }
+    test('it renders the input', async () => {
+        const { getByLabelText } = render(
+            <MockedThemeProvider mocks={mocks}>
+                <AddInvitationCode />
+            </MockedThemeProvider>
         );
 
-        act(() => {
-            wrapper
-                .find('input[name="code"]')
-                .simulate('change', { target: { value: invitationCode.code, name: 'code' } });
-            wrapper.find('form#create-invitation-code-form').simulate('submit');
-        });
-
-        await wait(50);
-
-        expect(wrapper.find('AddInvitationCode').instance().state.error).toEqual(null);
+        await waitForElement(() => getByLabelText(/Code/));
     });
+
+    // TODO: Figure this out
+    // test('it creates a category when the form is submited', async () => {
+    //     const { getByText, getByLabelText } = render(
+    //         <MockedThemeProvider mocks={mocks}>
+    //             <AddCategory />
+    //         </MockedThemeProvider>
+    //     );
+
+    //     const categoryInput = getByLabelText(/Name/);
+
+    //     await user.type(categoryInput, category.name);
+
+    //     const addCategoryButton = getByText(/Save/);
+
+    //     fireEvent.click(addCategoryButton);
+
+    //     const addCategoryMutation = mocks[0].createCategory;
+    //     await wait(() => expect(addCategoryMutation).toHaveBeenCalled());
+    // });
 });
