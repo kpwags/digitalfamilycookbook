@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Query, Mutation, ApolloConsumer } from 'react-apollo';
+import React, { useState } from 'react';
+import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
 import debounce from 'lodash.debounce';
 import { CURRENT_USER_QUERY, SINGLE_USER_USERNAME_QUERY } from '../../queries/User';
 import { UPDATE_PROFILE_MUTATION } from '../../mutations/User';
@@ -7,164 +7,49 @@ import { Form } from '../Form/Form';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { SuccessMessage } from '../SuccessMessage/SuccessMessage';
 import { FormValidator } from '../../lib/FormValidator';
-import { Utilities } from '../../lib/Utilities';
 
-class EditProfileForm extends Component {
-    state = {
-        name: '',
-        username: '',
-        email: '',
-        bio: '',
-        image: '',
-        largeImage: '',
-        successMessage: null,
-        error: null
-    };
+const EditProfileForm = () => {
+    const [id, setId] = useState('');
+    const [name, setName] = useState('');
+    const [nameError, setNameError] = useState('');
+    const [username, setUsername] = useState('');
+    const [usernameError, setUsernameError] = useState('');
+    const [email, setEmail] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [bio, setBio] = useState('');
+    const [image, setImage] = useState('');
+    const [largeImage, setLargeImage] = useState('');
+    const [successMessage, setSuccessMessage] = useState(null);
+    const [error, setError] = useState(null);
 
-    saveUsername = debounce(async (e, client) => {
-        e.preventDefault();
+    const client = useApolloClient();
 
-        this.setState({ username: e.target.value });
-
-        const res = await client.query({
-            query: SINGLE_USER_USERNAME_QUERY,
-            variables: { username: this.state.username }
-        });
-
-        const id = document.getElementById('user_id').value;
-        const { valid, message } = FormValidator.validateUsername(this.state.username);
-
-        if (res.data.user !== null && res.data.user.id !== id) {
-            Utilities.invalidateField('username', 'Username already taken');
-        } else if (!valid) {
-            Utilities.invalidateField('username', message);
-        } else {
-            Utilities.resetField('username');
-        }
-    }, 350);
-
-    saveToState = e => {
-        this.setState({ [e.target.name]: e.target.value });
-    };
-
-    updateProfile = async (e, updateProfileMutation) => {
-        e.preventDefault();
-
-        const id = document.getElementById('user_id').value;
-
-        let { name, username, email, bio, image, largeImage } = this.state;
-
-        if (name === '') {
-            name = document.getElementById('name').value;
-        }
-
-        if (username === '') {
-            username = document.getElementById('username').value;
-        }
-
-        if (email === '') {
-            email = document.getElementById('email').value;
-        }
-
-        if (bio === '') {
-            bio = document.getElementById('bio').value;
-        }
-
-        if (image === '') {
-            image = document.getElementById('image').value;
-        }
-
-        if (largeImage === '') {
-            largeImage = document.getElementById('large_image').value;
-        }
-
-        if (this.validateForm()) {
-            await updateProfileMutation({
-                variables: {
-                    id,
-                    name,
-                    username,
-                    email,
-                    bio,
-                    image,
-                    largeImage
-                }
-            }).catch(err => {
-                this.setState({ error: err });
-            });
-        }
-    };
-
-    validate = e => {
-        e.preventDefault();
-
-        let { name, email } = this.state;
-
-        if (name === '') {
-            name = document.getElementById('name').value;
-        }
-
-        if (email === '') {
-            email = document.getElementById('email').value;
-        }
-
-        // eslint-disable-next-line default-case
-        switch (e.target.id) {
-        case 'email':
-            if (!FormValidator.validateEmail(email)) {
-                Utilities.invalidateField('email', 'Invalid email');
-            } else {
-                Utilities.resetField('email');
+    const [updateUser, { loading: updateLoading, error: updateError }] = useMutation(UPDATE_PROFILE_MUTATION, {
+        refetchQueries: [{ query: CURRENT_USER_QUERY }],
+        onCompleted: () => {
+            if (!updateError) {
+                setSuccessMessage('Profile updated successfully');
             }
-            break;
+        }
+    });
 
-        case 'name':
-            if (!FormValidator.validateNotEmpty(name)) {
-                Utilities.invalidateField('name', 'Name is required.');
-            } else {
-                Utilities.resetField('name');
+    const {
+        data: { me }
+    } = useQuery(CURRENT_USER_QUERY, {
+        onCompleted: data => {
+            if (data.me !== null) {
+                setId(data.me.id);
+                setName(data.me.name);
+                setEmail(data.me.email);
+                setUsername(data.me.username);
+                setBio(data.me.bio);
+                setImage(data.me.image);
+                setLargeImage(data.me.largeImage);
             }
-            break;
         }
-    };
+    });
 
-    validateForm = () => {
-        let isValid = true;
-        let { name, username, email } = this.state;
-
-        if (name === '') {
-            name = document.getElementById('name').value;
-        }
-
-        if (email === '') {
-            email = document.getElementById('email').value;
-        }
-
-        if (username === '') {
-            username = document.getElementById('username').value;
-        }
-
-        const { valid: usernameValid, message: usernameMessage } = FormValidator.validateUsername(username);
-
-        if (!FormValidator.validateEmail(email)) {
-            Utilities.invalidateField('email', 'Invalid email');
-            isValid = false;
-        }
-
-        if (!usernameValid) {
-            Utilities.invalidateField('username', usernameMessage);
-            isValid = false;
-        }
-
-        if (!FormValidator.validateNotEmpty(name)) {
-            Utilities.invalidateField('name', 'Name is required.');
-            isValid = false;
-        }
-
-        return isValid;
-    };
-
-    uploadFile = async e => {
+    const uploadFile = async e => {
         const { files } = e.target;
         const data = new FormData();
         data.append('file', files[0]);
@@ -177,130 +62,216 @@ class EditProfileForm extends Component {
 
         const file = await res.json();
 
-        this.setState({
-            image: file.secure_url,
-            largeImage: file.eager[0].secure_url
-        });
+        setImage(file.secure_url);
+        setLargeImage(file.eager[0].secure_url);
     };
 
-    render() {
-        return (
-            <Query query={CURRENT_USER_QUERY}>
-                {({ data: { me } }) => {
-                    return (
-                        <Mutation
-                            mutation={UPDATE_PROFILE_MUTATION}
-                            variables={this.state}
-                            refetchQueries={[{ query: CURRENT_USER_QUERY }]}
-                            onCompleted={() => {
-                                if (this.state.error === null) {
-                                    this.setState({
-                                        successMessage: 'Profile updated successfully'
-                                    });
-                                }
-                            }}
-                        >
-                            {(updateUser, { error, mutationLoading }) => (
-                                <Form
-                                    data-test="form"
-                                    method="post"
-                                    onSubmit={async e => {
-                                        this.setState({ error: null, successMessage: null });
-                                        this.updateProfile(e, updateUser);
-                                    }}
-                                >
-                                    <fieldset disabled={mutationLoading} aria-busy={mutationLoading}>
-                                        <h2>Edit Profile</h2>
-                                        <SuccessMessage message={this.state.successMessage} />
-                                        <ErrorMessage error={error || this.state.error} />
-                                        <input type="hidden" name="id" id="user_id" defaultValue={me.id} />
-                                        <input type="hidden" name="image" id="image" defaultValue={me.image} />
-                                        <input
-                                            type="hidden"
-                                            name="large_image"
-                                            id="large_image"
-                                            defaultValue={me.largeImage}
-                                        />
-                                        <label htmlFor="file">
-                                            Image
-                                            <input type="file" id="file" name="file" onChange={this.uploadFile} />
-                                            {this.state.image && (
-                                                <div className="image-preview">
-                                                    <img src={this.state.image} alt="Upload Preview" />
-                                                </div>
-                                            )}
-                                            {!this.state.image && (
-                                                <div className="image-preview">
-                                                    <img src={me.image} alt={me.name} />
-                                                </div>
-                                            )}
-                                        </label>
-                                        <label htmlFor="name">
-                                            Name
-                                            <input
-                                                type="text"
-                                                name="name"
-                                                required
-                                                id="name"
-                                                defaultValue={me.name}
-                                                onChange={this.saveToState}
-                                                onBlur={this.validate}
-                                            />
-                                            <div className="error-text" id="name-message" />
-                                        </label>
+    const validate = e => {
+        e.preventDefault();
 
-                                        <ApolloConsumer>
-                                            {client => (
-                                                <label htmlFor="username">
-                                                    Username
-                                                    <input
-                                                        type="text"
-                                                        name="username"
-                                                        id="username"
-                                                        maxLength="20"
-                                                        defaultValue={me.username}
-                                                        onChange={e => {
-                                                            e.persist();
-                                                            this.saveUsername(e, client);
-                                                        }}
-                                                    />
-                                                    <div className="error-text" id="username-message" />
-                                                </label>
-                                            )}
-                                        </ApolloConsumer>
+        switch (e.target.name) {
+            case 'name':
+                if (!FormValidator.validateNotEmpty(name)) {
+                    setNameError('Name is required');
+                } else {
+                    setNameError('');
+                }
+                break;
 
-                                        <label htmlFor="email">
-                                            Email
-                                            <input
-                                                type="email"
-                                                name="email"
-                                                id="email"
-                                                required
-                                                defaultValue={me.email}
-                                                onChange={this.saveToState}
-                                                onBlur={this.validate}
-                                            />
-                                            <div className="error-text" id="email-message" />
-                                        </label>
-                                        <label htmlFor="bio">
-                                            Bio
-                                            <textarea
-                                                id="bio"
-                                                name="bio"
-                                                defaultValue={me.bio}
-                                                onChange={this.handleChange}
-                                            />
-                                        </label>
-                                        <button type="submit">Sav{mutationLoading ? 'ing' : 'e'} Changes</button>
-                                    </fieldset>
-                                </Form>
-                            )}
-                        </Mutation>
-                    );
-                }}
-            </Query>
-        );
-    }
-}
+            case 'email':
+                if (!FormValidator.validateEmail(email)) {
+                    setEmailError('Valid email is required');
+                } else {
+                    setEmailError('');
+                }
+                break;
+
+            default:
+                break;
+        }
+    };
+
+    const validateUsername = debounce(async () => {
+        const resp = await client.query({
+            query: SINGLE_USER_USERNAME_QUERY,
+            variables: { username }
+        });
+
+        const { valid, message } = FormValidator.validateUsername(username);
+
+        if (resp.data.user !== null && resp.data.user.id !== id) {
+            setUsernameError('Username already taken');
+        } else if (!valid) {
+            setUsernameError(message);
+        } else {
+            setUsernameError('');
+        }
+    }, 350);
+
+    const validateForm = async () => {
+        const resp = await client.query({
+            query: SINGLE_USER_USERNAME_QUERY,
+            variables: { username }
+        });
+
+        let isValid = true;
+
+        const { valid: usernameValid, message: usernameMessage } = FormValidator.validateUsername(username);
+
+        if (!FormValidator.validateEmail(email)) {
+            setEmailError('Invalid email');
+            isValid = false;
+        }
+
+        if (resp.data.user !== null && resp.data.user.id !== id) {
+            setUsernameError('Username already taken');
+        } else if (!usernameValid) {
+            setUsernameError(usernameMessage);
+            isValid = false;
+        }
+
+        if (!FormValidator.validateNotEmpty(name)) {
+            setNameError('Name is required.');
+            isValid = false;
+        }
+
+        return isValid;
+    };
+
+    return (
+        <Form
+            data-test="form"
+            method="post"
+            onSubmit={async e => {
+                e.preventDefault();
+
+                setError(null);
+
+                const isValid = await validateForm();
+                if (isValid) {
+                    await updateUser({
+                        variables: {
+                            id,
+                            name,
+                            username,
+                            email,
+                            bio,
+                            image,
+                            largeImage
+                        }
+                    }).catch(err => {
+                        setError(err);
+                    });
+                }
+            }}
+        >
+            <fieldset disabled={updateLoading} aria-busy={updateLoading}>
+                <h2>Edit Profile</h2>
+
+                <SuccessMessage message={successMessage} />
+                <ErrorMessage error={error || updateError} />
+
+                <input type="hidden" name="id" id="user_id" defaultValue={me.id} />
+                <input type="hidden" name="image" id="image" defaultValue={me.image} />
+                <input type="hidden" name="large_image" id="large_image" defaultValue={me.largeImage} />
+
+                <label htmlFor="file">
+                    Image
+                    <input
+                        type="file"
+                        id="file"
+                        name="file"
+                        onChange={e => {
+                            uploadFile(e);
+                        }}
+                    />
+                    {image && (
+                        <div className="image-preview">
+                            <img src={image} alt="Upload Preview" />
+                        </div>
+                    )}
+                    {!image && (
+                        <div className="image-preview">
+                            <img src={me.image} alt={me.name} />
+                        </div>
+                    )}
+                </label>
+
+                <label htmlFor="name" className={nameError !== '' ? 'errored' : ''}>
+                    Name
+                    <input
+                        type="text"
+                        name="name"
+                        required
+                        id="name"
+                        defaultValue={me.name}
+                        onChange={e => {
+                            setName(e.target.value);
+                        }}
+                        onBlur={e => {
+                            validate(e);
+                        }}
+                    />
+                    <div className="error-text" style={nameError !== '' ? { display: 'block' } : {}}>
+                        {nameError}
+                    </div>
+                </label>
+
+                <label htmlFor="username" className={usernameError !== '' ? 'errored' : ''}>
+                    Username
+                    <input
+                        type="text"
+                        name="username"
+                        id="username"
+                        maxLength="20"
+                        defaultValue={me.username}
+                        onChange={e => {
+                            setUsername(e.target.value);
+                        }}
+                        onBlur={e => {
+                            e.persist();
+                            validateUsername();
+                        }}
+                    />
+                    <div className="error-text" style={usernameError !== '' ? { display: 'block' } : {}}>
+                        {usernameError}
+                    </div>
+                </label>
+
+                <label htmlFor="email" className={emailError !== '' ? 'errored' : ''}>
+                    Email
+                    <input
+                        type="email"
+                        name="email"
+                        id="email"
+                        required
+                        defaultValue={me.email}
+                        onChange={e => {
+                            setEmail(e.target.value);
+                        }}
+                        onBlur={e => {
+                            validate(e);
+                        }}
+                    />
+                    <div className="error-text" style={emailError !== '' ? { display: 'block' } : {}}>
+                        {emailError}
+                    </div>
+                </label>
+                <label htmlFor="bio">
+                    Bio
+                    <textarea
+                        id="bio"
+                        name="bio"
+                        defaultValue={me.bio}
+                        onChange={e => {
+                            setBio(e.target.value);
+                        }}
+                    />
+                </label>
+                <button type="submit">Sav{updateLoading ? 'ing' : 'e'} Changes</button>
+            </fieldset>
+        </Form>
+    );
+};
 
 export { EditProfileForm };
