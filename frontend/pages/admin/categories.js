@@ -10,11 +10,11 @@ import { AdminHeader } from '../../components/AdminHeader/AdminHeader';
 import { AddButton } from '../../components/AddButton/AddButton';
 import { HeaderForm } from '../../components/HeaderForm/HeaderForm';
 import { Utilities } from '../../lib/Utilities';
-import { ConfirmDialog } from '../../components/ConfirmDialog/ConfirmDialog';
-import { ErrorAlert } from '../../components/ErrorAlert/ErrorAlert';
+import { DeleteCategory } from '../../components/DeleteCategory/DeleteCategory';
 import { EditCategory } from '../../components/EditCategory/EditCategory';
 import { AdminLayout } from '../../components/AdminLayout/AdminLayout';
-import { DELETE_CATEGORY_MUTATION } from '../../mutations/Category';
+import { ErrorMessage } from '../../components/ErrorMessage/ErrorMessage';
+import { SuccessMessage } from '../../components/SuccessMessage/SuccessMessage';
 import { TOGGLE_OVERLAY_MUTATION } from '../../mutations/Local';
 
 const AdminCategories = () => {
@@ -22,29 +22,11 @@ const AdminCategories = () => {
     const [error, setError] = useState(null);
     const [addFormOpen, setAddFormOpen] = useState(false);
     const [editFormOpen, setEditFormOpen] = useState(false);
-    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
 
     const { data, error: queryError, loading } = useQuery(ALL_CATEGORIES_QUERY);
 
-    const updateCache = (cache, { data: result }) => {
-        const categoryData = cache.readQuery({ query: ALL_CATEGORIES_QUERY });
-
-        categoryData.categories = categoryData.categories.filter(category => category.id !== result.deleteCategory.id);
-
-        cache.writeQuery({ query: ALL_CATEGORIES_QUERY, data: categoryData });
-    };
-
     const [toggleOverlay] = useMutation(TOGGLE_OVERLAY_MUTATION);
-    const [deleteCategory, { error: deleteError }] = useMutation(DELETE_CATEGORY_MUTATION, {
-        update: updateCache
-    });
-
-    const confirmDelete = e => {
-        e.preventDefault();
-
-        toggleOverlay();
-        setConfirmOpen(!confirmOpen);
-    };
 
     return (
         <>
@@ -102,79 +84,76 @@ const AdminCategories = () => {
                         />
                     )}
                     {!loading && (
-                        <Grid>
-                            <table cellPadding="0" cellSpacing="0" id="categories_admin_grid">
-                                <thead>
-                                    <tr>
-                                        <th width="50%" className="no-border">
-                                            Name
-                                        </th>
-                                        <th width="20%" className="no-border">
-                                            Created
-                                        </th>
-                                        <th width="15%" className="no-border">
-                                            &nbsp;
-                                        </th>
-                                        <th width="15%">&nbsp;</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.categories.length > 0 ? (
-                                        data.categories.map(category => (
-                                            <tr key={category.id} id={`row_${category.id}`}>
-                                                <td>{category.name}</td>
-                                                <td>{Utilities.formatDate(category.createdAt)}</td>
-                                                <td align="center">
-                                                    <button
-                                                        type="button"
-                                                        data-id={category.id}
-                                                        onClick={e => {
-                                                            e.preventDefault();
-                                                            setSelected(category);
-                                                            setEditFormOpen(true);
-                                                        }}
-                                                    >
-                                                        Edit
-                                                    </button>
-                                                </td>
-                                                <td align="center">
-                                                    <ErrorAlert error={deleteError || error} />
-                                                    <ConfirmDialog
-                                                        open={confirmOpen}
-                                                        message={`Are you sure you want to delete ${category.name}?`}
-                                                        continue={async () => {
-                                                            await deleteCategory({
-                                                                variables: { id: category.id }
-                                                            }).catch(err => {
-                                                                setError(err);
-                                                            });
-
-                                                            if (error === null) {
-                                                                setConfirmOpen(!confirmOpen);
+                        <>
+                            <SuccessMessage message={successMessage} />
+                            <ErrorMessage message={error} />
+                            <Grid>
+                                <table cellPadding="0" cellSpacing="0" id="categories_admin_grid">
+                                    <thead>
+                                        <tr>
+                                            <th width="50%" className="no-border">
+                                                Name
+                                            </th>
+                                            <th width="20%" className="no-border">
+                                                Created
+                                            </th>
+                                            <th width="15%" className="no-border">
+                                                &nbsp;
+                                            </th>
+                                            <th width="15%">&nbsp;</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {data.categories.length > 0 ? (
+                                            data.categories.map(category => (
+                                                <tr key={category.id} id={`row_${category.id}`}>
+                                                    <td>{category.name}</td>
+                                                    <td>{Utilities.formatDate(category.createdAt)}</td>
+                                                    <td align="center">
+                                                        <button
+                                                            type="button"
+                                                            data-id={category.id}
+                                                            onClick={e => {
+                                                                e.preventDefault();
+                                                                setSelected(category);
+                                                                setEditFormOpen(true);
+                                                            }}
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                    </td>
+                                                    <td align="center">
+                                                        <DeleteCategory
+                                                            id={category.id}
+                                                            name={category.name}
+                                                            continue={async err => {
                                                                 toggleOverlay();
-                                                            }
-                                                        }}
-                                                        cancel={() => {
-                                                            setConfirmOpen(false);
-                                                            toggleOverlay();
-                                                        }}
-                                                    />
-                                                    <button type="button" onClick={confirmDelete} className="delete">
-                                                        Delete
-                                                    </button>
+                                                                if (err !== null) {
+                                                                    setError(err);
+                                                                } else {
+                                                                    setSuccessMessage('Category successfully deleted');
+                                                                }
+                                                            }}
+                                                            cancel={() => {
+                                                                toggleOverlay();
+                                                            }}
+                                                        >
+                                                            Delete
+                                                        </DeleteCategory>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td colSpan="4" className="no-rows">
+                                                    No Categories Defined
                                                 </td>
                                             </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan="4" className="no-rows">
-                                                No Categories Defined
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </Grid>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </Grid>
+                        </>
                     )}
                 </AdminLayout>
             </AuthGateway>

@@ -17,7 +17,18 @@ const AddInvitationCode = props => {
     const [createInvitationCode, { loading: addLoading, error: addError }] = useMutation(
         CREATE_INVITATION_CODE_MUTATION,
         {
-            refetchQueries: [{ query: ALL_INVITATION_CODES_QUERY }]
+            refetchQueries: [{ query: ALL_INVITATION_CODES_QUERY }],
+            onCompleted: data => {
+                setCode('');
+                setCodeError('');
+
+                if (typeof props.onDone === 'function') {
+                    props.onDone({
+                        result: true,
+                        message: `Invitation Code '${data.createInvitationCode.code}' has been added successfully.`
+                    });
+                }
+            }
         }
     );
 
@@ -85,15 +96,6 @@ const AddInvitationCode = props => {
                     await createInvitationCode({ variables: { code } }).catch(err => {
                         setError(err);
                     });
-
-                    if (error === null) {
-                        setCode('');
-                        setCodeError('');
-
-                        if (typeof props.onDone === 'function') {
-                            props.onDone();
-                        }
-                    }
                 }
             }}
         >
@@ -105,8 +107,8 @@ const AddInvitationCode = props => {
                         type="text"
                         id="add-invitation-code-code"
                         name="code"
-                        required
                         maxLength="20"
+                        value={code}
                         onChange={e => {
                             setCode(e.target.value);
                         }}

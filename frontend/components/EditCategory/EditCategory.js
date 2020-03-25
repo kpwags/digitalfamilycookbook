@@ -8,6 +8,7 @@ import { ALL_CATEGORIES_QUERY } from '../../queries/Category';
 import { FormValidator } from '../../lib/FormValidator';
 
 const EditCategory = props => {
+    // eslint-disable-next-line no-unused-vars
     const [id, setId] = useState(props.id);
     const [error, setError] = useState(null);
     const [name, setName] = useState(props.name);

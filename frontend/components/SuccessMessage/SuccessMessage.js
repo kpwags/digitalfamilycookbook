@@ -8,6 +8,7 @@ const Success = styled.div`
     margin: 2rem 0;
     border-left: 5px solid hsl(117, 96%, 31%);
     color: hsl(117, 96%, 31%);
+    ${props => (props.message !== null || props.message !== '' ? 'display: block' : 'display: none')};
     p {
         margin: 0;
         font-weight: 100;
@@ -21,7 +22,7 @@ const SuccessMessage = ({ message }) => {
     if (!message) return null;
 
     return (
-        <Success>
+        <Success message="message">
             <p data-test="graphql-success">{message}</p>
         </Success>
     );
