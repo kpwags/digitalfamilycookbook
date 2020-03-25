@@ -9,7 +9,7 @@ import { ALL_INVITATION_CODES_QUERY, SINGLE_INVITATION_CODE_CODE_QUERY } from '.
 import { FormValidator } from '../../lib/FormValidator';
 
 const EditInvitationCode = props => {
-    const [id, setId] = useState(props.id);
+    const [id] = useState(props.id);
     const [code, setCode] = useState(props.code);
     const [error, setError] = useState(null);
     const [codeError, setCodeError] = useState('');
@@ -18,7 +18,22 @@ const EditInvitationCode = props => {
     const [updateInvitationCode, { loading: updateLoading, error: updateError }] = useMutation(
         UPDATE_INVITATION_CODE_MUTATION,
         {
-            refetchQueries: [{ query: ALL_INVITATION_CODES_QUERY }]
+            refetchQueries: [{ query: ALL_INVITATION_CODES_QUERY }],
+            onCompleted: data => {
+                setCodeError('');
+
+                if (error) {
+                    return props.onDone({
+                        result: false,
+                        message: error
+                    });
+                }
+
+                return props.onDone({
+                    result: true,
+                    message: `Invitation Code '${data.updateInvitationCode.code}' has been updated successfully.`
+                });
+            }
         }
     );
 
@@ -86,17 +101,12 @@ const EditInvitationCode = props => {
                     }).catch(err => {
                         setError(err);
                     });
-
-                    if (error === null) {
-                        setCodeError('');
-                        props.onDone();
-                    }
                 }
             }}
         >
-            <ErrorMessage error={error || updateError} />
+            <ErrorMessage error={updateError} />
             <fieldset disabled={updateLoading} aria-busy={updateLoading}>
-                <label htmlFor="code" className={codeError !== '' ? 'errored' : ''}>
+                <label htmlFor="edit-invitation-code-code" className={codeError !== '' ? 'errored' : ''}>
                     Code
                     <input
                         type="text"
