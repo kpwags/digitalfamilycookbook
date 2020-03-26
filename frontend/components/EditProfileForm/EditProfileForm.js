@@ -7,6 +7,7 @@ import { Form } from '../Form/Form';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { SuccessMessage } from '../SuccessMessage/SuccessMessage';
 import { FormValidator } from '../../lib/FormValidator';
+import { TextInput } from '../TextInput/TextInput';
 
 const EditProfileForm = () => {
     const [id, setId] = useState('');
@@ -21,6 +22,7 @@ const EditProfileForm = () => {
     const [largeImage, setLargeImage] = useState('');
     const [successMessage, setSuccessMessage] = useState(null);
     const [error, setError] = useState(null);
+    const [saveEnabled, setSaveEnabled] = useState(true);
 
     const client = useApolloClient();
 
@@ -66,32 +68,9 @@ const EditProfileForm = () => {
         setLargeImage(file.eager[0].secure_url);
     };
 
-    const validate = e => {
-        e.preventDefault();
-
-        switch (e.target.name) {
-            case 'name':
-                if (!FormValidator.validateNotEmpty(name)) {
-                    setNameError('Name is required');
-                } else {
-                    setNameError('');
-                }
-                break;
-
-            case 'email':
-                if (!FormValidator.validateEmail(email)) {
-                    setEmailError('Valid email is required');
-                } else {
-                    setEmailError('');
-                }
-                break;
-
-            default:
-                break;
-        }
-    };
-
     const validateUsername = debounce(async () => {
+        setSaveEnabled(false);
+
         const resp = await client.query({
             query: SINGLE_USER_USERNAME_QUERY,
             variables: { username }
@@ -100,10 +79,13 @@ const EditProfileForm = () => {
         const { valid, message } = FormValidator.validateUsername(username);
 
         if (resp.data.user !== null && resp.data.user.id !== id) {
+            setSaveEnabled(false);
             setUsernameError('Username already taken');
         } else if (!valid) {
+            setSaveEnabled(false);
             setUsernameError(message);
         } else {
+            setSaveEnabled(true);
             setUsernameError('');
         }
     }, 350);
@@ -197,66 +179,45 @@ const EditProfileForm = () => {
                     )}
                 </label>
 
-                <label htmlFor="name" className={nameError !== '' ? 'errored' : ''}>
-                    Name
-                    <input
-                        type="text"
-                        name="name"
-                        required
-                        id="name"
-                        defaultValue={me.name}
-                        onChange={e => {
-                            setName(e.target.value);
-                        }}
-                        onBlur={e => {
-                            validate(e);
-                        }}
-                    />
-                    <div className="error-text" style={nameError !== '' ? { display: 'block' } : {}}>
-                        {nameError}
-                    </div>
-                </label>
+                <TextInput
+                    id="name"
+                    name="name"
+                    label="Name"
+                    value={name}
+                    validationRule="notempty"
+                    error={nameError}
+                    onChange={e => {
+                        setName(e.target.value);
+                    }}
+                />
 
-                <label htmlFor="username" className={usernameError !== '' ? 'errored' : ''}>
-                    Username
-                    <input
-                        type="text"
-                        name="username"
-                        id="username"
-                        maxLength="20"
-                        defaultValue={me.username}
-                        onChange={e => {
-                            setUsername(e.target.value);
-                        }}
-                        onBlur={e => {
-                            e.persist();
-                            validateUsername();
-                        }}
-                    />
-                    <div className="error-text" style={usernameError !== '' ? { display: 'block' } : {}}>
-                        {usernameError}
-                    </div>
-                </label>
+                <TextInput
+                    id="username"
+                    name="username"
+                    label="Username"
+                    value={username}
+                    error={usernameError}
+                    onChange={e => {
+                        setUsername(e.target.value);
+                    }}
+                    validate={e => {
+                        e.persist();
+                        validateUsername();
+                    }}
+                />
 
-                <label htmlFor="email" className={emailError !== '' ? 'errored' : ''}>
-                    Email
-                    <input
-                        type="email"
-                        name="email"
-                        id="email"
-                        required
-                        defaultValue={me.email}
-                        onChange={e => {
-                            setEmail(e.target.value);
-                        }}
-                        onBlur={e => {
-                            validate(e);
-                        }}
-                    />
-                    <div className="error-text" style={emailError !== '' ? { display: 'block' } : {}}>
-                        {emailError}
-                    </div>
-                </label>
+                <TextInput
+                    id="email"
+                    name="email"
+                    label="Email"
+                    value={email}
+                    error={emailError}
+                    validationRule="email"
+                    onChange={e => {
+                        setEmail(e.target.value);
+                    }}
+                />
+
                 <label htmlFor="bio">
                     Bio
                     <textarea
@@ -268,7 +229,9 @@ const EditProfileForm = () => {
                         }}
                     />
                 </label>
-                <button type="submit">Sav{updateLoading ? 'ing' : 'e'} Changes</button>
+                <button type="submit" disabled={!saveEnabled} aria-disabled={!saveEnabled}>
+                    Sav{updateLoading ? 'ing' : 'e'} Changes
+                </button>
             </fieldset>
         </Form>
     );

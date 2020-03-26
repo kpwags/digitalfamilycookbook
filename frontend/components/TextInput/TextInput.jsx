@@ -82,11 +82,15 @@ const TextInput = props => {
                     }
                 }}
             />
-            <div className="error-text" style={error !== '' ? { display: 'block' } : {}}>
+            <div className="error-text" style={props.showErrorMessage && error !== '' ? { display: 'block' } : {}}>
                 {error}
             </div>
         </label>
     );
+};
+
+TextInput.defaultProps = {
+    showErrorMessage: true
 };
 
 TextInput.propTypes = {
@@ -98,7 +102,8 @@ TextInput.propTypes = {
     onChange: PropTypes.func,
     validationRule: PropTypes.string,
     validate: PropTypes.func,
-    validationArgs: PropTypes.object
+    validationArgs: PropTypes.object,
+    showErrorMessage: PropTypes.bool
 };
 
 export { TextInput };
