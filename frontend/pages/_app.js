@@ -1,12 +1,11 @@
 /* eslint-disable react/display-name */
 /* eslint-disable react/prop-types */
 import App from 'next/app';
-import { adopt } from 'react-adopt';
-import { ApolloProvider, Query } from 'react-apollo';
+import { ApolloProvider } from 'react-apollo';
 import { Page } from '../components/Page/Page';
 import { Overlay } from '../components/Overlay/Overlay';
 import withData from '../lib/withData';
-import { LOCAL_STATE_QUERY } from '../queries/Local';
+import { AppContext } from '../components/AppContext/AppContext';
 
 class DigitalFamilyCookbook extends App {
     static async getInitialProps({ Component, ctx }) {
@@ -20,27 +19,35 @@ class DigitalFamilyCookbook extends App {
         return { pageProps };
     }
 
+    state = {
+        overlayVisible: false
+    };
+
+    toggleOverlay = () => {
+        if (this.state.overlayVisible) {
+            this.setState({
+                overlayVisible: false
+            });
+        } else {
+            this.setState({
+                overlayVisible: true
+            });
+        }
+    };
+
     render() {
         const { Component, apollo, pageProps } = this.props;
 
-        const Composed = adopt({
-            localState: ({ render }) => <Query query={LOCAL_STATE_QUERY}>{render}</Query>
-        });
-
         return (
             <ApolloProvider client={apollo}>
-                <Composed>
-                    {({ localState }) => {
-                        let overlayVisible = false;
-                        if (typeof localState.data !== 'undefined') {
-                            ({ overlayVisible } = localState.data);
-                        }
-                        return <Overlay id="page-overlay" open={overlayVisible} />;
-                    }}
-                </Composed>
-                <Page>
-                    <Component {...pageProps} />
-                </Page>
+                <AppContext.Provider
+                    value={{ overlayVisible: this.state.overlayVisible, toggleOverlay: this.toggleOverlay }}
+                >
+                    <Overlay id="page-overlay" open={this.state.overlayVisible} />
+                    <Page>
+                        <Component {...pageProps} />
+                    </Page>
+                </AppContext.Provider>
             </ApolloProvider>
         );
     }

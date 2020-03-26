@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import React, { useState, useContext } from 'react';
+import { useQuery } from '@apollo/react-hooks';
 import { AuthGateway } from '../../components/AuthGateway/AuthGateway';
 import { EditInvitationCode } from '../../components/EditInvitationCode/EditInvitationCode';
 import { AddInvitationCode } from '../../components/AddInvitationCode/AddInvitationCode';
@@ -13,7 +13,7 @@ import { AddButton } from '../../components/AddButton/AddButton';
 import { HeaderForm } from '../../components/HeaderForm/HeaderForm';
 import { DeleteInvitationCode } from '../../components/DeleteInvitationCode/DeleteInvitationCode';
 import { Utilities } from '../../lib/Utilities';
-import { TOGGLE_OVERLAY_MUTATION } from '../../mutations/Local';
+import { AppContext } from '../../components/AppContext/AppContext';
 import { ErrorMessage } from '../../components/ErrorMessage/ErrorMessage';
 import { SuccessMessage } from '../../components/SuccessMessage/SuccessMessage';
 
@@ -26,7 +26,7 @@ const InvitationCodes = () => {
 
     const { data, error: queryError, loading } = useQuery(ALL_INVITATION_CODES_QUERY);
 
-    const [toggleOverlay] = useMutation(TOGGLE_OVERLAY_MUTATION);
+    const { toggleOverlay } = useContext(AppContext);
 
     return (
         <>

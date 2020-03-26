@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
 import { DELETE_CATEGORY_MUTATION } from '../../mutations/Category';
 import { ALL_CATEGORIES_QUERY } from '../../queries/Category';
 import { ConfirmDialog } from '../ConfirmDialog/ConfirmDialog';
 import { ErrorAlert } from '../ErrorAlert/ErrorAlert';
-import { TOGGLE_OVERLAY_MUTATION } from '../../mutations/Local';
+import { AppContext } from '../AppContext/AppContext';
 
 const DeleteCategory = props => {
     const [error, setError] = useState(null);
     const [confirmOpen, setConfirmOpen] = useState(false);
 
     const { id, name, children } = props;
+
+    const { toggleOverlay } = useContext(AppContext);
 
     const updateCache = (cache, { data: result }) => {
         const categoryData = cache.readQuery({ query: ALL_CATEGORIES_QUERY });
@@ -21,7 +23,6 @@ const DeleteCategory = props => {
         cache.writeQuery({ query: ALL_CATEGORIES_QUERY, data: categoryData });
     };
 
-    const [toggleOverlay] = useMutation(TOGGLE_OVERLAY_MUTATION);
     const [deleteCategory, { error: deleteError }] = useMutation(DELETE_CATEGORY_MUTATION, {
         update: updateCache
     });

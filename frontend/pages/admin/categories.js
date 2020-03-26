@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import React, { useState, useContext } from 'react';
+import { useQuery } from '@apollo/react-hooks';
 import { AddCategory } from '../../components/AddCategory/AddCategory';
 import { AuthGateway } from '../../components/AuthGateway/AuthGateway';
 import { ALL_CATEGORIES_QUERY } from '../../queries/Category';
@@ -15,7 +15,7 @@ import { EditCategory } from '../../components/EditCategory/EditCategory';
 import { AdminLayout } from '../../components/AdminLayout/AdminLayout';
 import { ErrorMessage } from '../../components/ErrorMessage/ErrorMessage';
 import { SuccessMessage } from '../../components/SuccessMessage/SuccessMessage';
-import { TOGGLE_OVERLAY_MUTATION } from '../../mutations/Local';
+import { AppContext } from '../../components/AppContext/AppContext';
 
 const AdminCategories = () => {
     const [selected, setSelected] = useState({ id: '', name: '' });
@@ -26,7 +26,7 @@ const AdminCategories = () => {
 
     const { data, error: queryError, loading } = useQuery(ALL_CATEGORIES_QUERY);
 
-    const [toggleOverlay] = useMutation(TOGGLE_OVERLAY_MUTATION);
+    const { toggleOverlay } = useContext(AppContext);
 
     return (
         <>
