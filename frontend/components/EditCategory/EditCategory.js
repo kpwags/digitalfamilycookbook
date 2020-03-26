@@ -6,6 +6,7 @@ import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { UPDATE_CATEGORY_MUTATION } from '../../mutations/Category';
 import { ALL_CATEGORIES_QUERY } from '../../queries/Category';
 import { FormValidator } from '../../lib/FormValidator';
+import { TextInput } from '../TextInput/TextInput';
 
 const EditCategory = props => {
     const [id, setId] = useState(props.id);
@@ -24,14 +25,6 @@ const EditCategory = props => {
             refetchQueries: [{ query: ALL_CATEGORIES_QUERY }]
         }
     );
-
-    const validate = () => {
-        if (!FormValidator.validateNotEmpty(name)) {
-            setNameError('Name is required');
-        } else {
-            setNameError('');
-        }
-    };
 
     const validateForm = () => {
         let isValid = true;
@@ -77,26 +70,17 @@ const EditCategory = props => {
         >
             <ErrorMessage error={error || updateCategoryError} />
             <fieldset disabled={updateCategoryLoading} aria-busy={updateCategoryLoading}>
-                <label htmlFor="name" className={nameError !== '' ? 'errored' : ''}>
-                    Name
-                    <input
-                        type="text"
-                        id="edit-category-name"
-                        name="name"
-                        required
-                        value={name}
-                        onChange={e => {
-                            setName(e.target.value);
-                        }}
-                        onBlur={e => {
-                            e.preventDefault();
-                            validate();
-                        }}
-                    />
-                    <div className="error-text" style={nameError !== '' ? { display: 'block' } : {}}>
-                        {nameError}
-                    </div>
-                </label>
+                <TextInput
+                    name="name"
+                    label="Name"
+                    id="edit-category-name"
+                    validationRule="notempty"
+                    value={name}
+                    error={nameError}
+                    onChange={e => {
+                        setName(e.target.value);
+                    }}
+                />
                 <button type="submit">Sav{updateCategoryLoading ? 'ing' : 'e'} Changes</button>
                 <button type="button" onClick={cancelEdit}>
                     Cancel

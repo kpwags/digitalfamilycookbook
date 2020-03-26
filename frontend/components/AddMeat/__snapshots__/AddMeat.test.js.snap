@@ -2,7 +2,7 @@
 
 exports[`<AddMeat/> should match snapshot 1`] = `
 <form
-  className="Form-sc-1jw7vbt-0 jSygZL"
+  className="Form-sc-1jw7vbt-0 inSmNT"
   data-test="form"
   id="create-meat-form"
   method="POST"

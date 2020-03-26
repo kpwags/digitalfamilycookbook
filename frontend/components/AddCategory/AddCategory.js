@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
 import { Form } from '../Form/Form';
+import { TextInput } from '../TextInput/TextInput';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { CREATE_CATEGORY_MUTATION } from '../../mutations/Category';
 import { ALL_CATEGORIES_QUERY } from '../../queries/Category';
@@ -18,19 +19,6 @@ const AddCategory = props => {
             refetchQueries: [{ query: ALL_CATEGORIES_QUERY }]
         }
     );
-
-    const validate = (fieldId, value) => {
-        // eslint-disable-next-line default-case
-        switch (fieldId) {
-            case 'name':
-                if (!FormValidator.validateNotEmpty(value)) {
-                    setNameError('Name is required');
-                } else {
-                    setNameError('');
-                }
-                break;
-        }
-    };
 
     const validateForm = () => {
         let isValid = true;
@@ -80,27 +68,18 @@ const AddCategory = props => {
         >
             <ErrorMessage error={error || createCategoryError} />
             <fieldset disabled={createCategoryLoading} aria-busy={createCategoryLoading}>
-                <label htmlFor="add-category-name" className={nameError !== '' ? 'errored' : ''}>
-                    Name
-                    <input
-                        type="text"
-                        id="add-category-name"
-                        name="name"
-                        data-testid="add-category-name"
-                        required
-                        value={name}
-                        onChange={e => {
-                            setName(e.target.value);
-                        }}
-                        onBlur={e => {
-                            e.preventDefault();
-                            validate('name', name);
-                        }}
-                    />
-                    <div className="error-text" style={nameError !== '' ? { display: 'block' } : {}}>
-                        {nameError}
-                    </div>
-                </label>
+                <TextInput
+                    name="name"
+                    label="Name"
+                    id="add-category-name"
+                    validationRule="notempty"
+                    value={name}
+                    error={nameError}
+                    onChange={e => {
+                        setName(e.target.value);
+                    }}
+                />
+
                 <button type="submit">Sav{createCategoryLoading ? 'ing' : 'e'}</button>
                 <button type="button" onClick={cancelAdd}>
                     Cancel

@@ -93,6 +93,14 @@ const Form = styled.form`
         border-color: ${props => props.theme.green};
     }
 
+    button:disabled,
+    button[disabled],
+    input[type='submit']:disabled,
+    input[type='submit'][disabled] {
+        background: hsla(0, 0%, 40%, 1);
+        border-color: hsla(0, 0%, 40%, 1);
+    }
+
     fieldset {
         border: 0;
         padding: 0;
