@@ -7,7 +7,7 @@ const ResetPassword = props => (
     <LoggedInUser>
         {({ data: { me } }) => {
             if (me || typeof props.query.resetToken === 'undefined') {
-                return <Homepage />;
+                return <Homepage query={props.query} />;
             }
 
             return <ResetPasswordForm resetToken={props.query.resetToken} />;

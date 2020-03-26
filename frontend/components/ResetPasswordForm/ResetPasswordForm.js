@@ -6,6 +6,7 @@ import { RESET_PASSWORD_MUTATION } from '../../mutations/User';
 import { Form } from '../Form/Form';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { SuccessMessage } from '../SuccessMessage/SuccessMessage';
+import { TextInput } from '../TextInput/TextInput';
 import { FormValidator } from '../../lib/FormValidator';
 
 const ResetPasswordForm = props => {
@@ -15,6 +16,7 @@ const ResetPasswordForm = props => {
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
     const [successMessage, setSuccessMessage] = useState(null);
     const [error, setError] = useState(null);
+    const [enableSave, setEnableSave] = useState(true);
 
     const [resetPassword, { loading: resetLoading, error: resetError }] = useMutation(RESET_PASSWORD_MUTATION, {
         refetchQueries: [{ query: CURRENT_USER_QUERY }],
@@ -39,9 +41,11 @@ const ResetPasswordForm = props => {
                 if (!passwordsValid) {
                     setPasswordError(message);
                     setConfirmPasswordError(message);
+                    setEnableSave(false);
                 } else {
                     setPasswordError('');
                     setConfirmPasswordError('');
+                    setEnableSave(true);
                 }
                 break;
         }
@@ -86,43 +90,42 @@ const ResetPasswordForm = props => {
             <fieldset disabled={resetLoading} aria-busy={resetLoading}>
                 <h2>Reset Password</h2>
 
-                <label htmlFor="password" className={passwordError !== '' ? 'errored' : ''}>
-                    Password
-                    <input
-                        type="password"
-                        name="password"
-                        id="password"
-                        value={password}
-                        onChange={e => {
-                            setPassword(e.target.value);
-                        }}
-                        onBlur={e => {
-                            e.preventDefault();
-                            validate(e);
-                        }}
-                    />
-                </label>
+                <TextInput
+                    id="password"
+                    name="password"
+                    type="password"
+                    label="Password"
+                    value={password}
+                    error={passwordError}
+                    showErrorMessage={false}
+                    onChange={e => {
+                        setPassword(e.target.value);
+                    }}
+                    validate={e => {
+                        e.preventDefault();
+                        validate(e);
+                    }}
+                />
 
-                <label htmlFor="confirmPassword" className={confirmPasswordError !== '' ? 'errored' : ''}>
-                    Confirm Password
-                    <input
-                        type="password"
-                        name="confirmPassword"
-                        id="confirmPassword"
-                        value={confirmPassword}
-                        onChange={e => {
-                            setConfirmPassword(e.target.value);
-                        }}
-                        onBlur={e => {
-                            e.preventDefault();
-                            validate(e);
-                        }}
-                    />
-                    <div className="error-text" style={confirmPasswordError !== '' ? { display: 'block' } : {}}>
-                        {confirmPasswordError}
-                    </div>
-                </label>
-                <button type="submit">Submit{resetLoading ? 'ting' : ''}</button>
+                <TextInput
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type="password"
+                    label="Re-Enter Password"
+                    value={confirmPassword}
+                    error={confirmPasswordError}
+                    onChange={e => {
+                        setConfirmPassword(e.target.value);
+                    }}
+                    validate={e => {
+                        e.preventDefault();
+                        validate(e);
+                    }}
+                />
+
+                <button type="submit" disabled={!enableSave} aria-disabled={!enableSave}>
+                    Submit{resetLoading ? 'ting' : ''}
+                </button>
             </fieldset>
         </Form>
     );

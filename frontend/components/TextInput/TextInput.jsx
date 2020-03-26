@@ -62,7 +62,7 @@ const TextInput = props => {
         <label htmlFor={props.name} className={error !== '' ? 'errored' : ''}>
             {props.label}
             <input
-                type="text"
+                type={props.type}
                 id={props.id}
                 name={props.name}
                 data-testid={props.id}
@@ -90,12 +90,14 @@ const TextInput = props => {
 };
 
 TextInput.defaultProps = {
-    showErrorMessage: true
+    showErrorMessage: true,
+    type: 'text'
 };
 
 TextInput.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
+    type: PropTypes.string,
     value: PropTypes.string,
     id: PropTypes.string,
     error: PropTypes.string,
