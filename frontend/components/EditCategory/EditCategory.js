@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
 import { Form } from '../Form/Form';
@@ -8,11 +8,15 @@ import { ALL_CATEGORIES_QUERY } from '../../queries/Category';
 import { FormValidator } from '../../lib/FormValidator';
 
 const EditCategory = props => {
-    // eslint-disable-next-line no-unused-vars
     const [id, setId] = useState(props.id);
     const [error, setError] = useState(null);
     const [name, setName] = useState(props.name);
     const [nameError, setNameError] = useState('');
+
+    useEffect(() => {
+        setId(props.id);
+        setName(props.name);
+    }, [props]);
 
     const [updateCategory, { loading: updateCategoryLoading, error: updateCategoryError }] = useMutation(
         UPDATE_CATEGORY_MUTATION,
@@ -43,7 +47,7 @@ const EditCategory = props => {
     const cancelEdit = e => {
         e.preventDefault();
         setNameError('');
-        props.onDone();
+        props.onDone(true, null);
     };
 
     return (

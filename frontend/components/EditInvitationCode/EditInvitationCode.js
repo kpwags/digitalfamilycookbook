@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMutation, useApolloClient } from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
 import debounce from 'lodash.debounce';
@@ -9,10 +9,15 @@ import { ALL_INVITATION_CODES_QUERY, SINGLE_INVITATION_CODE_CODE_QUERY } from '.
 import { FormValidator } from '../../lib/FormValidator';
 
 const EditInvitationCode = props => {
-    const [id] = useState(props.id);
+    const [id, setId] = useState(props.id);
     const [code, setCode] = useState(props.code);
     const [error, setError] = useState(null);
     const [codeError, setCodeError] = useState('');
+
+    useEffect(() => {
+        setId(props.id);
+        setCode(props.code);
+    }, [props]);
 
     const client = useApolloClient();
     const [updateInvitationCode, { loading: updateLoading, error: updateError }] = useMutation(
@@ -80,7 +85,7 @@ const EditInvitationCode = props => {
     const cancelEdit = e => {
         e.preventDefault();
         setCodeError('');
-        props.onDone();
+        props.onDone(true, null);
     };
 
     return (

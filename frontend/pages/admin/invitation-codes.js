@@ -63,7 +63,6 @@ const InvitationCodes = () => {
                         <EditInvitationCode
                             id={selected.id}
                             code={selected.code}
-                            key={selected.id}
                             onDone={({ result, message }) => {
                                 setEditFormOpen(false);
                                 if (result) {

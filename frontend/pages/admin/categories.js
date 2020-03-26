@@ -63,7 +63,6 @@ const AdminCategories = () => {
                     >
                         <EditCategory
                             id={selected.id}
-                            key={selected.id}
                             name={selected.name}
                             onDone={() => {
                                 setEditFormOpen(false);
