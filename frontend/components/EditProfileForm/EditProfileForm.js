@@ -8,6 +8,7 @@ import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { SuccessMessage } from '../SuccessMessage/SuccessMessage';
 import { FormValidator } from '../../lib/FormValidator';
 import { TextInput } from '../TextInput/TextInput';
+import { TextArea } from '../TextArea/TextArea';
 
 const EditProfileForm = () => {
     const [id, setId] = useState('');
@@ -218,17 +219,17 @@ const EditProfileForm = () => {
                     }}
                 />
 
-                <label htmlFor="bio">
-                    Bio
-                    <textarea
-                        id="bio"
-                        name="bio"
-                        defaultValue={me.bio}
-                        onChange={e => {
-                            setBio(e.target.value);
-                        }}
-                    />
-                </label>
+                <TextArea
+                    id="bio"
+                    name="bio"
+                    label="Bio"
+                    value={me.bio}
+                    error=""
+                    onChange={e => {
+                        setBio(e.target.value);
+                    }}
+                />
+
                 <button type="submit" disabled={!saveEnabled} aria-disabled={!saveEnabled}>
                     Sav{updateLoading ? 'ing' : 'e'} Changes
                 </button>
