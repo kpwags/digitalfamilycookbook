@@ -66,6 +66,7 @@ const ForgotPasswordForm = () => {
                     label="Email"
                     value={email}
                     error={emailError}
+                    validationRule="email"
                     onChange={e => {
                         setEmail(e.target.value);
                     }}
