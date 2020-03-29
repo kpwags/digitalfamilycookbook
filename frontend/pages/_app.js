@@ -6,6 +6,7 @@ import { Page } from '../components/Page/Page';
 import { Overlay } from '../components/Overlay/Overlay';
 import withData from '../lib/withData';
 import { AppContext } from '../components/AppContext/AppContext';
+import { LoggedInUser } from '../components/LoggedInUser/LoggedInUser';
 
 class DigitalFamilyCookbook extends App {
     static async getInitialProps({ Component, ctx }) {
@@ -40,14 +41,18 @@ class DigitalFamilyCookbook extends App {
 
         return (
             <ApolloProvider client={apollo}>
-                <AppContext.Provider
-                    value={{ overlayVisible: this.state.overlayVisible, toggleOverlay: this.toggleOverlay }}
-                >
-                    <Overlay id="page-overlay" open={this.state.overlayVisible} />
-                    <Page>
-                        <Component {...pageProps} />
-                    </Page>
-                </AppContext.Provider>
+                <LoggedInUser>
+                    {({ data: { me } }) => (
+                        <AppContext.Provider
+                            value={{ overlayVisible: this.state.overlayVisible, toggleOverlay: this.toggleOverlay, loggedInUser: me }}
+                        >
+                            <Overlay id="page-overlay" open={this.state.overlayVisible} />
+                            <Page>
+                                <Component {...pageProps} />
+                            </Page>
+                        </AppContext.Provider>
+                    )}
+                </LoggedInUser>
             </ApolloProvider>
         );
     }

@@ -1,7 +1,8 @@
+import { useContext } from 'react'
 import Link from 'next/link';
 import styled from 'styled-components';
-import { LoggedInUser } from '../LoggedInUser/LoggedInUser';
 import { Logout } from '../Logout/Logout';
+import { AppContext } from '../AppContext/AppContext';
 
 const UserMenu = styled.ul`
     float: right;
@@ -79,69 +80,65 @@ const UserMenu = styled.ul`
     }
 `;
 
-const UserHeaderMenu = () => (
-    <LoggedInUser>
-        {({ data: { me }, loading }) => (
-            <>
-                {!loading && (
-                    <UserMenu>
-                        {me && (
-                            <>
+const UserHeaderMenu = () => {
+    const { loggedInUser } = useContext(AppContext);
+
+    return (
+        <UserMenu>
+            {loggedInUser && (
+                <>
+                    <li>
+                        <img src={loggedInUser.image} alt={loggedInUser.name} /> {`${loggedInUser.name} `}
+                        <i className="arrow down" />
+                        <ul className="child-list">
+                            <li>
+                                <Link href="/create-recipe">
+                                    <a>Add New Recipe</a>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/edit-profile">
+                                    <a>Profile</a>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/account">
+                                    <a>Settings</a>
+                                </Link>
+                            </li>
+
+                            {loggedInUser.permissions.includes('ADMIN') && (
                                 <li>
-                                    <img src={me.image} alt={me.name} /> {`${me.name} `}
-                                    <i className="arrow down" />
-                                    <ul className="child-list">
-                                        <li>
-                                            <Link href="/create-recipe">
-                                                <a>Add New Recipe</a>
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link href="/edit-profile">
-                                                <a>Profile</a>
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link href="/account">
-                                                <a>Settings</a>
-                                            </Link>
-                                        </li>
-
-                                        {me.permissions.includes('ADMIN') && (
-                                            <li>
-                                                <Link href="/admin">
-                                                    <a>Administration</a>
-                                                </Link>
-                                            </li>
-                                        )}
-
-                                        <li>
-                                            <Logout />
-                                        </li>
-                                    </ul>
-                                </li>
-                            </>
-                        )}
-
-                        {!me && (
-                            <>
-                                <li>
-                                    <Link href="/signup">
-                                        <a>Sign Up</a>
+                                    <Link href="/admin">
+                                        <a>Administration</a>
                                     </Link>
                                 </li>
-                                <li>
-                                    <Link href="/login">
-                                        <a>Sign In</a>
-                                    </Link>
-                                </li>
-                            </>
-                        )}
-                    </UserMenu>
-                )}
-            </>
-        )}
-    </LoggedInUser>
-);
+                            )}
+
+                            <li>
+                                <Logout />
+                            </li>
+                        </ul>
+                    </li>
+                </>
+            )}
+
+            {!loggedInUser && (
+                <>
+                    <li>
+                        <Link href="/signup">
+                            <a>Sign Up</a>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href="/login">
+                            <a>Sign In</a>
+                        </Link>
+                    </li>
+                </>
+            )}
+        </UserMenu>
+    );
+};
 
 export { UserHeaderMenu };

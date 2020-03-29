@@ -1,17 +1,21 @@
+import { useContext } from 'react';
+import PropTypes from 'prop-types';
 import { SignupForm } from '../components/SignupForm/SignupForm';
-import { LoggedInUser } from '../components/LoggedInUser/LoggedInUser';
 import { Homepage } from '../components/Homepage/Homepage';
+import { AppContext } from '../components/AppContext/AppContext';
 
-const Signup = () => (
-    <LoggedInUser>
-        {({ data: { me } }) => {
-            if (me) {
-                return <Homepage />;
-            }
+const Signup = props => {
+    const { loggedInUser } = useContext(AppContext);
 
-            return <SignupForm />;
-        }}
-    </LoggedInUser>
-);
+    if (loggedInUser) {
+        return <Homepage query={props.query} />;
+    }
+
+    return <SignupForm />;
+};
+
+Signup.propTypes = {
+    query: PropTypes.object,
+};
 
 export default Signup;

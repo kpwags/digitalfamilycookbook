@@ -1,17 +1,18 @@
+import { useContext } from 'react';
 import { ChangePasswordForm } from '../components/ChangePasswordForm/ChangePasswordForm';
 import { AuthGateway } from '../components/AuthGateway/AuthGateway';
-import { LoggedInUser } from '../components/LoggedInUser/LoggedInUser';
+import { AppContext } from '../components/AppContext/AppContext';
 
-const ChangePassword = () => (
-    <>
-        <AuthGateway redirectUrl="/change-password" permissionNeeded="USER">
-            <LoggedInUser>
-                {({ data: { me } }) => {
-                    return <ChangePasswordForm user={me} />;
-                }}
-            </LoggedInUser>
-        </AuthGateway>
-    </>
-);
+const ChangePassword = () => {
+    const { loggedInUser } = useContext(AppContext);
+
+    return (
+        <>
+            <AuthGateway redirectUrl="/change-password" permissionNeeded="USER">
+                <ChangePasswordForm user={loggedInUser} />
+            </AuthGateway>
+        </>
+    );
+};
 
 export default ChangePassword;

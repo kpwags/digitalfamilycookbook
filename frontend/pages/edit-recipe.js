@@ -1,51 +1,56 @@
+import { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Query } from 'react-apollo';
+import { useQuery } from '@apollo/react-hooks';
 import { editMode } from '../config';
 import { RECIPE_BY_ID_QUERY } from '../queries/Recipe';
 import { AuthGateway } from '../components/AuthGateway/AuthGateway';
 import { EditRecipeForm } from '../components/EditRecipeForm/EditRecipeForm';
-import { LoggedInUser } from '../components/LoggedInUser/LoggedInUser';
 import { PageError } from '../components/PageError/PageError';
+import { LoadingBox } from '../components/LoadingBox/LoadingBox';
+import { AppContext } from '../components/AppContext/AppContext';
 
-const EditRecipe = props => (
-    <AuthGateway redirectUrl={`/edit-recipe?id=${props.query.id}`} permissionNeeded="USER">
-        <LoggedInUser>
-            {({ data: { me } }) => (
-                <Query query={RECIPE_BY_ID_QUERY} variables={{ id: props.query.id }}>
-                    {({ data, recipeError }) => {
-                        if (recipeError) return <PageError error={{ Title: 'Error', Message: recipeError.message }} />;
 
-                        if (!data.recipe) {
-                            return (
-                                <PageError
-                                    error={{
-                                        Title: 'Can\'t Find Recipe',
-                                        Message: 'The recipe cannot be found.'
-                                    }}
-                                />
-                            );
-                        }
+const EditRecipe = props => {
+    const { id, returnpage } = props.query;
 
-                        if (
-                            me &&
-                            (me.permissions.includes('ADMIN') || me.id === data.recipe.user.id || editMode === 'ALL')
-                        ) {
-                            return <EditRecipeForm recipe={data.recipe} previousPage={props.query.returnpage} />;
-                        }
-                        return (
-                            <PageError
-                                error={{
-                                    Title: 'Can\'t Edit Recipe',
-                                    Message: 'You do not have permission to edit this recipe.'
-                                }}
-                            />
-                        );
-                    }}
-                </Query>
+    const { data: { recipe }, loading, error } = useQuery(RECIPE_BY_ID_QUERY, { variables: { id }});
+
+    const { loggedInUser } = useContext(AppContext);
+
+    return (
+        <AuthGateway redirectUrl={`/edit-recipe?id=${id}`} permissionNeeded="USER">
+            { error && (
+                <PageError error={{ Title: 'Error', Message: error.message }} />
             )}
-        </LoggedInUser>
-    </AuthGateway>
-);
+
+            {loading && (
+                <div>
+                    <LoadingBox />
+                </div>
+            )}
+
+            {!recipe && (
+                <PageError
+                    error={{
+                        Title: 'Can\'t Find Recipe',
+                        Message: 'The recipe cannot be found.'
+                    }}
+                />
+            )}
+
+            {loggedInUser && (loggedInUser.permissions.includes('ADMIN') || loggedInUser.id === recipe.user.id || editMode === 'ALL') ? (
+                <EditRecipeForm recipe={recipe} previousPage={returnpage} />
+            ) : (
+                <PageError
+                    error={{
+                        Title: 'Can\'t Edit Recipe',
+                        Message: 'You do not have permission to edit this recipe.'
+                    }}
+                />
+            )}
+        </AuthGateway>
+    );
+};
 
 EditRecipe.propTypes = {
     query: PropTypes.object
