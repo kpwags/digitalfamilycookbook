@@ -1,113 +1,129 @@
 {
-  "name": "digitalfamilycookbook-frontend",
-  "version": "1.0.0",
-  "description": "Digital Family Cookbook Frontend",
-  "main": "index.js",
-  "scripts": {
-    "dev": "next -p 7777",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Keith Wagner",
-  "license": "GPL-3.0-or-later",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/kpwags/digitalfamilycookbook"
-  },
-  "dependencies": {
-    "@apollo/react-hooks": "^3.1.3",
-    "apollo-boost": "^0.4.4",
-    "apollo-client": "^2.6.4",
-    "babel-core": "^7.0.0-bridge.0",
-    "babel-plugin-styled-components": "^1.10.6",
-    "date-fns": "^2.5.1",
-    "downshift": "^2.2.3",
-    "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.15.1",
-    "graphql": "^14.5.8",
-    "graphql-tag": "^2.10.1",
-    "lodash.debounce": "^4.0.8",
-    "next": "^9.1.0",
-    "next-with-apollo": "^4.3.0",
-    "nprogress": "^0.2.0",
-    "prop-types": "^15.6.2",
-    "react": "^16.10.2",
-    "react-adopt": "^0.6.0",
-    "react-apollo": "^3.1.3",
-    "react-dom": "^16.10.2",
-    "react-static": "^7.2.2",
-    "react-transition-group": "^2.9.0",
-    "styled-components": "^4.4.0",
-    "validator": "^11.1.0",
-    "waait": "^1.0.5"
-  },
-  "devDependencies": {
-    "babel-eslint": "^10.0.3",
-    "babel-jest": "^25.0.0",
-    "babel-plugin-module-resolver": "^3.1.1",
-    "casual": "^1.6.2",
-    "enzyme-to-json": "^3.4.3",
-    "eslint": "^5.16.0",
-    "eslint-config-airbnb": "^17.1.1",
-    "eslint-config-prettier": "^6.4.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-prettier": "^3.1.1",
-    "eslint-plugin-react": "^7.16.0",
-    "graphql-tools": "^4.0.5",
-    "jest": "^25.0.0",
-    "jest-transform-graphql": "^2.1.0"
-  },
-  "babel": {
-    "env": {
-      "development": {
-        "presets": [
-          "next/babel"
+    "name": "digitalfamilycookbook-frontend",
+    "version": "1.0.0",
+    "description": "Digital Family Cookbook Frontend",
+    "main": "index.js",
+    "scripts": {
+        "dev": "next -p 7777",
+        "test": "NODE_ENV=test jest --watch"
+    },
+    "author": "Keith Wagner",
+    "license": "GPL-3.0-or-later",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kpwags/digitalfamilycookbook"
+    },
+    "dependencies": {
+        "@apollo/react-hooks": "^3.1.3",
+        "@apollo/react-testing": "^3.1.3",
+        "apollo-boost": "^0.4.7",
+        "apollo-client": "^2.6.8",
+        "babel-core": "^7.0.0-bridge.0",
+        "babel-plugin-styled-components": "^1.10.7",
+        "date-fns": "^2.9.0",
+        "downshift": "^2.2.3",
+        "enzyme": "^3.11.0",
+        "enzyme-adapter-react-16": "^1.15.2",
+        "graphql": "^14.6.0",
+        "graphql-tag": "^2.10.3",
+        "lodash.debounce": "^4.0.8",
+        "next": "^9.2.1",
+        "next-with-apollo": "^4.3.0",
+        "nprogress": "^0.2.0",
+        "prop-types": "^15.6.2",
+        "react": "^16.12.0",
+        "react-adopt": "^0.6.0",
+        "react-apollo": "^3.1.3",
+        "react-dom": "^16.12.0",
+        "react-static": "^7.2.3",
+        "react-transition-group": "^2.9.0",
+        "styled-components": "^4.4.1",
+        "validator": "^11.1.0",
+        "waait": "^1.0.5"
+    },
+    "devDependencies": {
+        "@testing-library/react": "^9.4.0",
+        "@testing-library/user-event": "^8.1.0",
+        "babel-eslint": "^10.0.3",
+        "babel-jest": "^25.1.0",
+        "babel-plugin-module-resolver": "^3.1.1",
+        "casual": "^1.6.2",
+        "enzyme-to-json": "^3.4.4",
+        "eslint": "^5.16.0",
+        "eslint-config-airbnb": "^17.1.1",
+        "eslint-config-prettier": "^6.10.0",
+        "eslint-plugin-import": "^2.20.1",
+        "eslint-plugin-jsx-a11y": "^6.2.3",
+        "eslint-plugin-prettier": "^3.1.2",
+        "eslint-plugin-react": "^7.18.3",
+        "graphql-tools": "^4.0.6",
+        "jest": "^25.1.0",
+        "jest-transform-graphql": "^2.1.0"
+    },
+    "jest": {
+        "setupFilesAfterEnv": [
+            "<rootDir>/jest.setup.js"
         ],
-        "plugins": [
-          [
-            "styled-components",
-            {
-              "ssr": true,
-              "displayName": true
-            }
-          ]
-        ]
-      },
-      "production": {
-        "presets": [
-          "next/babel"
+        "testPathIgnorePatterns": [
+            "<rootDir>/.next/",
+            "<rootDir>/node_modules/"
         ],
-        "plugins": [
-          [
-            "styled-components",
-            {
-              "ssr": true,
-              "displayName": true
+        "transform": {
+            "\\.(gql|graphql)$": "jest-transform-graphql",
+            ".*": "babel-jest"
+        }
+    },
+    "babel": {
+        "env": {
+            "development": {
+                "presets": [
+                    "next/babel"
+                ],
+                "plugins": [
+                    [
+                        "styled-components",
+                        {
+                            "ssr": true,
+                            "displayName": true
+                        }
+                    ]
+                ]
+            },
+            "production": {
+                "presets": [
+                    "next/babel"
+                ],
+                "plugins": [
+                    [
+                        "styled-components",
+                        {
+                            "ssr": true,
+                            "displayName": true
+                        }
+                    ]
+                ]
+            },
+            "test": {
+                "presets": [
+                    [
+                        "next/babel",
+                        {
+                            "preset-env": {
+                                "modules": "commonjs"
+                            }
+                        }
+                    ]
+                ],
+                "plugins": [
+                    [
+                        "styled-components",
+                        {
+                            "ssr": true,
+                            "displayName": true
+                        }
+                    ]
+                ]
             }
-          ]
-        ]
-      },
-      "test": {
-        "presets": [
-          [
-            "next/babel",
-            {
-              "preset-env": {
-                "modules": "commonjs"
-              }
-            }
-          ]
-        ],
-        "plugins": [
-          [
-            "styled-components",
-            {
-              "ssr": true,
-              "displayName": true
-            }
-          ]
-        ]
-      }
+        }
     }
-  }
 }

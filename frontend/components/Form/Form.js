@@ -52,7 +52,15 @@ const Form = styled.form`
 
     label.errored {
         color: hsl(0, 100%, 50%);
+
+        input,
+        textarea,
+        select {
+            border-width: 2px;
+            border-color: hsl(0, 100%, 50%);
+        }
     }
+
     input.errored,
     textarea.errored,
     select.errored {
@@ -83,6 +91,14 @@ const Form = styled.form`
     input[type='submit'] {
         background: ${props => props.theme.green};
         border-color: ${props => props.theme.green};
+    }
+
+    button:disabled,
+    button[disabled],
+    input[type='submit']:disabled,
+    input[type='submit'][disabled] {
+        background: hsla(0, 0%, 40%, 1);
+        border-color: hsla(0, 0%, 40%, 1);
     }
 
     fieldset {

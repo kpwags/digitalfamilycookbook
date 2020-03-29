@@ -1,123 +1,93 @@
-import React, { Component } from 'react';
-import { Mutation } from 'react-apollo';
+import React, { useState } from 'react';
+import { useMutation } from '@apollo/react-hooks';
+import PropTypes from 'prop-types';
 import { Form } from '../Form/Form';
+import { TextInput } from '../TextInput/TextInput';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { CREATE_MEAT_MUTATION } from '../../mutations/Meat';
 import { ALL_MEATS_QUERY } from '../../queries/Meat';
 import { FormValidator } from '../../lib/FormValidator';
-import { Utilities } from '../../lib/Utilities';
 
-class AddMeat extends Component {
-    state = {
-        name: '',
-        error: null
-    };
+const AddMeat = props => {
+    const [name, setName] = useState('');
+    const [error, setError] = useState(null);
+    const [nameError, setNameError] = useState('');
 
-    handleChange = e => {
-        const { id, name, type, value } = e.target;
-        const val = type === 'number' ? parseFloat(value) : value;
-        this.setState({ [name]: val }, () => {
-            this.validate(id, val);
-        });
-    };
+    const [createMeat, { loading: createLoading, error: createError }] = useMutation(CREATE_MEAT_MUTATION, {
+        refetchQueries: [{ query: ALL_MEATS_QUERY }]
+    });
 
-    validate = (fieldId, value) => {
-        // eslint-disable-next-line default-case
-        switch (fieldId) {
-        case 'add-meat-name':
-            if (!FormValidator.validateNotEmpty(value)) {
-                Utilities.invalidateField('add-meat-name', 'Name is required.');
-            } else {
-                Utilities.resetField('add-meat-name');
-            }
-            break;
-        }
-    };
-
-    validateForm = () => {
+    const validateForm = () => {
         let isValid = true;
 
-        let { name } = this.state;
-        if (name === '') {
-            name = document.getElementById('add-meat-name').value;
-        }
-
         if (!FormValidator.validateNotEmpty(name)) {
-            Utilities.invalidateField('add-meat-name', 'Name is required.');
+            setNameError('Name is required');
             isValid = false;
         }
 
         return isValid;
     };
 
-    hideAddForm = () => {
-        document.getElementById('create-meat-header-form').style.display = 'none';
-        this.setState({ name: '' });
-        document.getElementById('create-meat-form').reset();
-    };
-
-    cancelAddMeat = e => {
+    const cancelAdd = e => {
         e.preventDefault();
-        this.hideAddForm();
+        setName('');
+        setNameError('');
+
+        if (typeof props.onDone === 'function') {
+            props.onDone();
+        }
     };
 
-    render() {
-        return (
-            <Mutation
-                mutation={CREATE_MEAT_MUTATION}
-                variables={this.state}
-                refetchQueries={[{ query: ALL_MEATS_QUERY }]}
-            >
-                {(createMeat, { loading, error }) => (
-                    <Form
-                        data-test="form"
-                        method="POST"
-                        id="create-meat-form"
-                        onSubmit={async e => {
-                            e.preventDefault();
+    return (
+        <Form
+            data-test="form"
+            id="create-meat-form"
+            onSubmit={async e => {
+                e.preventDefault();
 
-                            this.setState({ error: null });
+                setError(null);
 
-                            if (this.validateForm()) {
-                                await createMeat().catch(err => {
-                                    this.setState({ error: err });
-                                });
+                if (validateForm()) {
+                    await createMeat({ variables: { name } }).catch(err => {
+                        setError(err);
+                    });
 
-                                if (this.state.error === null) {
-                                    this.hideAddForm();
-                                }
-                            }
-                        }}
-                    >
-                        <ErrorMessage error={error || this.state.error} />
-                        <fieldset disabled={loading} aria-busy={loading}>
-                            <label htmlFor="name">
-                                Name
-                                <input
-                                    type="text"
-                                    id="add-meat-name"
-                                    name="name"
-                                    placeholder="Name"
-                                    required
-                                    value={this.state.name}
-                                    onChange={this.handleChange}
-                                    onBlur={e => {
-                                        e.preventDefault();
-                                        this.validate('add-meat-name', this.state.name);
-                                    }}
-                                />
-                                <div className="error-text" id="add-meat-name-message" />
-                            </label>
-                            <button type="submit">Sav{loading ? 'ing' : 'e'}</button>
-                            <button type="button" onClick={this.cancelAddMeat}>
-                                Cancel
-                            </button>
-                        </fieldset>
-                    </Form>
-                )}
-            </Mutation>
-        );
-    }
-}
+                    if (error === null) {
+                        setName('');
+                        setNameError('');
+
+                        if (typeof props.onDone === 'function') {
+                            props.onDone();
+                        }
+                    }
+                }
+            }}
+        >
+            <ErrorMessage error={error || createError} />
+            <fieldset disabled={createLoading} aria-busy={createLoading}>
+                <TextInput
+                    name="name"
+                    label="Name"
+                    id="add-meat-name"
+                    validationRule="notempty"
+                    value={name}
+                    error={nameError}
+                    onChange={e => {
+                        setName(e.target.value);
+                    }}
+                />
+
+                <button type="submit">Sav{createLoading ? 'ing' : 'e'}</button>
+                <button type="button" onClick={cancelAdd}>
+                    Cancel
+                </button>
+            </fieldset>
+        </Form>
+    );
+};
+
+AddMeat.propTypes = {
+    onDone: PropTypes.func
+};
 
 export { AddMeat };

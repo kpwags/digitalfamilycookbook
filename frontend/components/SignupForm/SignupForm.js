@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Mutation, ApolloConsumer } from 'react-apollo';
+import React, { useState } from 'react';
+import { useMutation, useApolloClient } from 'react-apollo';
 import Router from 'next/router';
 import debounce from 'lodash.debounce';
 import { SIGNUP_MUTATION } from '../../mutations/User';
@@ -7,282 +7,279 @@ import { CURRENT_USER_QUERY, SINGLE_USER_USERNAME_QUERY } from '../../queries/Us
 import { Form } from '../Form/Form';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { FormValidator } from '../../lib/FormValidator';
-import { Utilities } from '../../lib/Utilities';
 import { publicRegistration } from '../../config';
+import { TextInput } from '../TextInput/TextInput';
+import { TextArea } from '../TextArea/TextArea';
 
-class SignupForm extends Component {
-    state = {
-        name: '',
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        bio: '',
-        invitationCode: '',
-        error: null
+const SignupForm = () => {
+    const [name, setName] = useState('');
+    const [nameError, setNameError] = useState('');
+    const [username, setUsername] = useState('');
+    const [usernameError, setUsernameError] = useState('');
+    const [email, setEmail] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [confirmPasswordError, setConfirmPasswordError] = useState('');
+    const [bio, setBio] = useState('');
+    const [invitationCode, setInvitationCode] = useState('');
+    const [invitationCodeError, setInvitationCodeError] = useState('');
+    const [error, setError] = useState(null);
+    const [saveEnabled, setSaveEnabled] = useState(true);
+
+    const client = useApolloClient();
+
+    const clearState = () => {
+        setName('');
+        setNameError('');
+        setUsername('');
+        setUsernameError('');
+        setEmail('');
+        setEmailError('');
+        setPassword('');
+        setPasswordError('');
+        setConfirmPassword('');
+        setConfirmPasswordError('');
+        setBio('');
+        setInvitationCode('');
+        setInvitationCodeError('');
+        setError(null);
+        setSaveEnabled(true);
     };
 
-    saveUsername = debounce(async (e, client) => {
-        e.preventDefault();
-
-        this.setState({ username: e.target.value });
-
-        const res = await client.query({
-            query: SINGLE_USER_USERNAME_QUERY,
-            variables: { username: this.state.username }
-        });
-
-        const { valid, message } = FormValidator.validateUsername(this.state.username);
-
-        if (res.data.user !== null) {
-            Utilities.invalidateField('username', 'Username already taken');
-        } else if (!valid) {
-            Utilities.invalidateField('username', message);
-        } else {
-            Utilities.resetField('username');
-        }
-    }, 350);
-
-    saveToState = e => {
-        this.setState({ [e.target.name]: e.target.value });
-    };
-
-    signupUser = async (e, signupMutation) => {
-        e.preventDefault();
-
-        this.setState({ error: null });
-
-        if (this.validateForm()) {
-            const args = this.state;
-
-            if (publicRegistration) {
-                args.invitationCode = 'N/A';
-            }
-
-            await signupMutation({
-                variables: {
-                    ...args,
-                    image: '/public/images/user.jpg',
-                    largeImage: '/public/images/user-lg.jpg'
-                }
-            }).catch(err => {
-                this.setState({ error: err });
-            });
-
-            if (this.state.error === null) {
-                this.setState({
-                    email: '',
-                    name: '',
-                    username: '',
-                    password: '',
-                    confirmPassword: '',
-                    bio: '',
-                    invitationCode: ''
-                });
+    const [signupUser, { loading, error: signupError }] = useMutation(SIGNUP_MUTATION, {
+        refetchQueries: [{ query: CURRENT_USER_QUERY }],
+        onCompleted: () => {
+            if (error === null) {
+                clearState();
 
                 Router.push({
                     pathname: '/'
                 });
             }
         }
-    };
+    });
 
-    validate = e => {
-        e.preventDefault();
+    const validateUsername = debounce(async () => {
+        setSaveEnabled(false);
 
-        const { valid: passwordsValid, message: passwordMessage } = FormValidator.validatePassword(
-            this.state.password,
-            this.state.confirmPassword
-        );
+        const resp = await client.query({
+            query: SINGLE_USER_USERNAME_QUERY,
+            variables: { username }
+        });
 
-        // eslint-disable-next-line default-case
-        switch (e.target.id) {
-        case 'email':
-            if (!FormValidator.validateEmail(this.state.email)) {
-                Utilities.invalidateField('email', 'Invalid email');
-            } else {
-                Utilities.resetField('email');
-            }
-            break;
+        const { valid, message } = FormValidator.validateUsername(username);
 
-        case 'name':
-            if (!FormValidator.validateNotEmpty(this.state.name)) {
-                Utilities.invalidateField('name', 'Name is required.');
-            } else {
-                Utilities.resetField('name');
-            }
-            break;
+        if (resp.data.user !== null) {
+            setSaveEnabled(false);
+            setUsernameError('Username already taken');
+        } else if (!valid) {
+            setSaveEnabled(false);
+            setUsernameError(message);
+        } else {
+            setSaveEnabled(true);
+            setUsernameError('');
+        }
+    }, 350);
 
-        case 'password':
-        case 'confirmPassword':
-            if (!passwordsValid) {
-                Utilities.invalidateField('password');
-                Utilities.invalidateField('confirmPassword', passwordMessage);
-            } else {
-                Utilities.resetField('password');
-                Utilities.resetField('confirmPassword');
-            }
-            break;
-
-        case 'invitationCode':
-            if (!FormValidator.validateNotEmpty(this.state.invitationCode)) {
-                Utilities.invalidateField('invitationCode', 'Invitation code is required.');
-            } else {
-                Utilities.resetField('invitationCode');
-            }
-            break;
+    const validatePassword = () => {
+        const { valid: passwordsValid, message } = FormValidator.validatePassword(password, confirmPassword);
+        if (!passwordsValid) {
+            setPasswordError(message);
+            setConfirmPasswordError(message);
+            setSaveEnabled(false);
+        } else {
+            setPasswordError('');
+            setConfirmPasswordError('');
+            setSaveEnabled(true);
         }
     };
 
-    validateForm = () => {
+    const validateForm = async () => {
+        const resp = await client.query({
+            query: SINGLE_USER_USERNAME_QUERY,
+            variables: { username }
+        });
+
         let isValid = true;
 
-        if (!FormValidator.validateNotEmpty(this.state.name)) {
-            Utilities.invalidateField('name', 'Name is required.');
+        const { valid: usernameValid, message: usernameMessage } = FormValidator.validateUsername(username);
+
+        if (!FormValidator.validateNotEmpty(name)) {
+            setNameError('Name is required.');
             isValid = false;
         }
 
-        const { valid: usernameValid, message: usernameMessage } = FormValidator.validateUsername(this.state.username);
-        if (!usernameValid) {
-            Utilities.invalidateField('username', usernameMessage);
+        if (!FormValidator.validateEmail(email)) {
+            setEmailError('Invalid email');
             isValid = false;
         }
 
-        if (!FormValidator.validateEmail(this.state.email)) {
-            Utilities.invalidateField('email', 'Invalid email');
+        if (resp.data.user !== null) {
+            setUsernameError('Username already taken');
+        } else if (!usernameValid) {
+            setUsernameError(usernameMessage);
             isValid = false;
         }
 
-        const { valid: passwordsValid, message: passwordMessage } = FormValidator.validatePassword(
-            this.state.password,
-            this.state.confirmPassword
-        );
-
+        const { valid: passwordsValid, message } = FormValidator.validatePassword(password, confirmPassword);
         if (!passwordsValid) {
-            Utilities.invalidateField('password');
-            Utilities.invalidateField('confirmPassword', passwordMessage);
+            setPasswordError(message);
+            setConfirmPasswordError(message);
             isValid = false;
         }
 
-        if (!publicRegistration && !FormValidator.validateNotEmpty(this.state.invitationCode)) {
-            Utilities.invalidateField('invitationCode', 'Invitation code is required.');
+        if (!publicRegistration && !FormValidator.validateNotEmpty(invitationCode)) {
+            setInvitationCodeError('Invitation code is required.');
             isValid = false;
         }
 
         return isValid;
     };
 
-    render() {
-        return (
-            <Mutation
-                mutation={SIGNUP_MUTATION}
-                variables={this.state}
-                refetchQueries={[{ query: CURRENT_USER_QUERY }]}
-            >
-                {(signup, { error, loading }) => (
-                    <Form
-                        data-test="form"
-                        method="post"
-                        onSubmit={async e => {
-                            this.signupUser(e, signup);
+    return (
+        <Form
+            data-test="form"
+            method="post"
+            onSubmit={async e => {
+                e.preventDefault();
+
+                const isValid = await validateForm();
+
+                if (isValid) {
+                    setError(null);
+
+                    if (publicRegistration) {
+                        setInvitationCode('N/A');
+                    }
+
+                    await signupUser({
+                        variables: {
+                            email,
+                            username,
+                            name,
+                            password,
+                            bio,
+                            invitationCode,
+                            image: 'images/user.jpg',
+                            largeImage: 'images/user-lg.jpg'
+                        }
+                    }).catch(err => {
+                        setError(err);
+                    });
+                }
+            }}
+        >
+            <fieldset disabled={loading} aria-busy={loading}>
+                <h2>Sign Up for an Account</h2>
+
+                <ErrorMessage error={error || signupError} />
+
+                <TextInput
+                    id="name"
+                    name="name"
+                    label="Name"
+                    validationRule="notempty"
+                    value={name}
+                    error={nameError}
+                    onChange={e => {
+                        setName(e.target.value);
+                    }}
+                />
+
+                <TextInput
+                    id="username"
+                    name="username"
+                    label="Username"
+                    value={username}
+                    error={usernameError}
+                    validate={e => {
+                        e.persist();
+                        validateUsername();
+                    }}
+                    onChange={e => {
+                        setUsername(e.target.value);
+                    }}
+                />
+
+                <TextInput
+                    id="email"
+                    name="email"
+                    label="Email"
+                    validationRule="email"
+                    value={email}
+                    error={emailError}
+                    onChange={e => {
+                        setEmail(e.target.value);
+                    }}
+                />
+
+                <TextInput
+                    id="password"
+                    name="password"
+                    type="password"
+                    label="Password"
+                    value={password}
+                    error={passwordError}
+                    showErrorMessage={false}
+                    onChange={e => {
+                        setPassword(e.target.value);
+                    }}
+                    validate={e => {
+                        e.preventDefault();
+                        validatePassword(e);
+                    }}
+                />
+
+                <TextInput
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type="password"
+                    label="Re-Enter Password"
+                    value={confirmPassword}
+                    error={confirmPasswordError}
+                    onChange={e => {
+                        setConfirmPassword(e.target.value);
+                    }}
+                    validate={e => {
+                        e.preventDefault();
+                        validatePassword(e);
+                    }}
+                />
+
+                <TextArea
+                    id="bio"
+                    name="bio"
+                    label="Bio"
+                    required={false}
+                    value={bio}
+                    error=""
+                    onChange={e => {
+                        setBio(e.target.value);
+                    }}
+                />
+
+                {!publicRegistration && (
+                    <TextInput
+                        id="invitationCode"
+                        name="invitationCode"
+                        label="Invitation Code"
+                        validationRule="notempty"
+                        value={invitationCode}
+                        error={invitationCodeError}
+                        onChange={e => {
+                            setInvitationCode(e.target.value);
                         }}
-                    >
-                        <fieldset disabled={loading} aria-busy={loading}>
-                            <h2>Sign Up for an Account</h2>
-                            <ErrorMessage error={error || this.state.error} />
-                            <label htmlFor="name">
-                                Name
-                                <input
-                                    type="text"
-                                    name="name"
-                                    id="name"
-                                    value={this.state.name}
-                                    onChange={this.saveToState}
-                                    onBlur={this.validate}
-                                />
-                                <div className="error-text" id="name-message" />
-                            </label>
-
-                            <ApolloConsumer>
-                                {client => (
-                                    <label htmlFor="username">
-                                        Username
-                                        <input
-                                            type="text"
-                                            name="username"
-                                            id="username"
-                                            maxLength="20"
-                                            onChange={e => {
-                                                e.persist();
-                                                this.saveUsername(e, client);
-                                            }}
-                                        />
-                                        <div className="error-text" id="username-message" />
-                                    </label>
-                                )}
-                            </ApolloConsumer>
-
-                            <label htmlFor="email">
-                                Email
-                                <input
-                                    type="email"
-                                    name="email"
-                                    id="email"
-                                    value={this.state.email}
-                                    onChange={this.saveToState}
-                                    onBlur={this.validate}
-                                />
-                                <div className="error-text" id="email-message" />
-                            </label>
-                            <label htmlFor="password">
-                                Password
-                                <input
-                                    type="password"
-                                    name="password"
-                                    id="password"
-                                    value={this.state.password}
-                                    onChange={this.saveToState}
-                                    onBlur={this.validate}
-                                />
-                                <div className="error-text" id="password-message" />
-                            </label>
-                            <label htmlFor="confirmPassword">
-                                Confirm Password
-                                <input
-                                    type="password"
-                                    name="confirmPassword"
-                                    id="confirmPassword"
-                                    value={this.state.confirmPassword}
-                                    onChange={this.saveToState}
-                                    onBlur={this.validate}
-                                />
-                                <div className="error-text" id="confirmPassword-message" />
-                            </label>
-                            <label htmlFor="bio">
-                                Bio
-                                <textarea id="bio" name="bio" value={this.state.bio} onChange={this.saveToState} />
-                            </label>
-                            {!publicRegistration && (
-                                <label htmlFor="invitationCode">
-                                    Invitation Code
-                                    <input
-                                        type="text"
-                                        name="invitationCode"
-                                        id="invitationCode"
-                                        value={this.state.invitationCode}
-                                        onChange={this.saveToState}
-                                        onBlur={this.validate}
-                                    />
-                                    <div className="error-text" id="invitationCode-message" />
-                                </label>
-                            )}
-                            <button type="submit">Sign Up</button>
-                        </fieldset>
-                    </Form>
+                    />
                 )}
-            </Mutation>
-        );
-    }
-}
+
+                <button type="submit" disabled={!saveEnabled} aria-disabled={!saveEnabled}>
+                    Sign Up
+                </button>
+            </fieldset>
+        </Form>
+    );
+};
 
 export { SignupForm };

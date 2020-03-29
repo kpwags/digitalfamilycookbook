@@ -1,59 +1,47 @@
-import React, { Component } from 'react';
-import { Mutation } from 'react-apollo';
+import React, { useState } from 'react';
+import { useMutation } from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
 import { TOGGLE_ADMIN_MUTATION } from '../../mutations/User';
 import { ALL_USERS_QUERY } from '../../queries/User';
-import { ErrorAlert } from '../ErrorAlert/ErrorAlert';
 
-class UserToggleAdmin extends Component {
-    static propTypes = {
-        userId: PropTypes.string.isRequired,
-        children: PropTypes.node
-    };
+const UserToggleAdmin = props => {
+    // eslint-disable-next-line no-unused-vars
+    const [error, setError] = useState(null);
 
-    state = {
-        error: null
-    };
+    const [toggleAdmin] = useMutation(TOGGLE_ADMIN_MUTATION, {
+        refetchQueries: [{ query: ALL_USERS_QUERY }]
+    });
 
-    toggleAdmin = async (e, userId, toggleAdminMutation) => {
-        e.preventDefault();
+    return (
+        <>
+            <button
+                className="wide"
+                type="button"
+                data-id={props.userId}
+                onClick={async e => {
+                    e.preventDefault();
 
-        this.setState({ error: null });
+                    setError(null);
 
-        await toggleAdminMutation({
-            variables: {
-                id: userId
-            }
-        }).catch(err => {
-            this.setState({ error: err });
-        });
-    };
-
-    render() {
-        return (
-            <Mutation
-                mutation={TOGGLE_ADMIN_MUTATION}
-                variables={this.state}
-                refetchQueries={[{ query: ALL_USERS_QUERY }]}
+                    await toggleAdmin({
+                        variables: {
+                            id: props.userId
+                        }
+                    }).catch(err => {
+                        // TODO: Display Error?
+                        setError(err);
+                    });
+                }}
             >
-                {(toggleAdmin, { error }) => (
-                    <>
-                        <ErrorAlert id={`toggle-admin-${this.props.userId}`} error={error || this.state.error} />
-                        <button
-                            className="wide"
-                            type="button"
-                            data-id={this.props.userId}
-                            onClick={e => {
-                                this.toggleAdmin(e, this.props.userId, toggleAdmin);
-                            }}
-                        >
-                            {this.props.children}
-                        </button>
-                    </>
-                )}
-            </Mutation>
-        );
-    }
-}
+                {props.children}
+            </button>
+        </>
+    );
+};
+
+UserToggleAdmin.propTypes = {
+    userId: PropTypes.string.isRequired,
+    children: PropTypes.node
+};
 
 export { UserToggleAdmin };

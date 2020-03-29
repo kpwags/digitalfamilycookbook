@@ -18,7 +18,9 @@ function createClient({ headers }) {
             resolvers: {
                 Mutation: {}
             },
-            defaults: {}
+            defaults: {
+                overlayVisible: false
+            }
         }
     });
 }

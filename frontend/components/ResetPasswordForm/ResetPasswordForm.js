@@ -1,144 +1,138 @@
-import React, { Component } from 'react';
-import { Mutation } from 'react-apollo';
+import React, { useState } from 'react';
+import { useMutation } from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
 import { CURRENT_USER_QUERY } from '../../queries/User';
 import { RESET_PASSWORD_MUTATION } from '../../mutations/User';
 import { Form } from '../Form/Form';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { SuccessMessage } from '../SuccessMessage/SuccessMessage';
+import { TextInput } from '../TextInput/TextInput';
 import { FormValidator } from '../../lib/FormValidator';
-import { Utilities } from '../../lib/Utilities';
 
-class ResetPasswordForm extends Component {
-    static propTypes = {
-        resetToken: PropTypes.string
-    };
+const ResetPasswordForm = props => {
+    const [password, setPassword] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [confirmPasswordError, setConfirmPasswordError] = useState('');
+    const [successMessage, setSuccessMessage] = useState(null);
+    const [error, setError] = useState(null);
+    const [enableSave, setEnableSave] = useState(true);
 
-    state = {
-        password: '',
-        confirmPassword: '',
-        successMessage: null,
-        error: null
-    };
-
-    saveToState = e => {
-        this.setState({ [e.target.name]: e.target.value });
-    };
-
-    resetPassword = async (e, resetPasswordMutation) => {
-        e.preventDefault();
-
-        if (this.validateForm()) {
-            await resetPasswordMutation({
-                variables: {
-                    resetToken: this.props.resetToken,
-                    password: this.state.password
-                }
-            }).catch(err => {
-                this.setState({ error: err });
-            });
+    const [resetPassword, { loading: resetLoading, error: resetError }] = useMutation(RESET_PASSWORD_MUTATION, {
+        refetchQueries: [{ query: CURRENT_USER_QUERY }],
+        onCompleted: () => {
+            if (error === null) {
+                setPassword('');
+                setPasswordError('');
+                setConfirmPassword('');
+                setConfirmPasswordError('');
+                setSuccessMessage('Password changed successfully');
+            }
         }
-    };
+    });
 
-    validate = e => {
-        e.preventDefault();
-
-        const { valid: passwordsValid, message } = FormValidator.validatePassword(
-            this.state.password,
-            this.state.confirmPassword
-        );
+    const validate = e => {
+        const { valid: passwordsValid, message } = FormValidator.validatePassword(password, confirmPassword);
 
         // eslint-disable-next-line default-case
         switch (e.target.id) {
-        case 'password':
-        case 'confirmPassword':
-            if (!passwordsValid) {
-                Utilities.invalidateField('password');
-                Utilities.invalidateField('confirmPassword', message);
-            } else {
-                Utilities.resetField('password');
-                Utilities.resetField('confirmPassword');
-            }
-            break;
+            case 'password':
+            case 'confirmPassword':
+                if (!passwordsValid) {
+                    setPasswordError(message);
+                    setConfirmPasswordError(message);
+                    setEnableSave(false);
+                } else {
+                    setPasswordError('');
+                    setConfirmPasswordError('');
+                    setEnableSave(true);
+                }
+                break;
         }
     };
 
-    validateForm = () => {
+    const validateForm = () => {
         let isValid = true;
 
-        const { valid: passwordsValid, message } = FormValidator.validatePassword(
-            this.state.password,
-            this.state.confirmPassword
-        );
+        const { valid: passwordsValid, message } = FormValidator.validatePassword(password, confirmPassword);
 
         if (!passwordsValid) {
-            Utilities.invalidateField('password');
-            Utilities.invalidateField('confirmPassword', message);
+            setPasswordError(message);
+            setConfirmPasswordError(message);
             isValid = false;
         }
 
         return isValid;
     };
 
-    render() {
-        return (
-            <Mutation
-                mutation={RESET_PASSWORD_MUTATION}
-                refetchQueries={[{ query: CURRENT_USER_QUERY }]}
-                onCompleted={() => {
-                    if (this.state.error === null) {
-                        this.setState({
-                            password: '',
-                            confirmPassword: '',
-                            successMessage: 'Password changed successfully',
-                            error: null
-                        });
-                    }
-                }}
-            >
-                {(resetPassword, { error, loading }) => (
-                    <Form
-                        data-test="form"
-                        method="post"
-                        onSubmit={async e => {
-                            this.resetPassword(e, resetPassword);
-                        }}
-                    >
-                        <SuccessMessage message={this.state.successMessage} />
-                        <ErrorMessage error={error || this.state.error} />
-                        <fieldset disabled={loading} aria-busy={loading}>
-                            <h2>Reset Password</h2>
-                            <label htmlFor="password">
-                                Password
-                                <input
-                                    type="password"
-                                    name="password"
-                                    id="password"
-                                    value={this.state.password}
-                                    onChange={this.saveToState}
-                                    onBlur={this.validate}
-                                />
-                                <div className="error-text" id="password-message" />
-                            </label>
-                            <label htmlFor="confirmPassword">
-                                Confirm Password
-                                <input
-                                    type="password"
-                                    name="confirmPassword"
-                                    id="confirmPassword"
-                                    value={this.state.confirmPassword}
-                                    onChange={this.saveToState}
-                                    onBlur={this.validate}
-                                />
-                                <div className="error-text" id="confirmPassword-message" />
-                            </label>
-                            <button type="submit">Submit{loading ? 'ting' : ''}</button>
-                        </fieldset>
-                    </Form>
-                )}
-            </Mutation>
-        );
-    }
-}
+    return (
+        <Form
+            data-test="form"
+            method="post"
+            onSubmit={async e => {
+                e.preventDefault();
+
+                if (validateForm()) {
+                    resetPassword({
+                        variables: {
+                            resetToken: props.resetToken,
+                            password
+                        }
+                    }).catch(err => {
+                        setError(err);
+                    });
+                }
+            }}
+        >
+            <SuccessMessage message={successMessage} />
+            <ErrorMessage error={error || resetError} />
+
+            <fieldset disabled={resetLoading} aria-busy={resetLoading}>
+                <h2>Reset Password</h2>
+
+                <TextInput
+                    id="password"
+                    name="password"
+                    type="password"
+                    label="Password"
+                    value={password}
+                    error={passwordError}
+                    showErrorMessage={false}
+                    onChange={e => {
+                        setPassword(e.target.value);
+                    }}
+                    validate={e => {
+                        e.preventDefault();
+                        validate(e);
+                    }}
+                />
+
+                <TextInput
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type="password"
+                    label="Re-Enter Password"
+                    value={confirmPassword}
+                    error={confirmPasswordError}
+                    onChange={e => {
+                        setConfirmPassword(e.target.value);
+                    }}
+                    validate={e => {
+                        e.preventDefault();
+                        validate(e);
+                    }}
+                />
+
+                <button type="submit" disabled={!enableSave} aria-disabled={!enableSave}>
+                    Submit{resetLoading ? 'ting' : ''}
+                </button>
+            </fieldset>
+        </Form>
+    );
+};
+
+ResetPasswordForm.propTypes = {
+    resetToken: PropTypes.string
+};
 
 export { ResetPasswordForm };

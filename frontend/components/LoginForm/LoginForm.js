@@ -1,90 +1,103 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import { useMutation } from '@apollo/react-hooks';
 import Link from 'next/link';
-import { Mutation } from 'react-apollo';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
 import { LOGIN_MUTATION } from '../../mutations/User';
 import { CURRENT_USER_QUERY } from '../../queries/User';
 import { Form } from '../Form/Form';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
+import { TextInput } from '../TextInput/TextInput';
 
-class LoginForm extends Component {
-    static propTypes = {
-        redirectUrl: PropTypes.string
-    };
+const LoginForm = props => {
+    const [username, setUsername] = useState('');
+    const [usernameError, setUsernameError] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [error, setError] = useState(null);
+    const [redirectUrl] = useState(props.redirectUrl);
 
-    state = {
-        email: '',
-        password: '',
-        error: null
-    };
+    // mutation={LOGIN_MUTATION} variables={this.state} refetchQueries={[{ query: CURRENT_USER_QUERY }]}>
 
-    saveToState = e => {
-        this.setState({ [e.target.name]: e.target.value });
-    };
+    const [login, { loading, error: loginError }] = useMutation(LOGIN_MUTATION, {
+        refetchQueries: [{ query: CURRENT_USER_QUERY }],
+        onCompleted: () => {
+            setUsername('');
+            setUsernameError('');
+            setPassword('');
+            setPasswordError('');
 
-    render() {
-        let { redirectUrl } = this.props;
-
-        if (typeof redirectUrl === 'undefined') {
-            redirectUrl = '/';
+            Router.push({
+                pathname: redirectUrl
+            });
         }
+    });
+    return (
+        <Form
+            data-test="login-form"
+            method="post"
+            onSubmit={async e => {
+                e.preventDefault();
 
-        return (
-            <Mutation mutation={LOGIN_MUTATION} variables={this.state} refetchQueries={[{ query: CURRENT_USER_QUERY }]}>
-                {(login, { error, loading }) => (
-                    <Form
-                        method="post"
-                        onSubmit={async e => {
-                            e.preventDefault();
+                setError(null);
 
-                            this.setState({ error: null });
+                await login({
+                    variables: {
+                        email: username,
+                        password
+                    }
+                }).catch(err => {
+                    setError(err);
+                });
+            }}
+        >
+            <fieldset disabled={loading} aria-busy={loading}>
+                <h2>Log In</h2>
 
-                            await login().catch(err => {
-                                this.setState({
-                                    error: err
-                                });
-                            });
+                <ErrorMessage error={error || loginError} />
 
-                            if (this.state.error === null) {
-                                this.setState({
-                                    email: '',
-                                    password: ''
-                                });
-                                Router.push({
-                                    pathname: redirectUrl
-                                });
-                            }
-                        }}
-                    >
-                        <fieldset disabled={loading} aria-busy={loading}>
-                            <h2>Log In</h2>
-                            <ErrorMessage error={error || this.state.error} />
-                            <label htmlFor="email">
-                                Email or Username
-                                <input type="text" name="email" value={this.state.email} onChange={this.saveToState} />
-                            </label>
-                            <label htmlFor="password">
-                                Password
-                                <input
-                                    type="password"
-                                    name="password"
-                                    value={this.state.password}
-                                    onChange={this.saveToState}
-                                />
-                            </label>
-                            <p>
-                                <Link href="/forgot-password">
-                                    <a>Forgot Password?</a>
-                                </Link>
-                            </p>
-                            <button type="submit">Log In</button>
-                        </fieldset>
-                    </Form>
-                )}
-            </Mutation>
-        );
-    }
-}
+                <TextInput
+                    id="username"
+                    name="username"
+                    label="Email or Username"
+                    value={username}
+                    error={usernameError}
+                    validationRule="notempty"
+                    onChange={e => {
+                        setUsername(e.target.value);
+                    }}
+                />
+
+                <TextInput
+                    id="password"
+                    name="password"
+                    type="password"
+                    label="Password"
+                    value={password}
+                    error={passwordError}
+                    validationRule="notempty"
+                    onChange={e => {
+                        setPassword(e.target.value);
+                    }}
+                />
+
+                <p>
+                    <Link href="/forgot-password">
+                        <a>Forgot Password?</a>
+                    </Link>
+                </p>
+                <button type="submit">{loading ? 'Logging' : 'Log'} In</button>
+            </fieldset>
+        </Form>
+    );
+};
+
+LoginForm.defaultProps = {
+    redirectUrl: '/'
+};
+
+LoginForm.propTypes = {
+    redirectUrl: PropTypes.string
+};
 
 export { LoginForm };

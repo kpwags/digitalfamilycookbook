@@ -51,7 +51,7 @@ const Main = styled.div`
 
 const AdminLayout = props => {
     return (
-        <Layout>
+        <Layout data-test="admin-layout">
             <Sidebar>
                 <ul>
                     <li className={props.activePage === 'invitationcodes' ? 'active' : ''}>

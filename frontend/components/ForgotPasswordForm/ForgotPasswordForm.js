@@ -1,52 +1,81 @@
-import React, { Component } from 'react';
-import { Mutation } from 'react-apollo';
+import React, { useState } from 'react';
+import { useMutation } from '@apollo/react-hooks';
+import { FormValidator } from '../../lib/FormValidator';
 import { REQUEST_PASSWORD_RESET_MUTATION } from '../../mutations/User';
 import { Form } from '../Form/Form';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { SuccessMessage } from '../SuccessMessage/SuccessMessage';
+import { TextInput } from '../TextInput/TextInput';
 
-class ForgotPasswordForm extends Component {
-    state = {
-        email: '',
-        error: null
+const ForgotPasswordForm = () => {
+    const [email, setEmail] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(null);
+
+    const [requestPasswordReset, { error: resetError, loading }] = useMutation(REQUEST_PASSWORD_RESET_MUTATION, {
+        onCompleted: () => {
+            setEmail('');
+            setEmailError('');
+
+            if (!resetError && !error) {
+                setSuccessMessage('Success! Check your email for a reset link.');
+            }
+        }
+    });
+
+    const validateForm = () => {
+        let isValid = true;
+
+        if (FormValidator.validateEmail(email)) {
+            setEmailError('');
+        } else {
+            setEmailError('Please enter a valid email');
+            isValid = false;
+        }
+
+        return isValid;
     };
 
-    saveToState = e => {
-        this.setState({ [e.target.name]: e.target.value });
-    };
+    return (
+        <Form
+            data-test="form"
+            method="post"
+            onSubmit={async e => {
+                e.preventDefault();
 
-    render() {
-        return (
-            <Mutation mutation={REQUEST_PASSWORD_RESET_MUTATION} variables={this.state}>
-                {(requestPasswordReset, { error, loading, called }) => (
-                    <Form
-                        data-test="form"
-                        method="post"
-                        onSubmit={async e => {
-                            e.preventDefault();
-                            await requestPasswordReset();
-                            this.setState({
-                                email: ''
-                            });
-                        }}
-                    >
-                        <fieldset disabled={loading} aria-busy={loading}>
-                            <h2>Reset Your Password</h2>
-                            <ErrorMessage error={error || this.state.error} />
-                            {!error && !loading && called && (
-                                <SuccessMessage message="Success! Check your email for a reset link." />
-                            )}
-                            <label htmlFor="email">
-                                Email
-                                <input type="email" name="email" value={this.state.email} onChange={this.saveToState} />
-                            </label>
-                            <button type="submit">Request Reset</button>
-                        </fieldset>
-                    </Form>
-                )}
-            </Mutation>
-        );
-    }
-}
+                if (validateForm) {
+                    await requestPasswordReset({
+                        variables: {
+                            email
+                        }
+                    }).catch(err => {
+                        setError(err);
+                    });
+                }
+            }}
+        >
+            <fieldset disabled={loading} aria-busy={loading}>
+                <h2>Reset Your Password</h2>
+                <ErrorMessage error={error || error} />
+                <SuccessMessage message={successMessage} />
+
+                <TextInput
+                    id="email"
+                    name="email"
+                    label="Email"
+                    value={email}
+                    error={emailError}
+                    validationRule="email"
+                    onChange={e => {
+                        setEmail(e.target.value);
+                    }}
+                />
+
+                <button type="submit">Request Reset</button>
+            </fieldset>
+        </Form>
+    );
+};
 
 export { ForgotPasswordForm };

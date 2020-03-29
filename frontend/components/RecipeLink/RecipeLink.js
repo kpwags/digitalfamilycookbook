@@ -19,6 +19,7 @@ const RecipeLink = styled.div`
         object-fit: cover;
         width: 100%;
         max-height: 250px;
+        min-height: 250px;
     }
 
     :hover {

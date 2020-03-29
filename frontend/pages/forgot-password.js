@@ -1,17 +1,21 @@
+import { useContext } from 'react';
+import PropTypes from 'prop-types';
 import { ForgotPasswordForm } from '../components/ForgotPasswordForm/ForgotPasswordForm';
-import { LoggedInUser } from '../components/LoggedInUser/LoggedInUser';
 import { Homepage } from '../components/Homepage/Homepage';
+import { AppContext } from '../components/AppContext/AppContext';
 
-const ForgotPassword = () => (
-    <LoggedInUser>
-        {({ data: { me } }) => {
-            if (me) {
-                return <Homepage />;
-            }
+const ForgotPassword = props => {
+    const { loggedInUser } = useContext(AppContext);
 
-            return <ForgotPasswordForm />;
-        }}
-    </LoggedInUser>
-);
+    if (loggedInUser) {
+        return <Homepage query={props.query} />;
+    }
+
+    return <ForgotPasswordForm/>;
+};
+
+ForgotPassword.propTypes = {
+    query: PropTypes.object
+};
 
 export default ForgotPassword;

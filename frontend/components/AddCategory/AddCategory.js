@@ -1,122 +1,96 @@
-import React, { Component } from 'react';
-import { Mutation } from 'react-apollo';
+import React, { useState } from 'react';
+import { useMutation } from '@apollo/react-hooks';
+import PropTypes from 'prop-types';
 import { Form } from '../Form/Form';
+import { TextInput } from '../TextInput/TextInput';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { CREATE_CATEGORY_MUTATION } from '../../mutations/Category';
 import { ALL_CATEGORIES_QUERY } from '../../queries/Category';
 import { FormValidator } from '../../lib/FormValidator';
-import { Utilities } from '../../lib/Utilities';
 
-class AddCategory extends Component {
-    state = {
-        name: '',
-        error: null
-    };
+const AddCategory = props => {
+    const [name, setName] = useState('');
+    const [error, setError] = useState(null);
+    const [nameError, setNameError] = useState('');
 
-    handleChange = e => {
-        const { id, name, type, value } = e.target;
-        const val = type === 'number' ? parseFloat(value) : value;
-        this.setState({ [name]: val }, () => {
-            this.validate(id, val);
-        });
-    };
-
-    validate = (fieldId, value) => {
-        // eslint-disable-next-line default-case
-        switch (fieldId) {
-        case 'add-category-name':
-            if (!FormValidator.validateNotEmpty(value)) {
-                Utilities.invalidateField('add-category-name', 'Name is required.');
-            } else {
-                Utilities.resetField('add-category-name');
-            }
-            break;
+    const [createCategory, { loading: createCategoryLoading, error: createCategoryError }] = useMutation(
+        CREATE_CATEGORY_MUTATION,
+        {
+            refetchQueries: [{ query: ALL_CATEGORIES_QUERY }]
         }
-    };
+    );
 
-    validateForm = () => {
+    const validateForm = () => {
         let isValid = true;
 
-        let { name } = this.state;
-        if (name === '') {
-            name = document.getElementById('add-category-name').value;
-        }
-
         if (!FormValidator.validateNotEmpty(name)) {
-            Utilities.invalidateField('add-category-name', 'Name is required.');
+            setNameError('Name is required');
             isValid = false;
         }
 
         return isValid;
     };
 
-    hideAddForm = () => {
-        document.getElementById('create-category-header-form').style.display = 'none';
-        this.setState({ name: '' });
-        document.getElementById('create-category-form').reset();
-    };
-
-    cancelAdd = e => {
+    const cancelAdd = e => {
         e.preventDefault();
-        this.hideAddForm();
+        setName('');
+        setNameError('');
+
+        if (typeof props.onDone === 'function') {
+            props.onDone();
+        }
     };
 
-    render() {
-        return (
-            <Mutation
-                mutation={CREATE_CATEGORY_MUTATION}
-                variables={this.state}
-                refetchQueries={[{ query: ALL_CATEGORIES_QUERY }]}
-            >
-                {(createCategory, { loading, error }) => (
-                    <Form
-                        data-test="form"
-                        id="create-category-form"
-                        onSubmit={async e => {
-                            e.preventDefault();
+    return (
+        <Form
+            data-test="form"
+            id="create-category-form"
+            onSubmit={async e => {
+                e.preventDefault();
 
-                            this.setState({ error: null });
+                setError(null);
 
-                            if (this.validateForm()) {
-                                await createCategory().catch(err => {
-                                    this.setState({ error: err });
-                                });
+                if (validateForm()) {
+                    await createCategory({ variables: { name } }).catch(err => {
+                        setError(err);
+                    });
 
-                                if (this.state.error === null) {
-                                    this.hideAddForm();
-                                }
-                            }
-                        }}
-                    >
-                        <ErrorMessage error={error || this.state.error} />
-                        <fieldset disabled={loading} aria-busy={loading}>
-                            <label htmlFor="name">
-                                Name
-                                <input
-                                    type="text"
-                                    id="add-category-name"
-                                    name="name"
-                                    placeholder="Name"
-                                    required
-                                    value={this.state.name}
-                                    onChange={this.handleChange}
-                                    onBlur={e => {
-                                        e.preventDefault();
-                                        this.validate('add-category-name', this.state.name);
-                                    }}
-                                />
-                                <div className="error-text" id="add-category-name-message" />
-                            </label>
-                            <button type="submit">Sav{loading ? 'ing' : 'e'}</button>
-                            <button type="button" onClick={this.cancelAdd}>
-                                Cancel
-                            </button>
-                        </fieldset>
-                    </Form>
-                )}
-            </Mutation>
-        );
-    }
-}
+                    if (error === null) {
+                        setName('');
+                        setNameError('');
+
+                        if (typeof props.onDone === 'function') {
+                            props.onDone();
+                        }
+                    }
+                }
+            }}
+        >
+            <ErrorMessage error={error || createCategoryError} />
+            <fieldset disabled={createCategoryLoading} aria-busy={createCategoryLoading}>
+                <TextInput
+                    name="name"
+                    label="Name"
+                    id="add-category-name"
+                    validationRule="notempty"
+                    value={name}
+                    error={nameError}
+                    onChange={e => {
+                        setName(e.target.value);
+                    }}
+                />
+
+                <button type="submit">Sav{createCategoryLoading ? 'ing' : 'e'}</button>
+                <button type="button" onClick={cancelAdd}>
+                    Cancel
+                </button>
+            </fieldset>
+        </Form>
+    );
+};
+
+AddCategory.propTypes = {
+    onDone: PropTypes.func
+};
 
 export { AddCategory };

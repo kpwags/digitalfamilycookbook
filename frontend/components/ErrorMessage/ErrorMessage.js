@@ -8,6 +8,7 @@ const ErrorStyles = styled.div`
     margin: 2rem 0;
     border: 1px solid hsla(0, 0%, 0%, 0.05);
     border-left: 5px solid red;
+    ${props => (props.message !== null || props.message !== '' ? 'display: block' : 'display: none')};
     p {
         margin: 0;
         font-weight: 100;
@@ -22,7 +23,7 @@ const ErrorMessage = ({ error }) => {
 
     if (typeof error === 'string') {
         return (
-            <ErrorStyles>
+            <ErrorStyles message={error}>
                 <p data-test="graphql-error">{error}</p>
             </ErrorStyles>
         );
@@ -30,7 +31,7 @@ const ErrorMessage = ({ error }) => {
 
     if (error.networkError && error.networkError.result && error.networkError.result.errors.length) {
         return error.networkError.result.errors.map((err, i) => (
-            <ErrorStyles key={i}>
+            <ErrorStyles key={i} message={err.message.replace('GraphQL error: ', '')}>
                 <p data-test="graphql-error">{err.message.replace('GraphQL error: ', '')}</p>
             </ErrorStyles>
         ));
@@ -49,7 +50,7 @@ const ErrorMessage = ({ error }) => {
     }
 
     return (
-        <ErrorStyles>
+        <ErrorStyles message={errorMessage}>
             <p data-test="graphql-error">{errorMessage}</p>
         </ErrorStyles>
     );
