@@ -1,9 +1,12 @@
+import { useContext } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import Link from 'next/link';
 import { ALL_CATEGORIES_QUERY } from '../../queries/Category';
-import { Utilities } from '../../lib/Utilities';
+import { AppContext } from '../AppContext/AppContext';
 
 const CategoriesNav = () => {
+    const { categoriesMenuVisible, toggleCategoriesMenu } = useContext(AppContext);
+
     const { data, loading, error } = useQuery(ALL_CATEGORIES_QUERY);
 
     if (loading) return <li />;
@@ -16,19 +19,19 @@ const CategoriesNav = () => {
                 tabIndex="0"
                 onClick={e => {
                     e.preventDefault();
-                    Utilities.toggleHeaderMenu('categories-header-menu');
+                    toggleCategoriesMenu();
                 }}
                 onKeyDown={e => {
                     e.preventDefault();
                     if (e.keyCode === 13 || e.keyCode === 32) {
-                        Utilities.toggleHeaderMenu('categories-header-menu');
+                        toggleCategoriesMenu();
                     }
                 }}
             >
                 Categories <i className="arrow down" />
             </a>
 
-            <ul className="child-list" id="categories-header-menu">
+            <ul className="child-list" style={categoriesMenuVisible ? { display: 'block' } : { display: 'none' }}>
                 {data.categories.length > 0 ? (
                     data.categories.map(category => (
                         <li key={category.id}>
@@ -37,11 +40,11 @@ const CategoriesNav = () => {
                                     role="button"
                                     tabIndex="0"
                                     onClick={() => {
-                                        Utilities.hideHeaderMenu('categories-header-menu');
+                                        toggleCategoriesMenu();
                                     }}
                                     onKeyDown={e => {
                                         if (e.keyCode === 13 || e.keyCode === 32) {
-                                            Utilities.hideHeaderMenu('categories-header-menu');
+                                            toggleCategoriesMenu();
                                         }
                                     }}
                                 >

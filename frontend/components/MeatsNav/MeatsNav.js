@@ -1,9 +1,12 @@
+import { useContext } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import Link from 'next/link';
 import { ALL_MEATS_QUERY } from '../../queries/Meat';
-import { Utilities } from '../../lib/Utilities';
+import { AppContext } from '../AppContext/AppContext';
 
 const MeatsNav = () => {
+    const { meatsMenuVisible, toggleMeatsMenu } = useContext(AppContext);
+
     const { data, loading, error } = useQuery(ALL_MEATS_QUERY);
 
     if (loading) return <li />;
@@ -16,19 +19,19 @@ const MeatsNav = () => {
                 tabIndex="0"
                 onClick={e => {
                     e.preventDefault();
-                    Utilities.toggleHeaderMenu('meats-header-menu');
+                    toggleMeatsMenu();
                 }}
                 onKeyDown={e => {
                     e.preventDefault();
                     if (e.keyCode === 13 || e.keyCode === 32) {
-                        Utilities.toggleHeaderMenu('meats-header-menu');
+                        toggleMeatsMenu();
                     }
                 }}
             >
                 Meats <i className="arrow down" />
             </a>
 
-            <ul className="child-list" id="meats-header-menu">
+            <ul className="child-list" style={meatsMenuVisible ? { display: 'block' } : { display: 'none' }}>
                 {data.meats.length > 0 ? (
                     data.meats.map(meat => (
                         <li key={meat.id}>
@@ -37,11 +40,11 @@ const MeatsNav = () => {
                                     role="button"
                                     tabIndex="0"
                                     onClick={() => {
-                                        Utilities.hideHeaderMenu('meats-header-menu');
+                                        toggleMeatsMenu();
                                     }}
                                     onKeyDown={e => {
                                         if (e.keyCode === 13 || e.keyCode === 32) {
-                                            Utilities.hideHeaderMenu('meats-header-menu');
+                                            toggleMeatsMenu();
                                         }
                                     }}
                                 >

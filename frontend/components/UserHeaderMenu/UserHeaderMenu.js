@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { Logout } from '../Logout/Logout';
@@ -19,6 +19,10 @@ const UserMenu = styled.ul`
         float: left;
         position: relative;
 
+        :first-child {
+            margin-right: 0;
+        }
+
         a {
             display: block;
             color: hsl(0, 0%, 100%);
@@ -26,6 +30,7 @@ const UserMenu = styled.ul`
             border: none;
             padding: 0 10px;
             :hover {
+                text-decoration: none;
                 background-image: none;
                 background: ${props => props.theme.lightGreen};
             }
@@ -68,10 +73,6 @@ const UserMenu = styled.ul`
                 }
             }
         }
-
-        :hover ul.child-list {
-            display: block;
-        }
     }
 
     @media all and (max-width: 800px) {
@@ -81,16 +82,31 @@ const UserMenu = styled.ul`
 `;
 
 const UserHeaderMenu = () => {
-    const { loggedInUser } = useContext(AppContext);
+    const { loggedInUser, userMenuVisible, toggleUserMenu } = useContext(AppContext);
 
     return (
         <UserMenu>
             {loggedInUser && (
                 <>
                     <li>
-                        <img src={loggedInUser.image} alt={loggedInUser.name} /> {`${loggedInUser.name} `}
-                        <i className="arrow down" />
-                        <ul className="child-list">
+                        <a
+                            role="button"
+                            tabIndex="0"
+                            onClick={e => {
+                                e.preventDefault();
+                                toggleUserMenu();
+                            }}
+                            onKeyDown={e => {
+                                e.preventDefault();
+                                if (e.keyCode === 13 || e.keyCode === 32) {
+                                    toggleUserMenu();
+                                }
+                            }}
+                        >
+                            <img src={loggedInUser.image} alt={loggedInUser.name} />
+                            {`${loggedInUser.name} `} <i className="arrow down" />
+                        </a>
+                        <ul className="child-list" style={userMenuVisible ? { display: 'block' } : { display: 'none' }}>
                             <li>
                                 <Link href="/create-recipe">
                                     <a>Add New Recipe</a>

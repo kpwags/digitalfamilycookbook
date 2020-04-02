@@ -12,7 +12,6 @@ const Menu = styled.div`
     background-color: hsl(0, 0%, 19.2%);
     padding: 0 15px;
     position: fixed;
-    left: -250px;
     top: 50px;
     height: 100%;
     z-index: 5;
@@ -57,10 +56,10 @@ const Menu = styled.div`
 `;
 
 const MobileMenu = () => {
-    const { loggedInUser } = useContext(AppContext);
+    const { loggedInUser, mobileMenuVisible } = useContext(AppContext);
 
     return (
-        <Menu id="mobilemenu">
+        <Menu id="mobilemenu" style={mobileMenuVisible ? { left: 0 } : { left: '-250px' }}>
             <ul>
                 <>
                     {loggedInUser && (
@@ -83,10 +82,7 @@ const MobileMenu = () => {
                                             Utilities.toggleMobileMenu();
                                         }}
                                         onKeyDown={e => {
-                                            if (
-                                                e.keyCode === 13 ||
-                                                e.keyCode === 32
-                                            ) {
+                                            if (e.keyCode === 13 || e.keyCode === 32) {
                                                 Utilities.toggleMobileMenu();
                                             }
                                         }}
@@ -104,10 +100,7 @@ const MobileMenu = () => {
                                             Utilities.toggleMobileMenu();
                                         }}
                                         onKeyDown={e => {
-                                            if (
-                                                e.keyCode === 13 ||
-                                                e.keyCode === 32
-                                            ) {
+                                            if (e.keyCode === 13 || e.keyCode === 32) {
                                                 Utilities.toggleMobileMenu();
                                             }
                                         }}
