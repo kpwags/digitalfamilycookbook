@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { AuthGateway } from '../../components/AuthGateway/AuthGateway';
@@ -59,35 +59,33 @@ const AdminHome = styled.div`
     }
 `;
 
-class AdminMeats extends Component {
-    render() {
-        return (
-            <>
-                <AuthGateway redirectUrl="/admin/meats" permissionNeeded="ADMIN">
-                    <AdminHome>
-                        <h1>Administration</h1>
-                        <div className="admin-links">
-                            <Link href="/admin/invitation-codes">
-                                <a className="gray">Manage Invitation Codes</a>
-                            </Link>
-                            <Link href="/admin/users">
-                                <a className="orange">Manage Family Members</a>
-                            </Link>
-                            <Link href="/admin/categories">
-                                <a className="green">Manage Categories</a>
-                            </Link>
-                            <Link href="/admin/meats">
-                                <a className="blue">Manage Meats</a>
-                            </Link>
-                            <Link href="/admin/recipes">
-                                <a className="purple">Manage Recipes</a>
-                            </Link>
-                        </div>
-                    </AdminHome>
-                </AuthGateway>
-            </>
-        );
-    }
-}
+const AdminIndex = () => {
+    return (
+        <>
+            <AuthGateway redirectUrl="/admin/meats" permissionNeeded="ADMIN">
+                <AdminHome>
+                    <h1>Administration</h1>
+                    <div className="admin-links">
+                        <Link href="/admin/invitation-codes">
+                            <a className="gray">Manage Invitation Codes</a>
+                        </Link>
+                        <Link href="/admin/users">
+                            <a className="orange">Manage Family Members</a>
+                        </Link>
+                        <Link href="/admin/categories">
+                            <a className="green">Manage Categories</a>
+                        </Link>
+                        <Link href="/admin/meats">
+                            <a className="blue">Manage Meats</a>
+                        </Link>
+                        <Link href="/admin/recipes">
+                            <a className="purple">Manage Recipes</a>
+                        </Link>
+                    </div>
+                </AdminHome>
+            </AuthGateway>
+        </>
+    );
+};
 
-export default AdminMeats;
+export default AdminIndex;

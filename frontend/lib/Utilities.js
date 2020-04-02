@@ -122,7 +122,7 @@ class Utilities {
     static goToRecipe(id) {
         Router.push({
             pathname: '/recipe',
-            query: { id }
+            query: { id },
         });
     }
 
@@ -145,10 +145,7 @@ class Utilities {
     }
 
     static toggleHeaderMenu(menuId) {
-        if (
-            document.getElementById(menuId).style.display === 'none' ||
-            document.getElementById(menuId).style.display === ''
-        ) {
+        if (document.getElementById(menuId).style.display === 'none' || document.getElementById(menuId).style.display === '') {
             document.getElementById(menuId).style.display = 'block';
         } else {
             document.getElementById(menuId).style.display = 'none';
@@ -170,10 +167,7 @@ class Utilities {
     }
 
     static toggleSearchBar() {
-        if (
-            document.getElementById('search-main').style.display === 'none' ||
-            document.getElementById('search-main').style.display === ''
-        ) {
+        if (document.getElementById('search-main').style.display === 'none' || document.getElementById('search-main').style.display === '') {
             document.getElementById('search-main').style.display = 'block';
         } else {
             document.getElementById('search-main').style.display = 'none';
