@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Router from 'next/router';
@@ -41,59 +41,43 @@ const Search = styled.form`
     }
 `;
 
-class SearchForm extends Component {
-    static propTypes = {
-        keywords: PropTypes.string
-    };
+const SearchForm = props => {
+    const [keywords, setKeywords] = useState(props.keywords);
 
-    state = {
-        keywords: ''
-    };
-
-    handleChange = e => {
-        const { name, type, value } = e.target;
-        const val = type === 'number' ? parseFloat(value) : value;
-        this.setState({ [name]: val });
-    };
-
-    search = e => {
+    const search = e => {
         e.preventDefault();
-
-        let searchTerms = this.state.keywords;
-        if (searchTerms === '') {
-            searchTerms = document.getElementById('keywords').value;
-            this.setState({ keywords: searchTerms });
-        }
 
         Router.push({
             pathname: '/search',
-            query: { q: searchTerms }
+            query: { q: keywords },
         });
     };
 
-    render() {
-        const { keywords } = this.props;
+    return (
+        <Search
+            method="POST"
+            onSubmit={e => {
+                search(e);
+            }}
+        >
+            <label htmlFor="keywords">
+                <input
+                    type="search"
+                    name="keywords"
+                    id="keywords"
+                    value={keywords}
+                    onChange={e => {
+                        setKeywords(e.target.value);
+                    }}
+                />
+            </label>
+            <button type="submit">Search</button>
+        </Search>
+    );
+};
 
-        return (
-            <Search
-                method="POST"
-                onSubmit={e => {
-                    this.search(e);
-                }}
-            >
-                <label htmlFor="keywords">
-                    <input
-                        type="search"
-                        name="keywords"
-                        id="keywords"
-                        defaultValue={keywords}
-                        onChange={this.handleChange}
-                    />
-                </label>
-                <button type="submit">Search</button>
-            </Search>
-        );
-    }
-}
+SearchForm.propTypes = {
+    keywords: PropTypes.string,
+};
 
 export { SearchForm };
