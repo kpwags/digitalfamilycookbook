@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import PropTypes from 'prop-types';
 import { Meta } from '../Meta/Meta';
@@ -90,26 +90,24 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
-class Page extends Component {
-    static propTypes = {
-        children: PropTypes.element.isRequired
-    };
+const Page = props => {
+    return (
+        <ThemeProvider theme={Theme}>
+            <GlobalStyle />
+            <StyledPage>
+                <Meta />
+                <Header />
+                <ClearFix />
+                <SearchBar />
+                <MobileMenu />
+                <Inner>{props.children}</Inner>
+            </StyledPage>
+        </ThemeProvider>
+    );
+};
 
-    render() {
-        return (
-            <ThemeProvider theme={Theme}>
-                <GlobalStyle />
-                <StyledPage>
-                    <Meta />
-                    <Header />
-                    <ClearFix />
-                    <SearchBar />
-                    <MobileMenu />
-                    <Inner>{this.props.children}</Inner>
-                </StyledPage>
-            </ThemeProvider>
-        );
-    }
-}
+Page.propTypes = {
+    children: PropTypes.element.isRequired,
+};
 
 export { Page };
