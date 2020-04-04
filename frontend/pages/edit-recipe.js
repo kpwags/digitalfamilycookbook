@@ -9,19 +9,22 @@ import { PageError } from '../components/PageError/PageError';
 import { LoadingBox } from '../components/LoadingBox/LoadingBox';
 import { AppContext } from '../components/AppContext/AppContext';
 
-
-const EditRecipe = props => {
+const EditRecipe = (props) => {
     const { id, returnpage } = props.query;
 
-    const { data: { recipe }, loading, error } = useQuery(RECIPE_BY_ID_QUERY, { variables: { id }});
+    console.log({ props });
+
+    const {
+        data: { recipe },
+        loading,
+        error,
+    } = useQuery(RECIPE_BY_ID_QUERY, { variables: { id } });
 
     const { loggedInUser } = useContext(AppContext);
 
     return (
         <AuthGateway redirectUrl={`/edit-recipe?id=${id}`} permissionNeeded="USER">
-            { error && (
-                <PageError error={{ Title: 'Error', Message: error.message }} />
-            )}
+            {error && <PageError error={{ Title: 'Error', Message: error.message }} />}
 
             {loading && (
                 <div>
@@ -32,8 +35,8 @@ const EditRecipe = props => {
             {!recipe && (
                 <PageError
                     error={{
-                        Title: 'Can\'t Find Recipe',
-                        Message: 'The recipe cannot be found.'
+                        Title: 'Recipe Not Found',
+                        Message: 'The recipe cannot be found.',
                     }}
                 />
             )}
@@ -43,8 +46,8 @@ const EditRecipe = props => {
             ) : (
                 <PageError
                     error={{
-                        Title: 'Can\'t Edit Recipe',
-                        Message: 'You do not have permission to edit this recipe.'
+                        Title: 'Insufficient Permissions',
+                        Message: 'You do not have permission to edit this recipe.',
                     }}
                 />
             )}
@@ -53,7 +56,7 @@ const EditRecipe = props => {
 };
 
 EditRecipe.propTypes = {
-    query: PropTypes.object
+    query: PropTypes.object,
 };
 
 export default EditRecipe;

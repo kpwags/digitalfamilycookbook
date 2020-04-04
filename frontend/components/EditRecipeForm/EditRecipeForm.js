@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Query, Mutation } from 'react-apollo';
+import React, { useState } from 'react';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import Router from 'next/router';
 import PropTypes from 'prop-types';
 import { UPDATE_RECIPE_MUTATION } from '../../mutations/Recipe';
@@ -11,182 +11,195 @@ import { Trashcan } from '../Trashcan/Trashcan';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { Utilities } from '../../lib/Utilities';
 import { FormValidator } from '../../lib/FormValidator';
+import { TextInput } from '../TextInput/TextInput';
 
-class EditRecipeForm extends Component {
-    static propTypes = {
-        recipe: PropTypes.object,
-        previousPage: PropTypes.string
-    };
+const EditRecipeForm = (props) => {
+    const { recipe } = props;
 
-    constructor(props) {
-        super();
+    const [error, setError] = useState(null);
+    const [id] = useState(recipe.id);
+    const [name, setName] = useState(recipe.name);
+    const [nameError, setNameError] = useState('');
+    const [isPublic] = useState(false);
+    const [source, setSource] = useState(recipe.source === null ? '' : recipe.source);
+    const [sourceUrl, setSourceUrl] = useState(recipe.sourceUrl === null ? '' : recipe.sourceUrl);
+    const [time, setTime] = useState(recipe.time === null ? '' : recipe.time);
+    const [timeError, setTimeError] = useState('');
+    const [activeTime, setActiveTime] = useState(recipe.activeTime === null ? '' : recipe.activeTime);
+    const [activeTimeError, setActiveTimeError] = useState('');
+    const [servings, setServings] = useState(recipe.servings === null ? '' : recipe.servings);
+    const [servingsError, setServingsError] = useState('');
+    const [calories, setCalories] = useState(recipe.calories === null ? '' : recipe.calories);
+    const [caloriesError, setCaloriesError] = useState('');
+    const [carbohydrates, setCarbohydrates] = useState(recipe.carbohydrates === null ? '' : recipe.carbohydrates);
+    const [carbohydratesError, setCarbohydratesError] = useState('');
+    const [protein, setProtein] = useState(recipe.protein === null ? '' : recipe.protein);
+    const [proteinError, setProteinError] = useState('');
+    const [fat, setFat] = useState(recipe.fat === null ? '' : recipe.fat);
+    const [fatError, setFatError] = useState('');
+    const [sugar, setSugar] = useState(recipe.sugar === null ? '' : recipe.sugar);
+    const [sugarError, setSugarError] = useState('');
+    const [cholesterol, setCholesterol] = useState(recipe.cholesterol === null ? '' : recipe.cholesterol);
+    const [cholesterolError, setCholesterolError] = useState('');
+    const [fiber, setFiber] = useState(recipe.fiber === null ? '' : recipe.fiber);
+    const [fiberError, setFiberError] = useState('');
+    const [image, setImage] = useState(recipe.image === null ? '' : recipe.image);
+    const [largeImage, setLargeImage] = useState(recipe.largeImage === null ? '' : recipe.largeImage);
+    const [ingredients, setIngredients] = useState(recipe.ingredients);
+    const [ingredientsError, setIngredientsError] = useState('');
+    const [directions, setDirections] = useState(recipe.directions);
+    const [directionsError, setDirectionsError] = useState();
+    const [meats, setMeats] = useState(Utilities.convertIDArray(recipe.meats));
+    const [categories, setCategories] = useState(Utilities.convertIDArray(recipe.categories));
 
-        const { recipe } = props;
+    const [updateRecipe, { loading: updateLoading, error: updateError }] = useMutation(UPDATE_RECIPE_MUTATION, {
+        refetchQueries: [{ query: RECIPE_BY_ID_QUERY, variables: { id } }],
+        onCompleted: (data) => {
+            switch (props.previousPage) {
+                case 'admin':
+                    Router.push({
+                        pathname: '/admin/recipes',
+                    });
+                    break;
+                case 'view':
+                default:
+                    Router.push({
+                        pathname: '/recipe',
+                        query: { id: data.updateRecipe.id },
+                    });
+                    break;
+            }
+        },
+    });
 
-        const meats = Utilities.convertIDArray(recipe.meats);
-        const categories = Utilities.convertIDArray(recipe.categories);
+    const { data: categoryData, error: categoriesError, loading: categoriesLoading } = useQuery(ALL_CATEGORIES_QUERY);
+    const { data: meatData, error: meatsError, loading: meatsLoading } = useQuery(ALL_MEATS_QUERY);
 
-        this.state = {
-            error: null,
-            successMessage: null,
-            id: recipe.id,
-            name: recipe.name,
-            public: false,
-            source: recipe.source === null ? '' : recipe.source,
-            sourceUrl: recipe.sourceUrl === null ? '' : recipe.sourceUrl,
-            time: recipe.time === null ? '' : recipe.time,
-            activeTime: recipe.activeTime === null ? '' : recipe.activeTime,
-            servings: recipe.servings === null ? '' : recipe.servings,
-            calories: recipe.calories === null ? '' : recipe.calories,
-            carbohydrates: recipe.carbohydrates === null ? '' : recipe.carbohydrates,
-            protein: recipe.protein === null ? '' : recipe.protein,
-            fat: recipe.fat === null ? '' : recipe.fat,
-            sugar: recipe.sugar === null ? '' : recipe.sugar,
-            cholesterol: recipe.cholesterol === null ? '' : recipe.cholesterol,
-            fiber: recipe.fiber === null ? '' : recipe.fiber,
-            image: recipe.image === null ? '' : recipe.image,
-            largeImage: recipe.largeImage === null ? '' : recipe.largeImage,
-            ingredients: recipe.ingredients,
-            directions: recipe.directions,
-            meats,
-            categories
-        };
-    }
-
-    handleChange = e => {
-        const { name, type, value } = e.target;
-        const val = type === 'number' ? parseFloat(value) : value;
-        this.setState({ [name]: val });
-    };
-
-    handleIngredientChange = (e, ingredient) => {
+    const handleIngredientChange = (e, ingredient) => {
         const { value } = e.target;
 
-        const { ingredients } = this.state;
+        const tmpIngredients = [];
 
-        ingredients.forEach(i => {
+        ingredients.forEach((i) => {
             if (i.sortOrder === ingredient.sortOrder) {
-                // eslint-disable-next-line no-param-reassign
-                i.name = value;
+                const ing = {
+                    sortOrder: i.sortOrder,
+                    name: value,
+                };
+                tmpIngredients.push(ing);
+            } else {
+                tmpIngredients.push(i);
             }
         });
 
-        this.setState({ ingredients });
+        setIngredients(tmpIngredients);
     };
 
-    addIngredient = e => {
+    const addIngredient = (e) => {
         e.preventDefault();
 
-        const { ingredients } = this.state;
+        const tmpIngredients = ingredients;
 
-        const nextKey = Utilities.getNextAvailableValue(ingredients, 'sortOrder');
+        const nextKey = Utilities.getNextAvailableValue(tmpIngredients, 'sortOrder');
 
-        ingredients.push({ sortOrder: nextKey, name: '' });
+        tmpIngredients.push({ sortOrder: nextKey, name: '' });
 
-        this.setState({ ingredients });
+        setIngredients(tmpIngredients);
     };
 
-    deleteIngredient = (e, ingredient) => {
+    const deleteIngredient = (e, ingredient) => {
         e.preventDefault();
 
-        if (
-            typeof e.keyCode === 'undefined' ||
-            (typeof e.keyCode !== 'undefined' && (e.keyCode === 13 || e.keyCode === 32))
-        ) {
-            const { ingredients } = this.state;
-            const newIngredients = ingredients.filter(i => {
+        if (typeof e.keyCode === 'undefined' || (typeof e.keyCode !== 'undefined' && (e.keyCode === 13 || e.keyCode === 32))) {
+            const newIngredients = ingredients.filter((i) => {
                 return i.sortOrder !== ingredient.sortOrder;
             });
 
-            this.setState({ ingredients: newIngredients });
+            setIngredients(newIngredients);
         }
     };
 
-    handleDirectionChange = (e, direction) => {
+    const handleDirectionChange = (e, direction) => {
         const { value } = e.target;
 
-        const { directions } = this.state;
+        const tmpDirections = [];
 
-        directions.forEach(i => {
-            if (i.sortOrder === direction.sortOrder) {
-                // eslint-disable-next-line no-param-reassign
-                i.direction = value;
+        directions.forEach((d) => {
+            if (d.sortOrder === direction.sortOrder) {
+                const dir = {
+                    sortOrder: d.sortOrder,
+                    direction: value,
+                };
+                tmpDirections.push(dir);
+            } else {
+                tmpDirections.push(d);
             }
         });
 
-        this.setState({ directions });
+        setDirections(tmpDirections);
     };
 
-    addDirection = e => {
+    const addDirection = (e) => {
         e.preventDefault();
 
-        const { directions } = this.state;
+        const tmpDirections = directions;
 
-        const nextSortOrder = Utilities.getNextAvailableValue(directions, 'sortOrder');
+        const nextSortOrder = Utilities.getNextAvailableValue(tmpDirections, 'sortOrder');
 
-        directions.push({ sortOrder: nextSortOrder, direction: '' });
+        tmpDirections.push({ sortOrder: nextSortOrder, direction: '' });
 
-        this.setState({ directions });
+        setDirections(tmpDirections);
     };
 
-    deleteDirection = (e, direction) => {
+    const deleteDirection = (e, direction) => {
         e.preventDefault();
 
-        if (
-            typeof e.keyCode === 'undefined' ||
-            (typeof e.keyCode !== 'undefined' && (e.keyCode === 13 || e.keyCode === 32))
-        ) {
-            const { directions } = this.state;
-
-            const newDirections = directions.filter(i => {
+        if (typeof e.keyCode === 'undefined' || (typeof e.keyCode !== 'undefined' && (e.keyCode === 13 || e.keyCode === 32))) {
+            const newDirections = directions.filter((i) => {
                 return i.sortOrder !== direction.sortOrder;
             });
 
-            this.setState({ directions: newDirections });
+            setDirections(newDirections);
         }
     };
 
-    onCategoryChange = e => {
-        const { categories } = this.state;
+    const onCategoryChange = (e) => {
+        const tmpCategories = categories;
         const categoryId = e.target.name.split('_')[1];
 
-        if (categories.includes(categoryId)) {
-            for (let i = 0; i < categories.length; i += 1) {
-                if (categories[i] === categoryId) {
-                    categories.splice(i, 1);
+        if (tmpCategories.includes(categoryId)) {
+            for (let i = 0; i < tmpCategories.length; i += 1) {
+                if (tmpCategories[i] === categoryId) {
+                    tmpCategories.splice(i, 1);
                     break;
                 }
             }
         } else {
-            categories.push(categoryId);
+            tmpCategories.push(categoryId);
         }
 
-        this.setState({
-            categories
-        });
+        setCategories(tmpCategories);
     };
 
-    onMeatChange = e => {
-        const { meats } = this.state;
+    const onMeatChange = (e) => {
+        const tmpMeats = meats;
         const meatId = e.target.name.split('_')[1];
 
-        if (meats.includes(meatId)) {
-            for (let i = 0; i < meats.length; i += 1) {
-                if (meats[i] === meatId) {
-                    meats.splice(i, 1);
+        if (tmpMeats.includes(meatId)) {
+            for (let i = 0; i < tmpMeats.length; i += 1) {
+                if (tmpMeats[i] === meatId) {
+                    tmpMeats.splice(i, 1);
                     break;
                 }
             }
         } else {
-            meats.push(meatId);
+            tmpMeats.push(meatId);
         }
 
-        this.setState({
-            meats
-        });
+        setMeats(tmpMeats);
     };
 
-    uploadFile = async e => {
+    const uploadFile = async (e) => {
         const { files } = e.target;
         const data = new FormData();
         data.append('file', files[0]);
@@ -194,673 +207,558 @@ class EditRecipeForm extends Component {
 
         const res = await fetch('https://api.cloudinary.com/v1_1/kpwags/image/upload', {
             method: 'POST',
-            body: data
+            body: data,
         });
 
         const file = await res.json();
 
-        this.setState({
-            image: file.secure_url,
-            largeImage: file.eager[0].secure_url
-        });
+        setImage(file.secure_url);
+        setLargeImage(file.eager[0].secure_url);
     };
 
-    updateRecipe = async (e, updateRecipeMutation) => {
-        e.preventDefault();
-
-        this.setState({ error: null });
-
-        const args = JSON.parse(JSON.stringify(this.state));
-
-        const dbCategories = [];
-        args.categories.forEach(category => {
-            dbCategories.push({ id: category });
-        });
-        const dbMeats = [];
-        args.meats.forEach(meat => {
-            dbMeats.push({ id: meat });
-        });
-
-        const ingredients = [];
-        args.ingredients.forEach(i => {
-            const ingredient = i;
-
-            // eslint-disable-next-line no-underscore-dangle
-            delete ingredient.__typename;
-
-            ingredients.push(ingredient);
-        });
-
-        const directions = [];
-        args.directions.forEach(d => {
-            const direction = d;
-
-            // eslint-disable-next-line no-underscore-dangle
-            delete direction.__typename;
-
-            directions.push(direction);
-        });
-
-        if (args.time === '') {
-            args.time = null;
-        }
-
-        if (args.activeTime === '') {
-            args.activeTime = null;
-        }
-
-        if (args.servings === '') {
-            args.servings = null;
-        }
-
-        if (args.calories === '') {
-            args.calories = null;
-        }
-
-        if (args.protein === '') {
-            args.protein = null;
-        }
-
-        if (args.carbohydrates === '') {
-            args.carbohydrates = null;
-        }
-
-        if (args.fat === '') {
-            args.fat = null;
-        }
-
-        if (args.cholesterol === '') {
-            args.cholesterol = null;
-        }
-
-        if (args.fiber === '') {
-            args.fiber = null;
-        }
-
-        if (args.sugar === '') {
-            args.sugar = null;
-        }
-
-        if (this.validateForm()) {
-            await updateRecipeMutation({
-                variables: {
-                    ...args,
-                    ingredients,
-                    directions,
-                    categories: dbCategories,
-                    meats: dbMeats
-                }
-            }).catch(err => {
-                this.setState({ error: err }, () => {
-                    window.scrollTo(0, 0);
-                });
-            });
-
-            if (this.state.error === null) {
-                switch (this.props.previousPage) {
-                case 'admin':
-                    Router.push({
-                        pathname: '/admin/recipes'
-                    });
-                    break;
-                case 'view':
-                default:
-                    Router.push({
-                        pathname: '/recipe',
-                        query: { id: args.id }
-                    });
-                    break;
-                }
-            }
-        }
-    };
-
-    validate = e => {
-        e.preventDefault();
-
-        // eslint-disable-next-line default-case
-        switch (e.target.id) {
-        case 'name':
-            if (!FormValidator.validateNotEmpty(this.state.name)) {
-                Utilities.invalidateField('name', 'Name is required.');
-            } else {
-                Utilities.resetField('name');
-            }
-            break;
-        case 'servings':
-        case 'time':
-        case 'activeTime':
-        case 'calories':
-        case 'protein':
-        case 'carbohydrates':
-        case 'fat':
-        case 'sugar':
-        case 'fiber':
-        case 'cholesterol':
-            if (!FormValidator.validateNumeric(this.state[e.target.id])) {
-                Utilities.invalidateField(e.target.id, 'Must be numeric');
-            } else {
-                Utilities.resetField(e.target.id);
-            }
-            break;
-        }
-    };
-
-    validateForm = () => {
+    const validateForm = () => {
         let isValid = true;
 
-        if (!FormValidator.validateNotEmpty(this.state.name)) {
-            Utilities.invalidateField('name', 'Name is required.');
+        if (!FormValidator.validateNotEmpty(name)) {
+            setNameError('Name is required');
             isValid = false;
         } else {
-            Utilities.resetField('name');
+            setNameError('');
         }
 
         let hasIngredients = false;
-        this.state.ingredients.forEach(i => {
+        ingredients.forEach((i) => {
             if (i.name.trim() !== '') {
                 hasIngredients = true;
             }
         });
 
         if (!hasIngredients) {
-            Utilities.invalidateFieldByClass('ingredient');
-            document.getElementById('ingredients-message').innerHTML = 'At least 1 ingredient is required';
-            document.getElementById('ingredients-message').style.display = 'block';
+            setIngredientsError('At least 1 ingredient is required');
             isValid = false;
         } else {
-            Utilities.resetFieldByClass('ingredient');
-            document.getElementById('ingredients-message').style.display = 'none';
+            setIngredientsError('');
         }
 
         let hasDirections = false;
-        this.state.directions.forEach(d => {
+        directions.forEach((d) => {
             if (d.direction.trim() !== '') {
                 hasDirections = true;
             }
         });
 
         if (!hasDirections) {
-            Utilities.invalidateFieldByClass('direction');
-            document.getElementById('directions-message').innerHTML = 'At least 1 direction is required';
-            document.getElementById('directions-message').style.display = 'block';
+            setDirectionsError('At least 1 direction is required');
             isValid = false;
         } else {
-            Utilities.resetFieldByClass('direction');
-            document.getElementById('directions-message').style.display = 'none';
+            setDirectionsError('');
         }
 
-        if (!FormValidator.validateNumeric(this.state.time)) {
-            Utilities.invalidateField('time', 'Time must be numeric');
+        if (!FormValidator.validateNumeric(time)) {
+            setTimeError('Time must be numeric');
             isValid = false;
         } else {
-            Utilities.resetField('time');
+            setTimeError('');
         }
 
-        if (!FormValidator.validateNumeric(this.state.activeTime)) {
-            Utilities.invalidateField('activeTime', 'Active time must be numeric');
+        if (!FormValidator.validateNumeric(activeTime)) {
+            setActiveTimeError('Active time must be numeric');
             isValid = false;
         } else {
-            Utilities.resetField('activeTime');
+            setActiveTimeError('');
         }
 
-        if (!FormValidator.validateNumeric(this.state.servings)) {
-            Utilities.invalidateField('servings', 'Servings must be numeric');
+        if (!FormValidator.validateNumeric(servings)) {
+            setServingsError('Servings must be numeric');
             isValid = false;
         } else {
-            Utilities.resetField('servings');
+            setServingsError('');
         }
 
-        if (!FormValidator.validateNumeric(this.state.calories)) {
-            Utilities.invalidateField('calories', 'Calories must be numeric');
+        if (!FormValidator.validateNumeric(calories)) {
+            setCaloriesError('Calories must be numeric');
             isValid = false;
         } else {
-            Utilities.resetField('calories');
+            setCaloriesError('');
         }
 
-        if (!FormValidator.validateNumeric(this.state.protein)) {
-            Utilities.invalidateField('protein', 'Protein must be numeric');
+        if (!FormValidator.validateNumeric(protein)) {
+            setProteinError('Protein must be numeric');
             isValid = false;
         } else {
-            Utilities.resetField('protein');
+            setProteinError('');
         }
 
-        if (!FormValidator.validateNumeric(this.state.carbohydrates)) {
-            Utilities.invalidateField('carbohydrates', 'Carbohydrates must be numeric');
+        if (!FormValidator.validateNumeric(carbohydrates)) {
+            setCarbohydratesError('Carbohydrates must be numeric');
             isValid = false;
         } else {
-            Utilities.resetField('carbohydrates');
+            setCarbohydratesError('');
         }
 
-        if (!FormValidator.validateNumeric(this.state.fat)) {
-            Utilities.invalidateField('fat', 'Fat must be numeric');
+        if (!FormValidator.validateNumeric(fat)) {
+            setFatError('Fat must be numeric');
             isValid = false;
         } else {
-            Utilities.resetField('fat');
+            setFatError('');
         }
 
-        if (!FormValidator.validateNumeric(this.state.sugar)) {
-            Utilities.invalidateField('sugar', 'Sugar must be numeric');
+        if (!FormValidator.validateNumeric(cholesterol)) {
+            setCholesterolError('Cholesterol must be numeric');
             isValid = false;
         } else {
-            Utilities.resetField('sugar');
+            setCholesterolError('');
         }
 
-        if (!FormValidator.validateNumeric(this.state.cholesterol)) {
-            Utilities.invalidateField('cholesterol', 'Cholesterol must be numeric');
+        if (!FormValidator.validateNumeric(sugar)) {
+            setSugarError('Sugar must be numeric');
             isValid = false;
         } else {
-            Utilities.resetField('cholesterol');
+            setSugarError('');
         }
 
-        if (!FormValidator.validateNumeric(this.state.fiber)) {
-            Utilities.invalidateField('fiber', 'Fiber must be numeric');
+        if (!FormValidator.validateNumeric(fiber)) {
+            setFiberError('Fiber must be numeric');
             isValid = false;
         } else {
-            Utilities.resetField('fiber');
+            setFiberError('');
         }
 
         return isValid;
     };
 
-    render() {
-        return (
-            <Mutation
-                mutation={UPDATE_RECIPE_MUTATION}
-                refetchQueries={[{ query: RECIPE_BY_ID_QUERY, variables: { id: this.state.id } }]}
-                onCompleted={() => {
-                    if (this.state.error === null) {
-                        this.setState({
-                            successMessage: 'Recipe created successfully'
-                        });
-                    }
-                }}
-            >
-                {(updateRecipe, { error, loading }) => (
-                    <RecipeForm
-                        id="create-recipe-form"
-                        data-test="form"
-                        method="POST"
-                        onSubmit={e => {
-                            this.updateRecipe(e, updateRecipe);
-                        }}
-                    >
-                        <h2>Edit Recipe</h2>
-                        <ErrorMessage error={error || this.state.error} />
-                        <fieldset disabled={loading} aria-busy={loading}>
-                            <label htmlFor="name">
-                                Name <span className="required">*</span>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    value={this.state.name}
-                                    onChange={this.handleChange}
-                                    onBlur={this.validate}
-                                />
-                                <div className="error-text" id="name-message" />
-                            </label>
-                            <label htmlFor="source">
-                                Source
-                                <input
-                                    type="text"
-                                    id="source"
-                                    name="source"
-                                    value={this.state.source}
-                                    onChange={this.handleChange}
-                                />
-                            </label>
-                            <label htmlFor="sourceUrl">
-                                Source URL
-                                <input
-                                    type="text"
-                                    id="sourceUrl"
-                                    name="sourceUrl"
-                                    value={this.state.sourceUrl}
-                                    onChange={this.handleChange}
-                                />
-                            </label>
-                            <div className="recipe-form-grid">
-                                <div className="ingredients-directions">
-                                    <h2>Ingredients</h2>
+    const saveRecipe = async (e) => {
+        e.preventDefault();
 
-                                    <div className="error-text" id="ingredients-message" />
+        setError(null);
 
-                                    <div id="ingredients">
-                                        {this.state.ingredients.map(ingredient => (
-                                            <label key={ingredient.sortOrder} htmlFor="name">
-                                                <div className="ingredient">
-                                                    <div className="input">
-                                                        <input
-                                                            type="text"
-                                                            id={`ingredientname-${ingredient.sortOrder}`}
-                                                            name="name"
-                                                            className="ingredient"
-                                                            value={ingredient.name}
-                                                            onChange={e => {
-                                                                this.handleIngredientChange(e, ingredient);
-                                                            }}
-                                                        />
-                                                    </div>
-                                                    <div className="delete-button">
-                                                        {this.state.ingredients.length > 1 && (
-                                                            <a
-                                                                role="button"
-                                                                tabIndex={0}
-                                                                title="Delete Ingredient"
-                                                                onClick={e => {
-                                                                    this.deleteIngredient(e, ingredient);
-                                                                }}
-                                                                onKeyUp={e => {
-                                                                    this.deleteIngredient(e, ingredient);
-                                                                }}
-                                                            >
-                                                                <Trashcan
-                                                                    width="32px"
-                                                                    height="32px"
-                                                                    className="delete-item"
-                                                                />
-                                                            </a>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </label>
-                                        ))}
+        const dbCategories = [];
+        categories.forEach((category) => {
+            dbCategories.push({ id: category });
+        });
+
+        const dbMeats = [];
+        meats.forEach((meat) => {
+            dbMeats.push({ id: meat });
+        });
+
+        if (time === '') {
+            setTime(null);
+        }
+
+        if (activeTime === '') {
+            setActiveTime(null);
+        }
+
+        if (servings === '') {
+            setServings(null);
+        }
+
+        if (calories === '') {
+            setCalories(null);
+        }
+
+        if (protein === '') {
+            setProtein(null);
+        }
+
+        if (carbohydrates === '') {
+            setCarbohydrates(null);
+        }
+
+        if (fat === '') {
+            setFat(null);
+        }
+
+        if (cholesterol === '') {
+            setCholesterol(null);
+        }
+
+        if (fiber === '') {
+            setFiber(null);
+        }
+
+        if (sugar === '') {
+            setSugar(null);
+        }
+
+        if (validateForm()) {
+            await updateRecipe({
+                variables: {
+                    id,
+                    name,
+                    public: isPublic,
+                    source,
+                    sourceUrl,
+                    time,
+                    activeTime,
+                    servings,
+                    calories,
+                    protein,
+                    fat,
+                    sugar,
+                    cholesterol,
+                    fiber,
+                    image,
+                    largeImage,
+                    ingredients,
+                    directions,
+                    categories: dbCategories,
+                    meats: dbMeats,
+                },
+            }).catch((err) => {
+                setError(err);
+                window.scrollTo(0, 0);
+            });
+        }
+    };
+
+    return (
+        <RecipeForm
+            id="create-recipe-form"
+            data-test="form"
+            method="POST"
+            onSubmit={(e) => {
+                saveRecipe(e);
+            }}
+        >
+            <h2>Edit Recipe</h2>
+
+            <ErrorMessage error={error || updateError} />
+
+            <fieldset disabled={updateLoading} aria-busy={updateLoading}>
+                <TextInput
+                    name="name"
+                    id="name"
+                    label="Name"
+                    value={name}
+                    error={nameError}
+                    validationRule="notempty"
+                    onChange={(e) => {
+                        setName(e.target.value);
+                    }}
+                />
+
+                <TextInput
+                    name="source"
+                    id="source"
+                    label="Source"
+                    value={source}
+                    error=""
+                    onChange={(e) => {
+                        setSource(e.target.value);
+                    }}
+                />
+
+                <TextInput
+                    name="sourceurl"
+                    id="sourceurl"
+                    label="Source URL"
+                    value={sourceUrl}
+                    error=""
+                    onChange={(e) => {
+                        setSourceUrl(e.target.value);
+                    }}
+                />
+                <div className="recipe-form-grid">
+                    <div className="ingredients-directions">
+                        <h2>Ingredients</h2>
+
+                        <div className="error-text" style={ingredientsError ? { display: 'block' } : { display: 'none' }}>
+                            {ingredientsError}
+                        </div>
+
+                        <div id="ingredients">
+                            {ingredients.map((ingredient) => (
+                                <label key={ingredient.sortOrder} htmlFor="name">
+                                    <div className="ingredient">
+                                        <div className="input">
+                                            <input
+                                                type="text"
+                                                id={`ingredientname-${ingredient.sortOrder}`}
+                                                name="name"
+                                                className="ingredient"
+                                                value={ingredient.name}
+                                                onChange={(e) => {
+                                                    handleIngredientChange(e, ingredient);
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="delete-button">
+                                            {ingredients.length > 1 && (
+                                                <a
+                                                    role="button"
+                                                    tabIndex={0}
+                                                    title="Delete Ingredient"
+                                                    onClick={(e) => {
+                                                        deleteIngredient(e, ingredient);
+                                                    }}
+                                                    onKeyUp={(e) => {
+                                                        deleteIngredient(e, ingredient);
+                                                    }}
+                                                >
+                                                    <Trashcan width="32px" height="32px" className="delete-item" />
+                                                </a>
+                                            )}
+                                        </div>
                                     </div>
+                                </label>
+                            ))}
+                        </div>
 
-                                    <button
-                                        type="button"
-                                        onClick={e => {
-                                            this.addIngredient(e);
-                                        }}
-                                    >
-                                        Add Ingredient
-                                    </button>
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                addIngredient(e);
+                            }}
+                        >
+                            Add Ingredient
+                        </button>
 
-                                    <h2>Directions</h2>
+                        <h2>Directions</h2>
 
-                                    <div className="error-text" id="directions-message" />
+                        <div className="error-text" style={directionsError ? { display: 'block' } : { display: 'none' }}>
+                            {directionsError}
+                        </div>
 
-                                    <div id="directions">
-                                        {this.state.directions.map(direction => (
-                                            <label key={direction.sortOrder} htmlFor="direction">
-                                                <div className="direction">
-                                                    <div className="input">
-                                                        <textarea
-                                                            id={`directionstep-${direction.sortOrder}`}
-                                                            name="direction"
-                                                            className="direction"
-                                                            value={direction.direction}
-                                                            onChange={e => {
-                                                                this.handleDirectionChange(e, direction);
-                                                            }}
-                                                        />
-                                                    </div>
-                                                    <div className="delete-button">
-                                                        {this.state.directions.length > 1 && (
-                                                            <a
-                                                                role="button"
-                                                                tabIndex={0}
-                                                                title="Delete Direction"
-                                                                onClick={e => {
-                                                                    this.deleteDirection(e, direction);
-                                                                }}
-                                                                onKeyUp={e => {
-                                                                    this.deleteDirection(e, direction);
-                                                                }}
-                                                            >
-                                                                <Trashcan
-                                                                    width="32px"
-                                                                    height="32px"
-                                                                    className="delete-item"
-                                                                />
-                                                            </a>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </label>
-                                        ))}
+                        <div id="directions">
+                            {directions.map((direction) => (
+                                <label key={direction.sortOrder} htmlFor="direction">
+                                    <div className="direction">
+                                        <div className="input">
+                                            <textarea
+                                                id={`directionstep-${direction.sortOrder}`}
+                                                name="direction"
+                                                className="direction"
+                                                defaultValue={direction.direction}
+                                                onChange={(e) => {
+                                                    handleDirectionChange(e, direction);
+                                                }}
+                                            />
+                                        </div>
+                                        <div className="delete-button">
+                                            {directions.length > 1 && (
+                                                <a
+                                                    role="button"
+                                                    tabIndex={0}
+                                                    title="Delete Direction"
+                                                    onClick={(e) => {
+                                                        deleteDirection(e, direction);
+                                                    }}
+                                                    onKeyUp={(e) => {
+                                                        deleteDirection(e, direction);
+                                                    }}
+                                                >
+                                                    <Trashcan width="32px" height="32px" className="delete-item" />
+                                                </a>
+                                            )}
+                                        </div>
                                     </div>
+                                </label>
+                            ))}
+                        </div>
 
-                                    <button
-                                        type="button"
-                                        onClick={e => {
-                                            this.addDirection(e);
-                                        }}
-                                    >
-                                        Add Step
-                                    </button>
-                                </div>
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                addDirection(e);
+                            }}
+                        >
+                            Add Step
+                        </button>
+                    </div>
 
-                                <div className="time-nutrition">
-                                    <label htmlFor="time">
-                                        Time (Minutes)
-                                        <input
-                                            type="text"
-                                            id="time"
-                                            name="time"
-                                            className="small"
-                                            value={this.state.time}
-                                            onChange={this.handleChange}
-                                            onBlur={this.validate}
-                                        />
-                                        <div className="error-text" id="time-message" />
-                                    </label>
+                    <div className="time-nutrition">
+                        <TextInput
+                            id="time"
+                            name="time"
+                            label="Time"
+                            value={time}
+                            error={timeError}
+                            validationRule="numeric"
+                            onChange={(e) => {
+                                setTime(e.target.value);
+                            }}
+                        />
 
-                                    <label htmlFor="activeTime">
-                                        Active Time (Minutes)
-                                        <input
-                                            type="text"
-                                            id="activeTime"
-                                            name="activeTime"
-                                            className="small"
-                                            value={this.state.activeTime}
-                                            onChange={this.handleChange}
-                                            onBlur={this.validate}
-                                        />
-                                        <div className="error-text" id="activeTime-message" />
-                                    </label>
+                        <TextInput
+                            id="activetime"
+                            name="activetime"
+                            label="Active Time"
+                            value={activeTime}
+                            error={activeTimeError}
+                            validationRule="numeric"
+                            onChange={(e) => {
+                                setActiveTime(e.target.value);
+                            }}
+                        />
 
-                                    <label htmlFor="servings">
-                                        Servings
-                                        <input
-                                            type="text"
-                                            id="servings"
-                                            name="servings"
-                                            className="small"
-                                            value={this.state.servings}
-                                            onChange={this.handleChange}
-                                            onBlur={this.validate}
-                                        />
-                                        <div className="error-text" id="servings-message" />
-                                    </label>
+                        <TextInput
+                            id="servings"
+                            name="servings"
+                            label="Servings"
+                            value={servings}
+                            error={servingsError}
+                            validationRule="numeric"
+                            onChange={(e) => {
+                                setServings(e.target.value);
+                            }}
+                        />
 
-                                    <h3>Nutrition</h3>
+                        <h3>Nutrition</h3>
 
-                                    <label htmlFor="calories">
-                                        Calories
-                                        <input
-                                            type="text"
-                                            id="calories"
-                                            name="calories"
-                                            className="small"
-                                            value={this.state.calories}
-                                            onChange={this.handleChange}
-                                            onBlur={this.validate}
-                                        />
-                                        <div className="error-text" id="calories-message" />
-                                    </label>
+                        <TextInput
+                            id="calories"
+                            name="calories"
+                            label="Calories"
+                            value={calories}
+                            error={caloriesError}
+                            validationRule="numeric"
+                            onChange={(e) => {
+                                setCalories(e.target.value);
+                            }}
+                        />
 
-                                    <label htmlFor="protein">
-                                        Protein (g)
-                                        <input
-                                            type="text"
-                                            id="protein"
-                                            name="protein"
-                                            className="small"
-                                            value={this.state.protein}
-                                            onChange={this.handleChange}
-                                            onBlur={this.validate}
-                                        />
-                                        <div className="error-text" id="protein-message" />
-                                    </label>
+                        <TextInput
+                            id="protein"
+                            name="protein"
+                            label="Protein (g)"
+                            value={protein}
+                            error={proteinError}
+                            validationRule="numeric"
+                            onChange={(e) => {
+                                setProtein(e.target.value);
+                            }}
+                        />
 
-                                    <label htmlFor="carbohydrates">
-                                        Carbohydrates (g)
-                                        <input
-                                            type="text"
-                                            id="carbohydrates"
-                                            name="carbohydrates"
-                                            className="small"
-                                            value={this.state.carbohydrates}
-                                            onChange={this.handleChange}
-                                            onBlur={this.validate}
-                                        />
-                                        <div className="error-text" id="carbohydrates-message" />
-                                    </label>
+                        <TextInput
+                            id="carbohyrdates"
+                            name="carbohydrates"
+                            label="Carbohydrates (g)"
+                            value={carbohydrates}
+                            error={carbohydratesError}
+                            validationRule="numeric"
+                            onChange={(e) => {
+                                setCarbohydrates(e.target.value);
+                            }}
+                        />
 
-                                    <label htmlFor="fat">
-                                        Fat (g)
-                                        <input
-                                            type="text"
-                                            id="fat"
-                                            name="fat"
-                                            className="small"
-                                            value={this.state.fat}
-                                            onChange={this.handleChange}
-                                            onBlur={this.validate}
-                                        />
-                                        <div className="error-text" id="fat-message" />
-                                    </label>
+                        <TextInput
+                            id="fat"
+                            name="fat"
+                            label="Fat (g)"
+                            value={fat}
+                            error={fatError}
+                            validationRule="numeric"
+                            onChange={(e) => {
+                                setFat(e.target.value);
+                            }}
+                        />
 
-                                    <label htmlFor="sugar">
-                                        Sugar (g)
-                                        <input
-                                            type="text"
-                                            id="sugar"
-                                            name="sugar"
-                                            className="small"
-                                            value={this.state.sugar}
-                                            onChange={this.handleChange}
-                                            onBlur={this.validate}
-                                        />
-                                        <div className="error-text" id="sugar-message" />
-                                    </label>
+                        <TextInput
+                            id="sugar"
+                            name="sugar"
+                            label="Sugar (g)"
+                            value={sugar}
+                            error={sugarError}
+                            validationRule="numeric"
+                            onChange={(e) => {
+                                setSugar(e.target.value);
+                            }}
+                        />
 
-                                    <label htmlFor="cholesterol">
-                                        Cholesterol (mg)
-                                        <input
-                                            type="text"
-                                            id="cholesterol"
-                                            name="cholesterol"
-                                            className="small"
-                                            value={this.state.cholesterol}
-                                            onChange={this.handleChange}
-                                            onBlur={this.validate}
-                                        />
-                                        <div className="error-text" id="cholesterol-message" />
-                                    </label>
+                        <TextInput
+                            id="cholesterol"
+                            name="cholesterol"
+                            label="Cholesterol (mg)"
+                            value={cholesterol}
+                            error={cholesterolError}
+                            validationRule="numeric"
+                            onChange={(e) => {
+                                setCholesterol(e.target.value);
+                            }}
+                        />
 
-                                    <label htmlFor="fiber">
-                                        Fiber (g)
-                                        <input
-                                            type="text"
-                                            id="fiber"
-                                            name="fiber"
-                                            className="small"
-                                            value={this.state.fiber}
-                                            onChange={this.handleChange}
-                                            onBlur={this.validate}
-                                        />
-                                        <div className="error-text" id="fiber-message" />
-                                    </label>
-                                </div>
-                            </div>
+                        <TextInput
+                            id="fiber"
+                            name="fiber"
+                            label="Fiber (g)"
+                            value={fiber}
+                            error={fiberError}
+                            validationRule="numeric"
+                            onChange={(e) => {
+                                setFiber(e.target.value);
+                            }}
+                        />
+                    </div>
+                </div>
 
-                            <Query query={ALL_CATEGORIES_QUERY}>
-                                {({ data: categoryData, categoryError }) => {
-                                    if (categoryError) return <p>Error: {categoryError.message}</p>;
-                                    return (
-                                        categoryData.categories.length > 0 && (
-                                            <>
-                                                <h2>Categories</h2>
-                                                <div className="categories_meats">
-                                                    {categoryData.categories.map(category => (
-                                                        <label htmlFor={`category_${category.id}`} key={category.id}>
-                                                            <input
-                                                                type="checkbox"
-                                                                name={`category_${category.id}`}
-                                                                id={`category_${category.id}`}
-                                                                onChange={this.onCategoryChange}
-                                                                checked={!!this.state.categories.includes(category.id)}
-                                                            />
-                                                            {category.name}
-                                                        </label>
-                                                    ))}
-                                                </div>
-                                            </>
-                                        )
-                                    );
-                                }}
-                            </Query>
-
-                            <Query query={ALL_MEATS_QUERY}>
-                                {({ data: meatData, meatError }) => {
-                                    if (meatError) return <p>Error: {meatError.message}</p>;
-                                    return (
-                                        meatData.meats.length > 0 && (
-                                            <>
-                                                <h2>Meats</h2>
-                                                <div className="categories_meats">
-                                                    {meatData.meats.map(meat => (
-                                                        <label htmlFor={`meat_${meat.id}`} key={meat.id}>
-                                                            <input
-                                                                type="checkbox"
-                                                                name={`meat_${meat.id}`}
-                                                                id={`meat_${meat.id}`}
-                                                                onChange={this.onMeatChange}
-                                                                checked={!!this.state.meats.includes(meat.id)}
-                                                            />
-                                                            {meat.name}
-                                                        </label>
-                                                    ))}
-                                                </div>
-                                            </>
-                                        )
-                                    );
-                                }}
-                            </Query>
-
-                            <label htmlFor="file">
-                                Image
-                                <input
-                                    type="file"
-                                    id="file"
-                                    name="file"
-                                    placeholder="Upload an Image"
-                                    onChange={this.uploadFile}
-                                />
-                                {this.state.image && (
-                                    <div className="image-preview">
-                                        <img src={this.state.image} alt="Upload Preview" />
-                                    </div>
-                                )}
-                            </label>
-
-                            <div className="save-button">
-                                <button type="submit">Sav{loading ? 'ing' : 'e'}</button>
-                            </div>
-                        </fieldset>
-                    </RecipeForm>
+                {!categoriesLoading && !categoriesError && categoryData.categories.length > 0 && (
+                    <>
+                        <h2>Categories</h2>
+                        <div className="categories_meats">
+                            {categoryData.categories.map((category) => (
+                                <label htmlFor={`category_${category.id}`} key={category.id}>
+                                    <input
+                                        type="checkbox"
+                                        name={`category_${category.id}`}
+                                        id={`category_${category.id}`}
+                                        onChange={onCategoryChange}
+                                        checked={!!categories.includes(category.id)}
+                                    />
+                                    {category.name}
+                                </label>
+                            ))}
+                        </div>
+                    </>
                 )}
-            </Mutation>
-        );
-    }
-}
+
+                {!meatsLoading && !meatsError && meatData.meats.length > 0 && (
+                    <>
+                        <h2>Meats</h2>
+                        <div className="categories_meats">
+                            {meatData.meats.map((meat) => (
+                                <label htmlFor={`meat_${meat.id}`} key={meat.id}>
+                                    <input
+                                        type="checkbox"
+                                        name={`meat_${meat.id}`}
+                                        id={`meat_${meat.id}`}
+                                        onChange={onMeatChange}
+                                        checked={!!meats.includes(meat.id)}
+                                    />
+                                    {meat.name}
+                                </label>
+                            ))}
+                        </div>
+                    </>
+                )}
+
+                <label htmlFor="file">
+                    Image
+                    <input type="file" id="file" name="file" placeholder="Upload an Image" onChange={uploadFile} />
+                    {image && (
+                        <div className="image-preview">
+                            <img src={image} alt="Upload Preview" />
+                        </div>
+                    )}
+                </label>
+
+                <div className="save-button">
+                    <button type="submit">Sav{updateLoading ? 'ing' : 'e'}</button>
+                </div>
+            </fieldset>
+        </RecipeForm>
+    );
+};
+
+EditRecipeForm.propTypes = {
+    recipe: PropTypes.object,
+    previousPage: PropTypes.string,
+};
 
 EditRecipeForm.defaultProps = {
     recipe: {},
-    previousPage: 'view'
+    previousPage: 'view',
 };
 
 export { EditRecipeForm };

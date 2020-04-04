@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FormValidator } from '../../lib/FormValidator';
 
-const TextInput = props => {
+const TextInput = (props) => {
     const [error, setError] = useState(props.error);
     const [value, setValue] = useState(props.value);
 
@@ -40,7 +40,7 @@ const TextInput = props => {
                 if (FormValidator.validateNumeric(val)) {
                     setError('');
                 } else {
-                    setError(`${props.label}  is required`);
+                    setError(`${props.label} must be numeric`);
                 }
                 break;
 
@@ -67,12 +67,12 @@ const TextInput = props => {
                 name={props.name}
                 data-testid={props.id}
                 value={value}
-                onChange={e => {
+                onChange={(e) => {
                     if (props.onChange) {
                         props.onChange(e);
                     }
                 }}
-                onBlur={e => {
+                onBlur={(e) => {
                     e.preventDefault();
 
                     if (props.validate) {
@@ -91,21 +91,21 @@ const TextInput = props => {
 
 TextInput.defaultProps = {
     showErrorMessage: true,
-    type: 'text'
+    type: 'text',
 };
 
 TextInput.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     type: PropTypes.string,
-    value: PropTypes.string,
+    value: PropTypes.any,
     id: PropTypes.string,
     error: PropTypes.string,
     onChange: PropTypes.func,
     validationRule: PropTypes.string,
     validate: PropTypes.func,
     validationArgs: PropTypes.object,
-    showErrorMessage: PropTypes.bool
+    showErrorMessage: PropTypes.bool,
 };
 
 export { TextInput };
