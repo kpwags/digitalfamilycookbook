@@ -1,73 +1,75 @@
-import React, { Component } from 'react';
-import { Mutation } from 'react-apollo';
+import React, { useState, useContext } from 'react';
+import { useMutation } from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
 import { DELETE_RECIPE_MUTATION } from '../../mutations/Recipe';
 import { ADMIN_ALL_RECIPES_QUERY } from '../../queries/Recipe';
 import { ConfirmDialog } from '../ConfirmDialog/ConfirmDialog';
 import { ErrorAlert } from '../ErrorAlert/ErrorAlert';
-import { Utilities } from '../../lib/Utilities';
+import { AppContext } from '../AppContext/AppContext';
 
-class DeleteRecipe extends Component {
-    static propTypes = {
-        id: PropTypes.string,
-        name: PropTypes.string,
-        children: PropTypes.node
+const DeleteRecipe = (props) => {
+    const [error, setError] = useState(null);
+    const [confirmOpen, setConfirmOpen] = useState(false);
+
+    const { id, name, children } = props;
+
+    const { toggleOverlay } = useContext(AppContext);
+
+    const updateCache = (cache, { data: result }) => {
+        const recipeData = cache.readQuery({ query: ADMIN_ALL_RECIPES_QUERY });
+
+        recipeData.recipes = recipeData.recipes.filter((r) => r.id !== result.deleteRecipe.id);
+
+        cache.writeQuery({ query: ADMIN_ALL_RECIPES_QUERY, data: recipeData });
     };
 
-    state = {
-        error: null
-    };
+    const [deleteRecipe, { error: deleteError }] = useMutation(DELETE_RECIPE_MUTATION, {
+        update: updateCache,
+        onCompleted: () => {
+            props.continue(error);
+        },
+    });
 
-    update = (cache, payload) => {
-        const data = cache.readQuery({ query: ADMIN_ALL_RECIPES_QUERY });
-
-        data.recipes = data.recipes.filter(recipe => recipe.id !== payload.data.deleteRecipe.id);
-
-        cache.writeQuery({ query: ADMIN_ALL_RECIPES_QUERY, data });
-    };
-
-    confirmDelete = e => {
+    const confirmDelete = (e) => {
         e.preventDefault();
 
-        document.getElementById('page-overlay').style.display = 'block';
-        document.getElementById(`confirm-recipe-delete-${this.props.id}`).style.display = 'block';
+        toggleOverlay();
+        setConfirmOpen(!confirmOpen);
     };
 
-    render() {
-        const { id, name } = this.props;
+    return (
+        <>
+            <ErrorAlert error={error || deleteError} />
 
-        return (
-            <Mutation mutation={DELETE_RECIPE_MUTATION} variables={{ id }} update={this.update}>
-                {(deleteRecipe, { error }) => (
-                    <>
-                        <ErrorAlert id={`delete-recipe-error-${id}`} error={error || this.state.error} />
-                        <ConfirmDialog
-                            id={`confirm-recipe-delete-${id}`}
-                            message={`Are you sure you want to delete ${name}?`}
-                            height="130"
-                            continue={async () => {
-                                await deleteRecipe().catch(err => {
-                                    this.setState({ error: err });
-                                });
+            <ConfirmDialog
+                open={confirmOpen}
+                message={`Are you sure you want to delete ${name}?`}
+                height="130"
+                continue={async () => {
+                    await deleteRecipe({
+                        variables: { id },
+                    }).catch((err) => {
+                        setError(err);
+                    });
+                }}
+                cancel={() => {
+                    setConfirmOpen(false);
+                    props.cancel();
+                }}
+            />
+            <button type="button" onClick={confirmDelete} className="delete">
+                {children}
+            </button>
+        </>
+    );
+};
 
-                                if (this.state.error === null) {
-                                    document.getElementById('page-overlay').style.display = 'none';
-                                    document.getElementById(`confirm-recipe-delete-${this.props.id}`).style.display =
-                                        'none';
-
-                                    // remove row from table
-                                    Utilities.deleteTableRow(`row_${id}`);
-                                }
-                            }}
-                        />
-                        <button type="button" onClick={this.confirmDelete} className="delete">
-                            {this.props.children}
-                        </button>
-                    </>
-                )}
-            </Mutation>
-        );
-    }
-}
+DeleteRecipe.propTypes = {
+    id: PropTypes.string,
+    name: PropTypes.string,
+    continue: PropTypes.func.isRequired,
+    cancel: PropTypes.func.isRequired,
+    children: PropTypes.node,
+};
 
 export { DeleteRecipe };
