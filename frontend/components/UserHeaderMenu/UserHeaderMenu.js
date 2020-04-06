@@ -1,8 +1,9 @@
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { Logout } from '../Logout/Logout';
 import { AppContext } from '../AppContext/AppContext';
+import { useClickOutside } from '../../lib/CustomHooks/useClickOutside';
 
 const UserMenu = styled.ul`
     float: right;
@@ -32,7 +33,7 @@ const UserMenu = styled.ul`
             :hover {
                 text-decoration: none;
                 background-image: none;
-                background: ${props => props.theme.lightGreen};
+                background: ${(props) => props.theme.lightGreen};
             }
         }
 
@@ -47,7 +48,7 @@ const UserMenu = styled.ul`
 
         ul.child-list {
             display: none;
-            background: ${props => props.theme.green};
+            background: ${(props) => props.theme.green};
             background-image: none;
             position: absolute;
             z-index: 2;
@@ -68,7 +69,7 @@ const UserMenu = styled.ul`
                     padding: 0 10px;
                     :hover {
                         background-image: none;
-                        background: ${props => props.theme.lightGreen};
+                        background: ${(props) => props.theme.lightGreen};
                     }
                 }
             }
@@ -84,6 +85,9 @@ const UserMenu = styled.ul`
 const UserHeaderMenu = () => {
     const { loggedInUser, userMenuVisible, toggleUserMenu } = useContext(AppContext);
 
+    const userNav = useRef(null);
+    useClickOutside(userNav, userMenuVisible, toggleUserMenu);
+
     return (
         <UserMenu>
             {loggedInUser && (
@@ -92,11 +96,11 @@ const UserHeaderMenu = () => {
                         <a
                             role="button"
                             tabIndex="0"
-                            onClick={e => {
+                            onClick={(e) => {
                                 e.preventDefault();
                                 toggleUserMenu();
                             }}
-                            onKeyDown={e => {
+                            onKeyDown={(e) => {
                                 e.preventDefault();
                                 if (e.keyCode === 13 || e.keyCode === 32) {
                                     toggleUserMenu();
@@ -106,7 +110,7 @@ const UserHeaderMenu = () => {
                             <img src={loggedInUser.image} alt={loggedInUser.name} />
                             {`${loggedInUser.name} `} <i className="arrow down" />
                         </a>
-                        <ul className="child-list" style={userMenuVisible ? { display: 'block' } : { display: 'none' }}>
+                        <ul ref={userNav} className="child-list" style={userMenuVisible ? { display: 'block' } : { display: 'none' }}>
                             <li>
                                 <Link href="/create-recipe">
                                     <a>Add New Recipe</a>

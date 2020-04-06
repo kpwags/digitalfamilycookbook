@@ -98,7 +98,11 @@ const EditRecipeForm = (props) => {
     const addIngredient = (e) => {
         e.preventDefault();
 
-        const tmpIngredients = ingredients;
+        const tmpIngredients = [];
+
+        ingredients.forEach((i) => {
+            tmpIngredients.push(i);
+        });
 
         const nextKey = Utilities.getNextAvailableValue(tmpIngredients, 'sortOrder');
 
@@ -142,7 +146,11 @@ const EditRecipeForm = (props) => {
     const addDirection = (e) => {
         e.preventDefault();
 
-        const tmpDirections = directions;
+        const tmpDirections = [];
+
+        directions.forEach((d) => {
+            tmpDirections.push(d);
+        });
 
         const nextSortOrder = Utilities.getNextAvailableValue(tmpDirections, 'sortOrder');
 
@@ -164,17 +172,19 @@ const EditRecipeForm = (props) => {
     };
 
     const onCategoryChange = (e) => {
-        const tmpCategories = categories;
+        const tmpCategories = [];
         const categoryId = e.target.name.split('_')[1];
+        let categoryRemoved = false;
 
-        if (tmpCategories.includes(categoryId)) {
-            for (let i = 0; i < tmpCategories.length; i += 1) {
-                if (tmpCategories[i] === categoryId) {
-                    tmpCategories.splice(i, 1);
-                    break;
-                }
+        categories.forEach((c) => {
+            if (c !== categoryId) {
+                tmpCategories.push(c);
+            } else {
+                categoryRemoved = true;
             }
-        } else {
+        });
+
+        if (!categoryRemoved) {
             tmpCategories.push(categoryId);
         }
 
@@ -182,17 +192,19 @@ const EditRecipeForm = (props) => {
     };
 
     const onMeatChange = (e) => {
-        const tmpMeats = meats;
+        const tmpMeats = [];
         const meatId = e.target.name.split('_')[1];
+        let meatRemoved = false;
 
-        if (tmpMeats.includes(meatId)) {
-            for (let i = 0; i < tmpMeats.length; i += 1) {
-                if (tmpMeats[i] === meatId) {
-                    tmpMeats.splice(i, 1);
-                    break;
-                }
+        meats.forEach((m) => {
+            if (m !== meatId) {
+                tmpMeats.push(m);
+            } else {
+                meatRemoved = true;
             }
-        } else {
+        });
+
+        if (!meatRemoved) {
             tmpMeats.push(meatId);
         }
 
@@ -332,6 +344,23 @@ const EditRecipeForm = (props) => {
 
         setError(null);
 
+        const dbIngredients = [];
+        ingredients.forEach((ingredient) => {
+            const i = ingredient;
+            // eslint-disable-next-line no-underscore-dangle
+            delete i.__typename;
+            dbIngredients.push(i);
+        });
+
+        const dbDirections = [];
+        directions.forEach((direction) => {
+            const d = direction;
+
+            // eslint-disable-next-line no-underscore-dangle
+            delete d.__typename;
+            dbDirections.push(d);
+        });
+
         const dbCategories = [];
         categories.forEach((category) => {
             dbCategories.push({ id: category });
@@ -401,8 +430,8 @@ const EditRecipeForm = (props) => {
                     fiber,
                     image,
                     largeImage,
-                    ingredients,
-                    directions,
+                    ingredients: dbIngredients,
+                    directions: dbDirections,
                     categories: dbCategories,
                     meats: dbMeats,
                 },
@@ -736,7 +765,7 @@ const EditRecipeForm = (props) => {
                 <label htmlFor="file">
                     Image
                     <input type="file" id="file" name="file" placeholder="Upload an Image" onChange={uploadFile} />
-                    {image && (
+                    {image !== '' && (
                         <div className="image-preview">
                             <img src={image} alt="Upload Preview" />
                         </div>

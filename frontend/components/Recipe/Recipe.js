@@ -10,7 +10,7 @@ import { Utilities } from '../../lib/Utilities';
 import { LoadingBox } from '../LoadingBox/LoadingBox';
 import { PageError } from '../PageError/PageError';
 
-const Recipe = props => {
+const Recipe = (props) => {
     const { loggedInUser } = useContext(AppContext);
 
     const { data, error, loading } = useQuery(RECIPE_BY_ID_QUERY, {
@@ -120,14 +120,14 @@ const Recipe = props => {
 
                     <h2>Ingredients</h2>
                     <ul className="ingredients">
-                        {data.recipe.ingredients.map(ingredient => (
+                        {data.recipe.ingredients.map((ingredient) => (
                             <li key={ingredient.sortOrder}>{ingredient.name} </li>
                         ))}
                     </ul>
 
                     <h2>Directions</h2>
                     <ol className="directions">
-                        {data.recipe.directions.map(direction => (
+                        {data.recipe.directions.map((direction) => (
                             <li key={direction.sortOrder}>{direction.direction} </li>
                         ))}
                     </ol>
@@ -143,6 +143,18 @@ const Recipe = props => {
                                         <div className="value">{data.recipe.calories}</div>
                                     </div>
                                 )}
+                                {data.recipe.protein !== null && (
+                                    <div className="nutrition-data noborder">
+                                        <div className="item">Protein</div>
+                                        <div className="value">{data.recipe.protein}g</div>
+                                    </div>
+                                )}
+                                {data.recipe.carbohydrates !== null && (
+                                    <div className="nutrition-data">
+                                        <div className="item">Carbohydrates</div>
+                                        <div className="value">{data.recipe.carbohydrates}g</div>
+                                    </div>
+                                )}
                                 {data.recipe.fat !== null && (
                                     <div className="nutrition-data">
                                         <div className="item">Fat</div>
@@ -155,12 +167,6 @@ const Recipe = props => {
                                         <div className="value">{data.recipe.cholesterol}mg</div>
                                     </div>
                                 )}
-                                {data.recipe.carbohydrates !== null && (
-                                    <div className="nutrition-data">
-                                        <div className="item">Carbohydrates</div>
-                                        <div className="value">{data.recipe.carbohydrates}g</div>
-                                    </div>
-                                )}
                                 {data.recipe.fiber !== null && (
                                     <div className="nutrition-data">
                                         <div className="item">Fiber</div>
@@ -171,12 +177,6 @@ const Recipe = props => {
                                     <div className="nutrition-data noborder">
                                         <div className="item">Sugar</div>
                                         <div className="value">{data.recipe.sugar}g</div>
-                                    </div>
-                                )}
-                                {data.recipe.protein !== null && (
-                                    <div className="nutrition-data noborder">
-                                        <div className="item">Protein</div>
-                                        <div className="value">{data.recipe.protein}g</div>
                                     </div>
                                 )}
                             </div>
