@@ -1,5 +1,6 @@
+import { useContext } from 'react';
 import styled from 'styled-components';
-import { Utilities } from '../../lib/Utilities';
+import { AppContext } from '../AppContext/AppContext';
 
 const HamburgerContainer = styled.div`
     display: none;
@@ -41,21 +42,23 @@ const HamburgerContainer = styled.div`
 `;
 
 const HamburgerMenu = () => {
+    const { toggleMobileMenu, mobileMenuVisible } = useContext(AppContext);
+
     return (
         <HamburgerContainer>
             <div
-                className="container"
+                className={mobileMenuVisible ? 'container change' : 'container'}
                 id="hamburgermenu"
                 role="button"
                 tabIndex="0"
                 onClick={e => {
                     e.preventDefault();
-                    Utilities.toggleMobileMenu();
+                    toggleMobileMenu();
                 }}
                 onKeyDown={e => {
                     e.preventDefault();
                     if (e.keyCode === 13 || e.keyCode === 32) {
-                        Utilities.toggleMobileMenu();
+                        toggleMobileMenu();
                     }
                 }}
             >

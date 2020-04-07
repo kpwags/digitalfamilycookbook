@@ -1,11 +1,9 @@
-import React from 'react';
-import { useQuery } from '@apollo/react-hooks';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { CURRENT_USER_QUERY } from '../../queries/User';
+import { AppContext } from '../AppContext/AppContext';
 import { LoginForm } from '../LoginForm/LoginForm';
 import { requireLogin } from '../../config';
-import { LoadingBox } from '../LoadingBox/LoadingBox';
 
 const ContinueMessage = styled.h2`
     color: ${props => props.theme.darkGreen};
@@ -22,11 +20,9 @@ const InvalidPermissionsMessage = styled.p`
 const AuthGateway = props => {
     const { permissionNeeded = null, redirectUrl = '/' } = props;
 
-    const { data, loading } = useQuery(CURRENT_USER_QUERY);
+    const { loggedInUser } = useContext(AppContext);
 
-    if (loading) return <LoadingBox />;
-
-    if (requireLogin && !data.me) {
+    if (requireLogin && !loggedInUser) {
         return (
             <div>
                 <ContinueMessage data-test="continue-message">Please sign in to continue</ContinueMessage>
@@ -35,7 +31,7 @@ const AuthGateway = props => {
         );
     }
 
-    if (permissionNeeded !== null && !data.me) {
+    if (permissionNeeded !== null && !loggedInUser) {
         return (
             <div>
                 <ContinueMessage data-test="continue-message">Please sign in to continue</ContinueMessage>
@@ -44,12 +40,10 @@ const AuthGateway = props => {
         );
     }
 
-    if (permissionNeeded !== null && !data.me.permissions.includes(permissionNeeded)) {
+    if (permissionNeeded !== null && !loggedInUser.permissions.includes(permissionNeeded)) {
         return (
             <>
-                <InvalidPermissionsMessage data-test="invalid-permissions-message">
-                    You do not have permission to access this page.
-                </InvalidPermissionsMessage>
+                <InvalidPermissionsMessage data-test="invalid-permissions-message">You do not have permission to access this page.</InvalidPermissionsMessage>
             </>
         );
     }
@@ -60,7 +54,7 @@ const AuthGateway = props => {
 AuthGateway.propTypes = {
     redirectUrl: PropTypes.string,
     permissionNeeded: PropTypes.string,
-    children: PropTypes.node
+    children: PropTypes.node,
 };
 
 export { AuthGateway };

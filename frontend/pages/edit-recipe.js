@@ -9,42 +9,43 @@ import { PageError } from '../components/PageError/PageError';
 import { LoadingBox } from '../components/LoadingBox/LoadingBox';
 import { AppContext } from '../components/AppContext/AppContext';
 
-
-const EditRecipe = props => {
+const EditRecipe = (props) => {
     const { id, returnpage } = props.query;
 
-    const { data: { recipe }, loading, error } = useQuery(RECIPE_BY_ID_QUERY, { variables: { id }});
+    const { data, loading, error } = useQuery(RECIPE_BY_ID_QUERY, { variables: { id } });
 
     const { loggedInUser } = useContext(AppContext);
 
+    if (loading) {
+        return (
+            <div>
+                <LoadingBox />
+            </div>
+        );
+    }
+
+    if (error) {
+        return <PageError error={{ Title: 'Error', Message: error.message }} />;
+    }
+
     return (
         <AuthGateway redirectUrl={`/edit-recipe?id=${id}`} permissionNeeded="USER">
-            { error && (
-                <PageError error={{ Title: 'Error', Message: error.message }} />
-            )}
-
-            {loading && (
-                <div>
-                    <LoadingBox />
-                </div>
-            )}
-
-            {!recipe && (
+            {!data && (
                 <PageError
                     error={{
-                        Title: 'Can\'t Find Recipe',
-                        Message: 'The recipe cannot be found.'
+                        Title: 'Recipe Not Found',
+                        Message: 'The recipe cannot be found.',
                     }}
                 />
             )}
 
-            {loggedInUser && (loggedInUser.permissions.includes('ADMIN') || loggedInUser.id === recipe.user.id || editMode === 'ALL') ? (
-                <EditRecipeForm recipe={recipe} previousPage={returnpage} />
+            {data && loggedInUser && (loggedInUser.permissions.includes('ADMIN') || loggedInUser.id === data.recipe.user.id || editMode === 'ALL') ? (
+                <EditRecipeForm recipe={data.recipe} previousPage={returnpage} />
             ) : (
                 <PageError
                     error={{
-                        Title: 'Can\'t Edit Recipe',
-                        Message: 'You do not have permission to edit this recipe.'
+                        Title: 'Insufficient Permissions',
+                        Message: 'You do not have permission to edit this recipe.',
                     }}
                 />
             )}
@@ -53,7 +54,7 @@ const EditRecipe = props => {
 };
 
 EditRecipe.propTypes = {
-    query: PropTypes.object
+    query: PropTypes.object,
 };
 
 export default EditRecipe;

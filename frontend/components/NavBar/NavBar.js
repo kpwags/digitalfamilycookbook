@@ -1,9 +1,10 @@
+import { useContext } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { CategoriesNav } from '../CategoriesNav/CategoriesNav';
 import { MeatsNav } from '../MeatsNav/MeatsNav';
 import { SearchIcon } from '../SearchIcon/SearchIcon';
-import { Utilities } from '../../lib/Utilities';
+import { AppContext } from '../AppContext/AppContext';
 
 const StyledNavBar = styled.ul`
     float: left;
@@ -30,21 +31,9 @@ const StyledNavBar = styled.ul`
             padding: 0 10px;
             border-right: 1px solid hsl(0, 0%, 100%);
             :hover {
-                background-image: -ms-linear-gradient(
-                    bottom,
-                    ${props => props.theme.lightGreen} 0%,
-                    ${props => props.theme.green} 100%
-                );
-                background-image: -moz-linear-gradient(
-                    bottom,
-                    ${props => props.theme.lightGreen} 0%,
-                    ${props => props.theme.green} 100%
-                );
-                background-image: -o-linear-gradient(
-                    bottom,
-                    ${props => props.theme.lightGreen} 0%,
-                    ${props => props.theme.green} 100%
-                );
+                background-image: -ms-linear-gradient(bottom, ${props => props.theme.lightGreen} 0%, ${props => props.theme.green} 100%);
+                background-image: -moz-linear-gradient(bottom, ${props => props.theme.lightGreen} 0%, ${props => props.theme.green} 100%);
+                background-image: -o-linear-gradient(bottom, ${props => props.theme.lightGreen} 0%, ${props => props.theme.green} 100%);
                 background-image: -webkit-gradient(
                     linear,
                     left bottom,
@@ -52,16 +41,8 @@ const StyledNavBar = styled.ul`
                     color-stop(0, ${props => props.theme.lightGreen}),
                     color-stop(100, ${props => props.theme.green})
                 );
-                background-image: -webkit-linear-gradient(
-                    bottom,
-                    ${props => props.theme.lightGreen} 0%,
-                    ${props => props.theme.green} 100%
-                );
-                background-image: linear-gradient(
-                    to top,
-                    ${props => props.theme.lightGreen} 0%,
-                    ${props => props.theme.green} 100%
-                );
+                background-image: -webkit-linear-gradient(bottom, ${props => props.theme.lightGreen} 0%, ${props => props.theme.green} 100%);
+                background-image: linear-gradient(to top, ${props => props.theme.lightGreen} 0%, ${props => props.theme.green} 100%);
                 text-decoration: none;
             }
         }
@@ -118,36 +99,40 @@ const StyledNavBar = styled.ul`
     }
 `;
 
-const NavBar = () => (
-    <StyledNavBar>
-        <li>
-            <Link href="/recipes">
-                <a>Recipes</a>
-            </Link>
-        </li>
+const NavBar = () => {
+    const { toggleSearchBar } = useContext(AppContext);
 
-        <CategoriesNav />
-        <MeatsNav />
-        <li className="search-button">
-            <a
-                role="button"
-                title="Search"
-                tabIndex="0"
-                onClick={e => {
-                    e.preventDefault();
-                    Utilities.toggleSearchBar();
-                }}
-                onKeyDown={e => {
-                    e.preventDefault();
-                    if (e.keyCode === 13 || e.keyCode === 32) {
-                        Utilities.toggleSearchBar();
-                    }
-                }}
-            >
-                <SearchIcon width="30" height="30" />
-            </a>
-        </li>
-    </StyledNavBar>
-);
+    return (
+        <StyledNavBar>
+            <li>
+                <Link href="/recipes">
+                    <a>Recipes</a>
+                </Link>
+            </li>
+
+            <CategoriesNav />
+            <MeatsNav />
+            <li className="search-button">
+                <a
+                    role="button"
+                    title="Search"
+                    tabIndex="0"
+                    onClick={e => {
+                        e.preventDefault();
+                        toggleSearchBar();
+                    }}
+                    onKeyDown={e => {
+                        e.preventDefault();
+                        if (e.keyCode === 13 || e.keyCode === 32) {
+                            toggleSearchBar();
+                        }
+                    }}
+                >
+                    <SearchIcon width="30" height="30" />
+                </a>
+            </li>
+        </StyledNavBar>
+    );
+};
 
 export { NavBar };

@@ -1,17 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { useQuery } from '@apollo/react-hooks';
 import { editMode } from '../../config';
 import { RECIPE_BY_ID_QUERY } from '../../queries/Recipe';
-import { LoggedInUser } from '../LoggedInUser/LoggedInUser';
+import { AppContext } from '../AppContext/AppContext';
 import { RecipeView } from '../RecipeView/RecipeView';
 import { Utilities } from '../../lib/Utilities';
 import { LoadingBox } from '../LoadingBox/LoadingBox';
 import { PageError } from '../PageError/PageError';
 
-const Recipe = props => {
-    const { data, error, loading } = useQuery(RECIPE_BY_ID_QUERY, { variables: { id: props.id } });
+const Recipe = (props) => {
+    const { loggedInUser } = useContext(AppContext);
+
+    const { data, error, loading } = useQuery(RECIPE_BY_ID_QUERY, {
+        variables: { id: props.id },
+    });
 
     if (loading) return <LoadingBox />;
     if (error)
@@ -19,7 +23,7 @@ const Recipe = props => {
             <PageError
                 error={{
                     Title: 'Error Loading Recipe',
-                    Message: error
+                    Message: error,
                 }}
             />
         );
@@ -74,7 +78,8 @@ const Recipe = props => {
 
                     {data.recipe.time && (
                         <p className="details">
-                            <strong>Time:</strong>&nbsp;{Utilities.convertCookingTime(data.recipe.time)}
+                            <strong>Time:</strong>&nbsp;
+                            {Utilities.convertCookingTime(data.recipe.time)}
                         </p>
                     )}
 
@@ -115,14 +120,14 @@ const Recipe = props => {
 
                     <h2>Ingredients</h2>
                     <ul className="ingredients">
-                        {data.recipe.ingredients.map(ingredient => (
+                        {data.recipe.ingredients.map((ingredient) => (
                             <li key={ingredient.sortOrder}>{ingredient.name} </li>
                         ))}
                     </ul>
 
                     <h2>Directions</h2>
                     <ol className="directions">
-                        {data.recipe.directions.map(direction => (
+                        {data.recipe.directions.map((direction) => (
                             <li key={direction.sortOrder}>{direction.direction} </li>
                         ))}
                     </ol>
@@ -138,6 +143,18 @@ const Recipe = props => {
                                         <div className="value">{data.recipe.calories}</div>
                                     </div>
                                 )}
+                                {data.recipe.protein !== null && (
+                                    <div className="nutrition-data noborder">
+                                        <div className="item">Protein</div>
+                                        <div className="value">{data.recipe.protein}g</div>
+                                    </div>
+                                )}
+                                {data.recipe.carbohydrates !== null && (
+                                    <div className="nutrition-data">
+                                        <div className="item">Carbohydrates</div>
+                                        <div className="value">{data.recipe.carbohydrates}g</div>
+                                    </div>
+                                )}
                                 {data.recipe.fat !== null && (
                                     <div className="nutrition-data">
                                         <div className="item">Fat</div>
@@ -148,12 +165,6 @@ const Recipe = props => {
                                     <div className="nutrition-data">
                                         <div className="item">Cholesterol</div>
                                         <div className="value">{data.recipe.cholesterol}mg</div>
-                                    </div>
-                                )}
-                                {data.recipe.carbohydrates !== null && (
-                                    <div className="nutrition-data">
-                                        <div className="item">Carbohydrates</div>
-                                        <div className="value">{data.recipe.carbohydrates}g</div>
                                     </div>
                                 )}
                                 {data.recipe.fiber !== null && (
@@ -168,34 +179,19 @@ const Recipe = props => {
                                         <div className="value">{data.recipe.sugar}g</div>
                                     </div>
                                 )}
-                                {data.recipe.protein !== null && (
-                                    <div className="nutrition-data noborder">
-                                        <div className="item">Protein</div>
-                                        <div className="value">{data.recipe.protein}g</div>
-                                    </div>
-                                )}
                             </div>
                         </div>
                     </div>
                 )}
             </div>
 
-            <LoggedInUser>
-                {({ data: { me } }) => (
-                    <>
-                        {me &&
-                            (me.permissions.includes('ADMIN') ||
-                                me.id === data.recipe.user.id ||
-                                editMode === 'ALL') && (
-                            <p className="hide-print">
-                                <Link href={`/edit-recipe?id=${data.recipe.id}&returnpage=view`}>
-                                    <a>Edit Recipe</a>
-                                </Link>
-                            </p>
-                        )}
-                    </>
-                )}
-            </LoggedInUser>
+            {loggedInUser && (loggedInUser.permissions.includes('ADMIN') || loggedInUser.id === data.recipe.user.id || editMode === 'ALL') && (
+                <p className="hide-print">
+                    <Link href={`/edit-recipe?id=${data.recipe.id}&returnpage=view`}>
+                        <a>Edit Recipe</a>
+                    </Link>
+                </p>
+            )}
         </RecipeView>
     ) : (
         <RecipeView>
@@ -206,7 +202,7 @@ const Recipe = props => {
 };
 
 Recipe.propTypes = {
-    id: PropTypes.string
+    id: PropTypes.string,
 };
 
 export { Recipe };

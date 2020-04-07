@@ -19,7 +19,9 @@ const Mutations = {
       throw new Error('You can only change your own password');
     }
 
-    const user = await ctx.db.query.user({ where: { id: ctx.request.userId } });
+    const user = await ctx.db.query.user({
+      where: { id: ctx.request.userId },
+    });
     const valid = await bcrypt.compare(args.currentPassword, user.password);
     if (!valid) {
       throw new Error('Current password is invalid');
@@ -45,7 +47,7 @@ const Mutations = {
       throw new Error('You must be logged in to create a category');
     }
 
-    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+    const hasPermissions = ctx.request.user.permissions.some((permission) => ['ADMIN'].includes(permission));
 
     if (!hasPermissions) {
       throw new Error('You do not have the proper permissions to create a category');
@@ -102,7 +104,7 @@ const Mutations = {
       throw new Error('You must be logged in to create an inivation code');
     }
 
-    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+    const hasPermissions = ctx.request.user.permissions.some((permission) => ['ADMIN'].includes(permission));
 
     if (!hasPermissions) {
       throw new Error('You do not have the proper permissions to create an invitation code');
@@ -125,7 +127,7 @@ const Mutations = {
       throw new Error('You must be logged in to create a meat');
     }
 
-    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+    const hasPermissions = ctx.request.user.permissions.some((permission) => ['ADMIN'].includes(permission));
 
     if (!hasPermissions) {
       throw new Error('You do not have the proper permissions to create a meat');
@@ -199,7 +201,7 @@ const Mutations = {
 
     const where = { id: args.id };
 
-    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+    const hasPermissions = ctx.request.user.permissions.some((permission) => ['ADMIN'].includes(permission));
 
     if (!hasPermissions) {
       throw new Error('You do not have the proper permissions to delete');
@@ -217,7 +219,7 @@ const Mutations = {
 
     const where = { id: args.id };
 
-    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+    const hasPermissions = ctx.request.user.permissions.some((permission) => ['ADMIN'].includes(permission));
 
     if (!hasPermissions) {
       throw new Error('You do not have the proper permissions to delete');
@@ -233,7 +235,7 @@ const Mutations = {
 
     const where = { id: args.id };
 
-    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+    const hasPermissions = ctx.request.user.permissions.some((permission) => ['ADMIN'].includes(permission));
 
     if (!hasPermissions) {
       throw new Error('You do not have the proper permissions to delete');
@@ -249,7 +251,7 @@ const Mutations = {
 
     const where = { id: args.id };
 
-    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+    const hasPermissions = ctx.request.user.permissions.some((permission) => ['ADMIN'].includes(permission));
 
     if (!hasPermissions) {
       throw new Error('You do not have the proper permissions to delete invitation codes');
@@ -265,7 +267,7 @@ const Mutations = {
 
     const where = { id: args.id };
 
-    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+    const hasPermissions = ctx.request.user.permissions.some((permission) => ['ADMIN'].includes(permission));
 
     if (!hasPermissions) {
       throw new Error('You do not have the proper permissions to delete');
@@ -283,16 +285,13 @@ const Mutations = {
 
     const recipeId = args.id;
 
-    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+    const hasPermissions = ctx.request.user.permissions.some((permission) => ['ADMIN'].includes(permission));
 
     if (!hasPermissions) {
       throw new Error('You do not have the proper permissions to delete');
     }
 
-    const recipe = await ctx.db.query.recipes(
-      { where: { id: recipeId } },
-      '{ id, ingredients { id }, directions { id } }',
-    );
+    const recipe = await ctx.db.query.recipes({ where: { id: recipeId } }, '{ id, ingredients { id }, directions { id } }');
 
     if (recipe.length !== 1) {
       throw new Error('Recipe not found');
@@ -308,17 +307,13 @@ const Mutations = {
       directions.push(d.id);
     });
 
-    await ctx.db.mutation
-      .deleteManyIngredients({ where: { id_in: ingredients } }, '{ count }')
-      .catch((e) => {
-        throw new Error(e.message);
-      });
+    await ctx.db.mutation.deleteManyIngredients({ where: { id_in: ingredients } }, '{ count }').catch((e) => {
+      throw new Error(e.message);
+    });
 
-    await ctx.db.mutation
-      .deleteManyDirections({ where: { id_in: directions } }, '{ count }')
-      .catch((e) => {
-        throw new Error(e.message);
-      });
+    await ctx.db.mutation.deleteManyDirections({ where: { id_in: directions } }, '{ count }').catch((e) => {
+      throw new Error(e.message);
+    });
 
     return ctx.db.mutation.deleteRecipe({ where: { id: recipeId } }, info).catch((e) => {
       throw new Error(e.message);
@@ -332,7 +327,7 @@ const Mutations = {
 
     const where = { id: args.id };
 
-    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+    const hasPermissions = ctx.request.user.permissions.some((permission) => ['ADMIN'].includes(permission));
 
     if (!hasPermissions) {
       throw new Error('You do not have the proper permissions to delete a user');
@@ -343,11 +338,13 @@ const Mutations = {
     return ctx.db.mutation.deleteUser({ where }, info);
   },
 
-  async login(parent, { email, password }, ctx) {
+  async login(parent, { email, password }, ctx, info) {
+    let userFoundByEmail = true;
     let user = await ctx.db.query.user({ where: { email } });
 
     // check if user exists
     if (!user) {
+      userFoundByEmail = false;
       user = await ctx.db.query.user({ where: { username: email } });
 
       if (!user) {
@@ -365,6 +362,12 @@ const Mutations = {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
     });
+
+    if (userFoundByEmail) {
+      user = await ctx.db.query.user({ where: { email } }, info);
+    } else {
+      user = await ctx.db.query.user({ where: { username: email } }, info);
+    }
 
     return user;
   },
@@ -484,7 +487,7 @@ const Mutations = {
       throw new Error('You must be logged in');
     }
 
-    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+    const hasPermissions = ctx.request.user.permissions.some((permission) => ['ADMIN'].includes(permission));
 
     if (!hasPermissions) {
       throw new Error("You do not have the proper permissions to update the user's permissions");
@@ -520,7 +523,7 @@ const Mutations = {
       throw new Error('You must be logged in');
     }
 
-    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+    const hasPermissions = ctx.request.user.permissions.some((permission) => ['ADMIN'].includes(permission));
 
     if (!hasPermissions) {
       throw new Error('You do not have the proper permissions to update categories');
@@ -546,7 +549,7 @@ const Mutations = {
       throw new Error('You must be logged in');
     }
 
-    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+    const hasPermissions = ctx.request.user.permissions.some((permission) => ['ADMIN'].includes(permission));
 
     if (!hasPermissions) {
       throw new Error('You do not have the proper permissions to update invitation codes');
@@ -572,7 +575,7 @@ const Mutations = {
       throw new Error('You must be logged in');
     }
 
-    const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+    const hasPermissions = ctx.request.user.permissions.some((permission) => ['ADMIN'].includes(permission));
 
     if (!hasPermissions) {
       throw new Error('You do not have the proper permissions to update meats');
@@ -598,17 +601,14 @@ const Mutations = {
       throw new Error('You must be logged in');
     }
 
-    const recipe = await ctx.db.query.recipes(
-      { where: { id: args.id } },
-      '{ id, ingredients { id }, directions { id }, user { id } }',
-    );
+    const recipe = await ctx.db.query.recipes({ where: { id: args.id } }, '{ id, ingredients { id }, directions { id }, user { id } }');
 
     if (recipe.length !== 1) {
       throw new Error('Recipe not found');
     }
 
     if (process.env.EDIT_MODE === 'USER') {
-      const hasPermissions = ctx.request.user.permissions.some(permission => ['ADMIN'].includes(permission));
+      const hasPermissions = ctx.request.user.permissions.some((permission) => ['ADMIN'].includes(permission));
 
       if (!hasPermissions && recipe[0].user.id !== ctx.request.userId) {
         throw new Error('You do not have the permission to update this recipe');
@@ -625,17 +625,13 @@ const Mutations = {
       directionsToDelete.push(d.id);
     });
 
-    await ctx.db.mutation
-      .deleteManyIngredients({ where: { id_in: ingredientsToDelete } }, '{ count }')
-      .catch((e) => {
-        throw new Error(e.message);
-      });
+    await ctx.db.mutation.deleteManyIngredients({ where: { id_in: ingredientsToDelete } }, '{ count }').catch((e) => {
+      throw new Error(e.message);
+    });
 
-    await ctx.db.mutation
-      .deleteManyDirections({ where: { id_in: directionsToDelete } }, '{ count }')
-      .catch((e) => {
-        throw new Error(e.message);
-      });
+    await ctx.db.mutation.deleteManyDirections({ where: { id_in: directionsToDelete } }, '{ count }').catch((e) => {
+      throw new Error(e.message);
+    });
 
     return ctx.db.mutation.updateRecipe(
       {

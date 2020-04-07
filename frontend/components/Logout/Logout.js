@@ -9,7 +9,7 @@ const LogoutLink = styled.a``;
 
 const Logout = () => {
     const [logout] = useMutation(LOGOUT_MUTATION, {
-        refetchQueries: [{ query: CURRENT_USER_QUERY }]
+        refetchQueries: [{ query: CURRENT_USER_QUERY }],
     });
 
     return (
@@ -17,8 +17,9 @@ const Logout = () => {
             onClick={e => {
                 e.preventDefault();
                 logout();
+
                 Router.push({
-                    pathname: '/'
+                    pathname: '/',
                 });
             }}
         >

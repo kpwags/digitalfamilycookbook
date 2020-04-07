@@ -51,7 +51,7 @@ const RecipeForm = styled.form`
 
         &:focus {
             outline: 0;
-            border-color: ${props => props.theme.green};
+            border-color: ${(props) => props.theme.green};
         }
     }
 
@@ -79,7 +79,7 @@ const RecipeForm = styled.form`
     button,
     input[type='submit'] {
         width: auto;
-        background: ${props => props.theme.green};
+        background: ${(props) => props.theme.green};
         color: hsl(0, 0%, 100%);
         border: 0;
         font-size: 1.2rem;
@@ -106,9 +106,9 @@ const RecipeForm = styled.form`
             display: block;
             background-image: linear-gradient(
                 to right,
-                ${props => props.theme.green} 0%,
-                ${props => props.theme.lightGreen} 50%,
-                ${props => props.theme.green} 100%
+                ${(props) => props.theme.green} 0%,
+                ${(props) => props.theme.lightGreen} 50%,
+                ${(props) => props.theme.green} 100%
             );
             margin-bottom: 25px;
         }
@@ -126,7 +126,7 @@ const RecipeForm = styled.form`
     div.error-text {
         color: hsl(0, 100%, 50%);
         display: none;
-        font-size: 1.4rem;
+        font-size: 1.2rem;
         font-weight: normal;
         margin-top: 5px;
     }

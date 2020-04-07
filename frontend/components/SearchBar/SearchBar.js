@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import Router from 'next/router';
+import { AppContext } from '../AppContext/AppContext';
 
 const SearchForm = styled.form`
-    display: none;
     border-bottom: 2px solid ${props => props.theme.darkGreen};
     padding: 15px 50px;
     text-align: center;
@@ -40,43 +40,43 @@ const SearchForm = styled.form`
     }
 `;
 
-class SearchBar extends Component {
-    state = {
-        keywords: ''
-    };
+const SearchBar = () => {
+    const [keywords, setKeywords] = useState('');
 
-    handleChange = e => {
-        const { name, type, value } = e.target;
-        const val = type === 'number' ? parseFloat(value) : value;
-        this.setState({ [name]: val });
-    };
+    const { searchBarVisible, toggleSearchBar } = useContext(AppContext);
 
-    search = e => {
+    const search = e => {
         e.preventDefault();
-
+        toggleSearchBar();
         Router.push({
             pathname: '/search',
-            query: { q: this.state.keywords }
+            query: { q: keywords },
         });
     };
 
-    render() {
-        return (
-            <SearchForm
-                id="search-main"
-                method="POST"
-                onSubmit={e => {
-                    this.search(e);
-                }}
-            >
-                <label htmlFor="keywords">
-                    Search
-                    <input type="search" name="keywords" id="keywords" onChange={this.handleChange} />
-                    <button type="submit">Search</button>
-                </label>
-            </SearchForm>
-        );
-    }
-}
+    return (
+        <SearchForm
+            id="search-main"
+            method="POST"
+            onSubmit={e => {
+                search(e);
+            }}
+            style={searchBarVisible ? { display: 'block' } : { display: 'none' }}
+        >
+            <label htmlFor="keywords">
+                Search
+                <input
+                    type="search"
+                    name="keywords"
+                    id="keywords"
+                    onChange={e => {
+                        setKeywords(e.target.value);
+                    }}
+                />
+                <button type="submit">Search</button>
+            </label>
+        </SearchForm>
+    );
+};
 
 export { SearchBar };

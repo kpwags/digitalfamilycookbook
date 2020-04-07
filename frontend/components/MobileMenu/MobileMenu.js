@@ -1,8 +1,9 @@
+import { useContext } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import { MeatsMobileNav } from '../MeatsMobileNav/MeatsMobileNav';
 import { CategoriesMobileNav } from '../CategoriesMobileNav/CategoriesMobileNav';
-import { LoggedInUser } from '../LoggedInUser/LoggedInUser';
+import { AppContext } from '../AppContext/AppContext';
 import { Logout } from '../Logout/Logout';
 import { Utilities } from '../../lib/Utilities';
 
@@ -11,7 +12,6 @@ const Menu = styled.div`
     background-color: hsl(0, 0%, 19.2%);
     padding: 0 15px;
     position: fixed;
-    left: -250px;
     top: 50px;
     height: 100%;
     z-index: 5;
@@ -56,64 +56,62 @@ const Menu = styled.div`
 `;
 
 const MobileMenu = () => {
-    return (
-        <Menu id="mobilemenu">
-            <ul>
-                <LoggedInUser>
-                    {({ data: { me }, loading }) => (
-                        <>
-                            {!loading && me && (
-                                <>
-                                    <li className="title">{me.name}</li>
-                                    <li>
-                                        <Logout />
-                                    </li>
-                                </>
-                            )}
+    const { loggedInUser, mobileMenuVisible } = useContext(AppContext);
 
-                            {!me && (
-                                <>
-                                    <li className="title">
-                                        <Link href="/signup">
-                                            <a
-                                                role="button"
-                                                tabIndex="0"
-                                                onClick={() => {
-                                                    Utilities.toggleMobileMenu();
-                                                }}
-                                                onKeyDown={e => {
-                                                    if (e.keyCode === 13 || e.keyCode === 32) {
-                                                        Utilities.toggleMobileMenu();
-                                                    }
-                                                }}
-                                            >
-                                                Sign Up
-                                            </a>
-                                        </Link>
-                                    </li>
-                                    <li className="title bordered">
-                                        <Link href="/login">
-                                            <a
-                                                role="button"
-                                                tabIndex="0"
-                                                onClick={() => {
-                                                    Utilities.toggleMobileMenu();
-                                                }}
-                                                onKeyDown={e => {
-                                                    if (e.keyCode === 13 || e.keyCode === 32) {
-                                                        Utilities.toggleMobileMenu();
-                                                    }
-                                                }}
-                                            >
-                                                Sign In
-                                            </a>
-                                        </Link>
-                                    </li>
-                                </>
-                            )}
+    return (
+        <Menu id="mobilemenu" style={mobileMenuVisible ? { left: 0 } : { left: '-250px' }}>
+            <ul>
+                <>
+                    {loggedInUser && (
+                        <>
+                            <li className="title">{loggedInUser.name}</li>
+                            <li>
+                                <Logout />
+                            </li>
                         </>
                     )}
-                </LoggedInUser>
+
+                    {!loggedInUser && (
+                        <>
+                            <li className="title">
+                                <Link href="/signup">
+                                    <a
+                                        role="button"
+                                        tabIndex="0"
+                                        onClick={() => {
+                                            Utilities.toggleMobileMenu();
+                                        }}
+                                        onKeyDown={e => {
+                                            if (e.keyCode === 13 || e.keyCode === 32) {
+                                                Utilities.toggleMobileMenu();
+                                            }
+                                        }}
+                                    >
+                                        Sign Up
+                                    </a>
+                                </Link>
+                            </li>
+                            <li className="title bordered">
+                                <Link href="/login">
+                                    <a
+                                        role="button"
+                                        tabIndex="0"
+                                        onClick={() => {
+                                            Utilities.toggleMobileMenu();
+                                        }}
+                                        onKeyDown={e => {
+                                            if (e.keyCode === 13 || e.keyCode === 32) {
+                                                Utilities.toggleMobileMenu();
+                                            }
+                                        }}
+                                    >
+                                        Sign In
+                                    </a>
+                                </Link>
+                            </li>
+                        </>
+                    )}
+                </>
                 <li className="title bordered">
                     <Link href="/recipes">
                         <a

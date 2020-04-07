@@ -17,8 +17,6 @@ const LoginForm = props => {
     const [error, setError] = useState(null);
     const [redirectUrl] = useState(props.redirectUrl);
 
-    // mutation={LOGIN_MUTATION} variables={this.state} refetchQueries={[{ query: CURRENT_USER_QUERY }]}>
-
     const [login, { loading, error: loginError }] = useMutation(LOGIN_MUTATION, {
         refetchQueries: [{ query: CURRENT_USER_QUERY }],
         onCompleted: () => {
@@ -28,9 +26,9 @@ const LoginForm = props => {
             setPasswordError('');
 
             Router.push({
-                pathname: redirectUrl
+                pathname: redirectUrl,
             });
-        }
+        },
     });
     return (
         <Form
@@ -44,8 +42,8 @@ const LoginForm = props => {
                 await login({
                     variables: {
                         email: username,
-                        password
-                    }
+                        password,
+                    },
                 }).catch(err => {
                     setError(err);
                 });
@@ -93,11 +91,11 @@ const LoginForm = props => {
 };
 
 LoginForm.defaultProps = {
-    redirectUrl: '/'
+    redirectUrl: '/',
 };
 
 LoginForm.propTypes = {
-    redirectUrl: PropTypes.string
+    redirectUrl: PropTypes.string,
 };
 
 export { LoginForm };

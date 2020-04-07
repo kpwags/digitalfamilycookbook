@@ -1,9 +1,16 @@
+import { useContext, useRef } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import Link from 'next/link';
 import { ALL_CATEGORIES_QUERY } from '../../queries/Category';
-import { Utilities } from '../../lib/Utilities';
+import { AppContext } from '../AppContext/AppContext';
+import { useClickOutside } from '../../lib/CustomHooks/useClickOutside';
 
 const CategoriesNav = () => {
+    const { categoriesMenuVisible, toggleCategoriesMenu } = useContext(AppContext);
+
+    const categoriesNav = useRef(null);
+    useClickOutside(categoriesNav, categoriesMenuVisible, toggleCategoriesMenu);
+
     const { data, loading, error } = useQuery(ALL_CATEGORIES_QUERY);
 
     if (loading) return <li />;
@@ -14,34 +21,34 @@ const CategoriesNav = () => {
             <a
                 role="button"
                 tabIndex="0"
-                onClick={e => {
+                onClick={(e) => {
                     e.preventDefault();
-                    Utilities.toggleHeaderMenu('categories-header-menu');
+                    toggleCategoriesMenu();
                 }}
-                onKeyDown={e => {
+                onKeyDown={(e) => {
                     e.preventDefault();
                     if (e.keyCode === 13 || e.keyCode === 32) {
-                        Utilities.toggleHeaderMenu('categories-header-menu');
+                        toggleCategoriesMenu();
                     }
                 }}
             >
                 Categories <i className="arrow down" />
             </a>
 
-            <ul className="child-list" id="categories-header-menu">
+            <ul ref={categoriesNav} className="child-list" style={categoriesMenuVisible ? { display: 'block' } : { display: 'none' }}>
                 {data.categories.length > 0 ? (
-                    data.categories.map(category => (
+                    data.categories.map((category) => (
                         <li key={category.id}>
                             <Link href={`/category?id=${category.id}`}>
                                 <a
                                     role="button"
                                     tabIndex="0"
                                     onClick={() => {
-                                        Utilities.hideHeaderMenu('categories-header-menu');
+                                        toggleCategoriesMenu();
                                     }}
-                                    onKeyDown={e => {
+                                    onKeyDown={(e) => {
                                         if (e.keyCode === 13 || e.keyCode === 32) {
-                                            Utilities.hideHeaderMenu('categories-header-menu');
+                                            toggleCategoriesMenu();
                                         }
                                     }}
                                 >

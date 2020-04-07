@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import useWindowDimensions from '../../lib/CustomHooks/useWindowDimensions';
 
 const AlertBox = styled.div`
     display: none;
@@ -32,39 +33,41 @@ const AlertBox = styled.div`
     }
 `;
 
-class MobileAlertBox extends Component {
-    static closeAlert() {
-        document.getElementById('mobile_alert_box').style.display = 'none';
-    }
+const MobileAlertBox = props => {
+    const { width } = useWindowDimensions();
 
-    static propTypes = {
-        message: PropTypes.string.isRequired
+    const [isVisible, setIsVisible] = useState(width <= 500);
+
+    const closeAlert = () => {
+        setIsVisible(false);
     };
 
-    render() {
-        const { message } = this.props;
+    return (
+        <AlertBox id="mobile_alert_box" style={isVisible ? { display: 'block' } : { display: 'none' }}>
+            {props.message}
+            <div className="close">
+                <a
+                    role="button"
+                    tabIndex="0"
+                    onClick={() => {
+                        closeAlert();
+                    }}
+                    onKeyDown={e => {
+                        e.preventDefault();
+                        if (e.keyCode === 13 || e.keyCode === 32) {
+                            closeAlert();
+                        }
+                    }}
+                >
+                    x
+                </a>
+            </div>
+        </AlertBox>
+    );
+};
 
-        return (
-            <AlertBox id="mobile_alert_box">
-                {message}
-                <div className="close">
-                    <a
-                        role="button"
-                        tabIndex="0"
-                        onClick={MobileAlertBox.closeAlert}
-                        onKeyDown={e => {
-                            e.preventDefault();
-                            if (e.keyCode === 13 || e.keyCode === 32) {
-                                MobileAlertBox.closeAlert();
-                            }
-                        }}
-                    >
-                        x
-                    </a>
-                </div>
-            </AlertBox>
-        );
-    }
-}
+MobileAlertBox.propTypes = {
+    message: PropTypes.string.isRequired,
+};
 
 export { MobileAlertBox };
