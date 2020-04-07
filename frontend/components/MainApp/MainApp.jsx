@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
+import { ToastProvider } from 'react-toast-notifications';
 import PropTypes from 'prop-types';
 import { CURRENT_USER_QUERY } from '../../queries/User';
 import { Page } from '../Page/Page';
@@ -7,7 +8,7 @@ import { Overlay } from '../Overlay/Overlay';
 import { LoadingBox } from '../LoadingBox/LoadingBox';
 import { AppContext } from '../AppContext/AppContext';
 
-const MainApp = props => {
+const MainApp = (props) => {
     const [overlayVisible, setOverlayVisible] = useState(false);
     const [searchBarVisible, setSearchBarVisible] = useState(false);
     const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
@@ -46,26 +47,28 @@ const MainApp = props => {
     }
 
     return (
-        <AppContext.Provider
-            value={{
-                overlayVisible,
-                toggleOverlay,
-                searchBarVisible,
-                toggleSearchBar,
-                mobileMenuVisible,
-                toggleMobileMenu,
-                categoriesMenuVisible,
-                toggleCategoriesMenu,
-                meatsMenuVisible,
-                toggleMeatsMenu,
-                userMenuVisible,
-                toggleUserMenu,
-                loggedInUser: data.me,
-            }}
-        >
-            <Overlay id="page-overlay" open={overlayVisible} />
-            <Page>{props.children}</Page>
-        </AppContext.Provider>
+        <ToastProvider autoDismiss>
+            <AppContext.Provider
+                value={{
+                    overlayVisible,
+                    toggleOverlay,
+                    searchBarVisible,
+                    toggleSearchBar,
+                    mobileMenuVisible,
+                    toggleMobileMenu,
+                    categoriesMenuVisible,
+                    toggleCategoriesMenu,
+                    meatsMenuVisible,
+                    toggleMeatsMenu,
+                    userMenuVisible,
+                    toggleUserMenu,
+                    loggedInUser: data.me,
+                }}
+            >
+                <Overlay id="page-overlay" open={overlayVisible} />
+                <Page>{props.children}</Page>
+            </AppContext.Provider>
+        </ToastProvider>
     );
 };
 

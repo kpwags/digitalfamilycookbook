@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/react-hooks';
+import { useToasts } from 'react-toast-notifications';
 import PropTypes from 'prop-types';
 import { Form } from '../Form/Form';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
@@ -8,23 +9,45 @@ import { ALL_CATEGORIES_QUERY } from '../../queries/Category';
 import { FormValidator } from '../../lib/FormValidator';
 import { TextInput } from '../TextInput/TextInput';
 
-const EditCategory = props => {
+const EditCategory = (props) => {
     const [id, setId] = useState(props.id);
     const [error, setError] = useState(null);
     const [name, setName] = useState(props.name);
     const [nameError, setNameError] = useState('');
+
+    const { addToast } = useToasts();
 
     useEffect(() => {
         setId(props.id);
         setName(props.name);
     }, [props]);
 
-    const [updateCategory, { loading: updateCategoryLoading, error: updateCategoryError }] = useMutation(
-        UPDATE_CATEGORY_MUTATION,
-        {
-            refetchQueries: [{ query: ALL_CATEGORIES_QUERY }]
-        }
-    );
+    const [updateCategory, { loading: updateCategoryLoading, error: updateCategoryError }] = useMutation(UPDATE_CATEGORY_MUTATION, {
+        refetchQueries: [{ query: ALL_CATEGORIES_QUERY }],
+        onCompleted: (data) => {
+            if (error) {
+                if (props.onError) {
+                    props.onError(error);
+                }
+            } else {
+                setName('');
+                setNameError('');
+
+                addToast(`${data.updateCategory.name} Updated Successfully`, { appearance: 'success' });
+
+                if (props.onComplete) {
+                    props.onComplete();
+                }
+            }
+        },
+        onError: (err) => {
+            if (props.onError) {
+                props.onError(err);
+            } else {
+                setError(err);
+            }
+        },
+    });
 
     const validateForm = () => {
         let isValid = true;
@@ -37,16 +60,17 @@ const EditCategory = props => {
         return isValid;
     };
 
-    const cancelEdit = e => {
+    const cancelEdit = (e) => {
         e.preventDefault();
         setNameError('');
-        props.onDone(true, null);
+
+        props.onCancel();
     };
 
     return (
         <Form
             data-test="form"
-            onSubmit={async e => {
+            onSubmit={async (e) => {
                 e.preventDefault();
 
                 setError(null);
@@ -55,16 +79,15 @@ const EditCategory = props => {
                     await updateCategory({
                         variables: {
                             id,
-                            name
+                            name,
+                        },
+                    }).catch((err) => {
+                        if (props.onError) {
+                            props.onError(err);
+                        } else {
+                            setError(err);
                         }
-                    }).catch(err => {
-                        setError(err);
                     });
-
-                    if (error === null) {
-                        setNameError('');
-                        props.onDone();
-                    }
                 }
             }}
         >
@@ -77,7 +100,7 @@ const EditCategory = props => {
                     validationRule="notempty"
                     value={name}
                     error={nameError}
-                    onChange={e => {
+                    onChange={(e) => {
                         setName(e.target.value);
                     }}
                 />
@@ -93,7 +116,9 @@ const EditCategory = props => {
 EditCategory.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    onDone: PropTypes.func
+    onComplete: PropTypes.func,
+    onCancel: PropTypes.func,
+    onError: PropTypes.func,
 };
 
 export { EditCategory };

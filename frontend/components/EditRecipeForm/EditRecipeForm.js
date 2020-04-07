@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useToasts } from 'react-toast-notifications';
 import Router from 'next/router';
 import PropTypes from 'prop-types';
 import { UPDATE_RECIPE_MUTATION } from '../../mutations/Recipe';
@@ -52,9 +53,12 @@ const EditRecipeForm = (props) => {
     const [meats, setMeats] = useState(Utilities.convertIDArray(recipe.meats));
     const [categories, setCategories] = useState(Utilities.convertIDArray(recipe.categories));
 
+    const { addToast } = useToasts();
+
     const [updateRecipe, { loading: updateLoading, error: updateError }] = useMutation(UPDATE_RECIPE_MUTATION, {
         refetchQueries: [{ query: RECIPE_BY_ID_QUERY, variables: { id } }],
         onCompleted: (data) => {
+            addToast(`${data.updateRecipe.name} has been updated successfully`, { appearance: 'success' });
             switch (props.previousPage) {
                 case 'admin':
                     Router.push({

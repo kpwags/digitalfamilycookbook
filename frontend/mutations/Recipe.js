@@ -46,6 +46,7 @@ const CREATE_RECIPE_MUTATION = gql`
             categories: $categories
         ) {
             id
+            name
         }
     }
 `;
@@ -106,6 +107,7 @@ const UPDATE_RECIPE_MUTATION = gql`
             categories: $categories
         ) {
             id
+            name
         }
     }
 `;

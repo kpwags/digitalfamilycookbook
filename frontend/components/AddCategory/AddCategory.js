@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/react-hooks';
+import { useToasts } from 'react-toast-notifications';
 import PropTypes from 'prop-types';
 import { Form } from '../Form/Form';
 import { TextInput } from '../TextInput/TextInput';
@@ -8,17 +9,39 @@ import { CREATE_CATEGORY_MUTATION } from '../../mutations/Category';
 import { ALL_CATEGORIES_QUERY } from '../../queries/Category';
 import { FormValidator } from '../../lib/FormValidator';
 
-const AddCategory = props => {
+const AddCategory = (props) => {
     const [name, setName] = useState('');
     const [error, setError] = useState(null);
     const [nameError, setNameError] = useState('');
 
-    const [createCategory, { loading: createCategoryLoading, error: createCategoryError }] = useMutation(
-        CREATE_CATEGORY_MUTATION,
-        {
-            refetchQueries: [{ query: ALL_CATEGORIES_QUERY }]
-        }
-    );
+    const { addToast } = useToasts();
+
+    const [createCategory, { loading: createCategoryLoading, error: createCategoryError }] = useMutation(CREATE_CATEGORY_MUTATION, {
+        refetchQueries: [{ query: ALL_CATEGORIES_QUERY }],
+        onCompleted: (data) => {
+            if (error) {
+                if (props.onError) {
+                    props.onError(error);
+                }
+            } else {
+                setName('');
+                setNameError('');
+
+                addToast(`${data.createCategory.name} Added Successfully`, { appearance: 'success' });
+
+                if (props.onComplete) {
+                    props.onComplete();
+                }
+            }
+        },
+        onError: (err) => {
+            if (props.onError) {
+                props.onError(err);
+            } else {
+                setError(err);
+            }
+        },
+    });
 
     const validateForm = () => {
         let isValid = true;
@@ -31,13 +54,13 @@ const AddCategory = props => {
         return isValid;
     };
 
-    const cancelAdd = e => {
+    const cancelAdd = (e) => {
         e.preventDefault();
         setName('');
         setNameError('');
 
-        if (typeof props.onDone === 'function') {
-            props.onDone();
+        if (props.onCancel) {
+            props.onCancel();
         }
     };
 
@@ -45,24 +68,19 @@ const AddCategory = props => {
         <Form
             data-test="form"
             id="create-category-form"
-            onSubmit={async e => {
+            onSubmit={async (e) => {
                 e.preventDefault();
 
                 setError(null);
 
                 if (validateForm()) {
-                    await createCategory({ variables: { name } }).catch(err => {
-                        setError(err);
-                    });
-
-                    if (error === null) {
-                        setName('');
-                        setNameError('');
-
-                        if (typeof props.onDone === 'function') {
-                            props.onDone();
+                    await createCategory({ variables: { name } }).catch((err) => {
+                        if (props.onError) {
+                            props.onError(err);
+                        } else {
+                            setError(err);
                         }
-                    }
+                    });
                 }
             }}
         >
@@ -75,7 +93,7 @@ const AddCategory = props => {
                     validationRule="notempty"
                     value={name}
                     error={nameError}
-                    onChange={e => {
+                    onChange={(e) => {
                         setName(e.target.value);
                     }}
                 />
@@ -90,7 +108,9 @@ const AddCategory = props => {
 };
 
 AddCategory.propTypes = {
-    onDone: PropTypes.func
+    onComplete: PropTypes.func,
+    onCancel: PropTypes.func,
+    onError: PropTypes.func,
 };
 
 export { AddCategory };

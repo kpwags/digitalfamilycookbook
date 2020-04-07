@@ -15,14 +15,12 @@ import { DeleteInvitationCode } from '../../components/DeleteInvitationCode/Dele
 import { Utilities } from '../../lib/Utilities';
 import { AppContext } from '../../components/AppContext/AppContext';
 import { ErrorMessage } from '../../components/ErrorMessage/ErrorMessage';
-import { SuccessMessage } from '../../components/SuccessMessage/SuccessMessage';
 
 const InvitationCodes = () => {
     const [selected, setSelected] = useState({ id: '', code: '' });
     const [error, setError] = useState(null);
     const [addFormOpen, setAddFormOpen] = useState(false);
     const [editFormOpen, setEditFormOpen] = useState(false);
-    const [successMessage, setSuccessMessage] = useState('');
 
     const { data, error: queryError, loading } = useQuery(ALL_INVITATION_CODES_QUERY);
 
@@ -35,7 +33,7 @@ const InvitationCodes = () => {
                     <AdminHeader title="Invitation Codes">
                         <AddButton>
                             <button
-                                onClick={e => {
+                                onClick={(e) => {
                                     e.preventDefault();
                                     setAddFormOpen(true);
                                 }}
@@ -48,13 +46,11 @@ const InvitationCodes = () => {
 
                     <HeaderForm width="500" style={addFormOpen ? { display: 'block' } : { display: 'none' }}>
                         <AddInvitationCode
-                            onDone={({ result, message }) => {
+                            onComplete={() => {
                                 setAddFormOpen(false);
-                                if (result) {
-                                    setSuccessMessage(message);
-                                } else {
-                                    setError(message);
-                                }
+                            }}
+                            onCancel={() => {
+                                setAddFormOpen(false);
                             }}
                         />
                     </HeaderForm>
@@ -63,13 +59,11 @@ const InvitationCodes = () => {
                         <EditInvitationCode
                             id={selected.id}
                             code={selected.code}
-                            onDone={({ result, message }) => {
+                            onComplete={() => {
                                 setEditFormOpen(false);
-                                if (result) {
-                                    setSuccessMessage(message);
-                                } else {
-                                    setError(message);
-                                }
+                            }}
+                            onCancel={() => {
+                                setEditFormOpen(false);
                             }}
                         />
                     </HeaderForm>
@@ -84,14 +78,13 @@ const InvitationCodes = () => {
                         <PageError
                             error={{
                                 Title: 'Error Loading Categories',
-                                Message: queryError
+                                Message: queryError,
                             }}
                         />
                     )}
 
                     {!loading && (
                         <>
-                            <SuccessMessage message={successMessage} />
                             <ErrorMessage message={error} />
                             <Grid>
                                 <table cellPadding="0" cellSpacing="0" id="invitationcodeadmingrid">
@@ -111,7 +104,7 @@ const InvitationCodes = () => {
                                     </thead>
                                     <tbody>
                                         {data.invitationCodes.length > 0 ? (
-                                            data.invitationCodes.map(invitationCode => (
+                                            data.invitationCodes.map((invitationCode) => (
                                                 <tr key={invitationCode.id} id={`row_${invitationCode.id}`}>
                                                     <td>{invitationCode.code}</td>
                                                     <td>{Utilities.formatDate(invitationCode.createdAt)}</td>
@@ -119,7 +112,7 @@ const InvitationCodes = () => {
                                                         <button
                                                             type="button"
                                                             data-id={invitationCode.id}
-                                                            onClick={e => {
+                                                            onClick={(e) => {
                                                                 e.preventDefault();
                                                                 setSelected(invitationCode);
                                                                 setEditFormOpen(true);
@@ -132,18 +125,14 @@ const InvitationCodes = () => {
                                                         <DeleteInvitationCode
                                                             id={invitationCode.id}
                                                             code={invitationCode.code}
-                                                            continue={async err => {
+                                                            onComplete={() => {
                                                                 toggleOverlay();
-                                                                if (err !== null) {
-                                                                    setError(err);
-                                                                } else {
-                                                                    setSuccessMessage(
-                                                                        'Invitation code successfully deleted'
-                                                                    );
-                                                                }
                                                             }}
-                                                            cancel={() => {
+                                                            onCancel={() => {
                                                                 toggleOverlay();
+                                                            }}
+                                                            onError={(err) => {
+                                                                setError(err);
                                                             }}
                                                         >
                                                             Delete

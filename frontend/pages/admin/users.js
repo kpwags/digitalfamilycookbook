@@ -7,15 +7,13 @@ import { AuthGateway } from '../../components/AuthGateway/AuthGateway';
 import { Grid } from '../../components/Grid/Grid';
 import { LoadingBox } from '../../components/LoadingBox/LoadingBox';
 import { PageError } from '../../components/PageError/PageError';
-import { UserToggleAdmin } from '../../components/UserToggleAdmin/UserToggleAdmin';
-import { UserDelete } from '../../components/UserDelete/UserDelete';
+import { ToggleUserAdmin } from '../../components/ToggleUserAdmin/ToggleUserAdmin';
+import { DeleteUser } from '../../components/DeleteUser/DeleteUser';
 import { ErrorMessage } from '../../components/ErrorMessage/ErrorMessage';
-import { SuccessMessage } from '../../components/SuccessMessage/SuccessMessage';
 import { AppContext } from '../../components/AppContext/AppContext';
 
 const AdminUsers = () => {
     const [error, setError] = useState(null);
-    const [successMessage, setSuccessMessage] = useState('');
 
     const { data, error: queryError, loading } = useQuery(ALL_USERS_QUERY);
 
@@ -44,7 +42,6 @@ const AdminUsers = () => {
 
                     {!loading && (
                         <>
-                            <SuccessMessage message={successMessage} />
                             <ErrorMessage message={error} />
                             <Grid>
                                 <table cellPadding="0" cellSpacing="0" id="users_admin_grid">
@@ -62,7 +59,7 @@ const AdminUsers = () => {
                                     </thead>
                                     <tbody>
                                         {data.users.length > 0 ? (
-                                            data.users.map(user => (
+                                            data.users.map((user) => (
                                                 <tr key={user.id} id={`row_${user.id}`}>
                                                     <td>{user.name}</td>
                                                     <td>{user.permissions.includes('ADMIN') ? 'Adminstrator' : 'Member'}</td>
@@ -74,28 +71,31 @@ const AdminUsers = () => {
                                                     ) : (
                                                         <>
                                                             <td align="center">
-                                                                <UserToggleAdmin userId={user.id}>
+                                                                <ToggleUserAdmin
+                                                                    userId={user.id}
+                                                                    onError={(err) => {
+                                                                        setError(err);
+                                                                    }}
+                                                                >
                                                                     {user.permissions.includes('ADMIN') ? 'Remove Admin' : 'Make Admin'}
-                                                                </UserToggleAdmin>
+                                                                </ToggleUserAdmin>
                                                             </td>
                                                             <td align="center">
-                                                                <UserDelete
+                                                                <DeleteUser
                                                                     id={user.id}
                                                                     name={user.name}
-                                                                    continue={async err => {
+                                                                    onComplete={() => {
                                                                         toggleOverlay();
-                                                                        if (err !== null) {
-                                                                            setError(err);
-                                                                        } else {
-                                                                            setSuccessMessage('Category successfully deleted');
-                                                                        }
                                                                     }}
-                                                                    cancel={() => {
+                                                                    onCancel={() => {
                                                                         toggleOverlay();
+                                                                    }}
+                                                                    onError={(err) => {
+                                                                        setError(err);
                                                                     }}
                                                                 >
                                                                     Delete
-                                                                </UserDelete>
+                                                                </DeleteUser>
                                                             </td>
                                                         </>
                                                     )}

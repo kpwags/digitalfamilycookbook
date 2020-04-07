@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
+import { useToasts } from 'react-toast-notifications';
 import debounce from 'lodash.debounce';
 import { CURRENT_USER_QUERY, SINGLE_USER_USERNAME_QUERY } from '../../queries/User';
 import { UPDATE_PROFILE_MUTATION } from '../../mutations/User';
 import { Form } from '../Form/Form';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
-import { SuccessMessage } from '../SuccessMessage/SuccessMessage';
 import { FormValidator } from '../../lib/FormValidator';
 import { TextInput } from '../TextInput/TextInput';
 import { TextArea } from '../TextArea/TextArea';
@@ -21,9 +21,10 @@ const EditProfileForm = () => {
     const [bio, setBio] = useState('');
     const [image, setImage] = useState('');
     const [largeImage, setLargeImage] = useState('');
-    const [successMessage, setSuccessMessage] = useState(null);
     const [error, setError] = useState(null);
     const [saveEnabled, setSaveEnabled] = useState(true);
+
+    const { addToast } = useToasts();
 
     const client = useApolloClient();
 
@@ -31,15 +32,15 @@ const EditProfileForm = () => {
         refetchQueries: [{ query: CURRENT_USER_QUERY }],
         onCompleted: () => {
             if (!updateError) {
-                setSuccessMessage('Profile updated successfully');
+                addToast('Profile updated successfully', { appearance: 'success' });
             }
-        }
+        },
     });
 
     const {
-        data: { me }
+        data: { me },
     } = useQuery(CURRENT_USER_QUERY, {
-        onCompleted: data => {
+        onCompleted: (data) => {
             if (data.me !== null) {
                 setId(data.me.id);
                 setName(data.me.name);
@@ -49,10 +50,10 @@ const EditProfileForm = () => {
                 setImage(data.me.image);
                 setLargeImage(data.me.largeImage);
             }
-        }
+        },
     });
 
-    const uploadFile = async e => {
+    const uploadFile = async (e) => {
         const { files } = e.target;
         const data = new FormData();
         data.append('file', files[0]);
@@ -60,7 +61,7 @@ const EditProfileForm = () => {
 
         const res = await fetch('https://api.cloudinary.com/v1_1/kpwags/image/upload', {
             method: 'POST',
-            body: data
+            body: data,
         });
 
         const file = await res.json();
@@ -74,7 +75,7 @@ const EditProfileForm = () => {
 
         const resp = await client.query({
             query: SINGLE_USER_USERNAME_QUERY,
-            variables: { username }
+            variables: { username },
         });
 
         const { valid, message } = FormValidator.validateUsername(username);
@@ -94,7 +95,7 @@ const EditProfileForm = () => {
     const validateForm = async () => {
         const resp = await client.query({
             query: SINGLE_USER_USERNAME_QUERY,
-            variables: { username }
+            variables: { username },
         });
 
         let isValid = true;
@@ -125,7 +126,7 @@ const EditProfileForm = () => {
         <Form
             data-test="form"
             method="post"
-            onSubmit={async e => {
+            onSubmit={async (e) => {
                 e.preventDefault();
 
                 setError(null);
@@ -140,9 +141,9 @@ const EditProfileForm = () => {
                             email,
                             bio,
                             image,
-                            largeImage
-                        }
-                    }).catch(err => {
+                            largeImage,
+                        },
+                    }).catch((err) => {
                         setError(err);
                     });
                 }
@@ -151,7 +152,6 @@ const EditProfileForm = () => {
             <fieldset disabled={updateLoading} aria-busy={updateLoading}>
                 <h2>Edit Profile</h2>
 
-                <SuccessMessage message={successMessage} />
                 <ErrorMessage error={error || updateError} />
 
                 <input type="hidden" name="id" id="user_id" defaultValue={me.id} />
@@ -164,7 +164,7 @@ const EditProfileForm = () => {
                         type="file"
                         id="file"
                         name="file"
-                        onChange={e => {
+                        onChange={(e) => {
                             uploadFile(e);
                         }}
                     />
@@ -187,7 +187,7 @@ const EditProfileForm = () => {
                     value={name}
                     validationRule="notempty"
                     error={nameError}
-                    onChange={e => {
+                    onChange={(e) => {
                         setName(e.target.value);
                     }}
                 />
@@ -198,10 +198,10 @@ const EditProfileForm = () => {
                     label="Username"
                     value={username}
                     error={usernameError}
-                    onChange={e => {
+                    onChange={(e) => {
                         setUsername(e.target.value);
                     }}
-                    validate={e => {
+                    validate={(e) => {
                         e.persist();
                         validateUsername();
                     }}
@@ -214,7 +214,7 @@ const EditProfileForm = () => {
                     value={email}
                     error={emailError}
                     validationRule="email"
-                    onChange={e => {
+                    onChange={(e) => {
                         setEmail(e.target.value);
                     }}
                 />
@@ -225,7 +225,7 @@ const EditProfileForm = () => {
                     label="Bio"
                     value={me.bio}
                     error=""
-                    onChange={e => {
+                    onChange={(e) => {
                         setBio(e.target.value);
                     }}
                 />
