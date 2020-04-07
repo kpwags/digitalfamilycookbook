@@ -5,11 +5,9 @@ import PropTypes from 'prop-types';
 import { DELETE_USER_MUTATION } from '../../mutations/User';
 import { ALL_USERS_QUERY } from '../../queries/User';
 import { ConfirmDialog } from '../ConfirmDialog/ConfirmDialog';
-import { ErrorAlert } from '../ErrorAlert/ErrorAlert';
 import { AppContext } from '../AppContext/AppContext';
 
-const UserDelete = (props) => {
-    const [error, setError] = useState(null);
+const DeleteUser = (props) => {
     const [confirmOpen, setConfirmOpen] = useState(false);
 
     const { id, name, children } = props;
@@ -24,19 +22,15 @@ const UserDelete = (props) => {
         cache.writeQuery({ query: ALL_USERS_QUERY, data });
     };
 
-    const [deleteUser, { error: deleteError }] = useMutation(DELETE_USER_MUTATION, {
+    const [deleteUser] = useMutation(DELETE_USER_MUTATION, {
         update: updateCache,
         onCompleted: () => {
             addToast('User has been deleted', { appearance: 'success' });
 
-            if (error && typeof props.onError === 'function') {
-                return props.onError(error);
-            }
-
-            return props.onComplete();
+            props.onComplete();
         },
         onError: (err) => {
-            return props.onError(err);
+            props.onError(err);
         },
     });
 
@@ -51,7 +45,6 @@ const UserDelete = (props) => {
 
     return (
         <>
-            <ErrorAlert error={error || deleteError} />
             <ConfirmDialog
                 open={confirmOpen}
                 message={`Are you sure you want to delete ${name}?`}
@@ -74,7 +67,7 @@ const UserDelete = (props) => {
     );
 };
 
-UserDelete.propTypes = {
+DeleteUser.propTypes = {
     id: PropTypes.string,
     name: PropTypes.string,
     onComplete: PropTypes.func.isRequired,
@@ -83,4 +76,4 @@ UserDelete.propTypes = {
     children: PropTypes.node,
 };
 
-export { UserDelete };
+export { DeleteUser };

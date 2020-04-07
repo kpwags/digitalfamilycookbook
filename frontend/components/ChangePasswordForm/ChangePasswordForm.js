@@ -1,29 +1,46 @@
 import React, { useState } from 'react';
+import { useToasts } from 'react-toast-notifications';
 import PropTypes from 'prop-types';
+import Router from 'next/router';
 import { useMutation } from '@apollo/react-hooks';
 import { CURRENT_USER_QUERY } from '../../queries/User';
 import { CHANGE_PASSWORD_MUTATION } from '../../mutations/User';
 import { Form } from '../Form/Form';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
-import { SuccessMessage } from '../SuccessMessage/SuccessMessage';
 import { FormValidator } from '../../lib/FormValidator';
 
-const ChangePasswordForm = props => {
+const ChangePasswordForm = (props) => {
     const [user] = useState(props.user);
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
-    const [successMessage, setSuccessMessage] = useState(null);
     const [error, setError] = useState(null);
 
     const [currentPasswordValidationError, setCurrentPasswordValidationError] = useState('');
     const [newPasswordValidationError, setNewPasswordValidationError] = useState('');
     const [confirmNewPasswordValidationError, setConfirmNewPasswordValidationError] = useState('');
 
-    const [
-        changePassword,
-        { loading: changePasswordLoading, error: changePasswordError }
-    ] = useMutation(CHANGE_PASSWORD_MUTATION, { refetchQueries: [{ query: CURRENT_USER_QUERY }] });
+    const { addToast } = useToasts();
+
+    const [changePassword, { loading: changePasswordLoading, error: changePasswordError }] = useMutation(CHANGE_PASSWORD_MUTATION, {
+        refetchQueries: [{ query: CURRENT_USER_QUERY }],
+        onCompleted: () => {
+            if (!error) {
+                setCurrentPassword('');
+                setNewPassword('');
+                setConfirmNewPassword('');
+
+                addToast('Password changed successfully', { appearance: 'success' });
+
+                Router.push({
+                    pathname: '/account',
+                });
+            }
+        },
+        onError: (err) => {
+            setError(err);
+        },
+    });
 
     const validate = (fieldId, value) => {
         const { valid: passwordsValid, message } = FormValidator.validatePassword(newPassword, confirmNewPassword);
@@ -74,7 +91,7 @@ const ChangePasswordForm = props => {
         <Form
             data-test="form"
             method="post"
-            onSubmit={async e => {
+            onSubmit={async (e) => {
                 e.preventDefault();
 
                 setError(null);
@@ -84,23 +101,14 @@ const ChangePasswordForm = props => {
                         variables: {
                             id: user.id,
                             currentPassword,
-                            password: newPassword
-                        }
-                    }).catch(err => {
+                            password: newPassword,
+                        },
+                    }).catch((err) => {
                         setError(err);
                     });
-
-                    if (error === null) {
-                        setCurrentPassword('');
-                        setNewPassword('');
-                        setConfirmNewPassword('');
-                        setSuccessMessage('Password changed successfully');
-                        setError(null);
-                    }
                 }
             }}
         >
-            <SuccessMessage message={successMessage} />
             <ErrorMessage error={error || changePasswordError} />
             <fieldset disabled={changePasswordLoading} aria-busy={changePasswordLoading}>
                 <h2>Change Password</h2>
@@ -112,18 +120,15 @@ const ChangePasswordForm = props => {
                         name="current-password"
                         id="current-password"
                         value={currentPassword}
-                        onChange={e => {
+                        onChange={(e) => {
                             setCurrentPassword(e.target.value);
                         }}
-                        onBlur={e => {
+                        onBlur={(e) => {
                             e.preventDefault();
                             validate('current-password', currentPassword);
                         }}
                     />
-                    <div
-                        className="error-text"
-                        style={currentPasswordValidationError !== '' ? { display: 'block' } : {}}
-                    >
+                    <div className="error-text" style={currentPasswordValidationError !== '' ? { display: 'block' } : {}}>
                         {currentPasswordValidationError}
                     </div>
                 </label>
@@ -135,10 +140,10 @@ const ChangePasswordForm = props => {
                         name="password"
                         id="password"
                         value={newPassword}
-                        onChange={e => {
+                        onChange={(e) => {
                             setNewPassword(e.target.value);
                         }}
-                        onBlur={e => {
+                        onBlur={(e) => {
                             e.preventDefault();
                             validate('password', newPassword);
                         }}
@@ -155,18 +160,15 @@ const ChangePasswordForm = props => {
                         name="confirm-password"
                         id="confirm-password"
                         value={confirmNewPassword}
-                        onChange={e => {
+                        onChange={(e) => {
                             setConfirmNewPassword(e.target.value);
                         }}
-                        onBlur={e => {
+                        onBlur={(e) => {
                             e.preventDefault();
                             validate('confirm-password', confirmNewPassword);
                         }}
                     />
-                    <div
-                        className="error-text"
-                        style={confirmNewPasswordValidationError !== '' ? { display: 'block' } : {}}
-                    >
+                    <div className="error-text" style={confirmNewPasswordValidationError !== '' ? { display: 'block' } : {}}>
                         {confirmNewPasswordValidationError}
                     </div>
                 </label>
@@ -178,7 +180,7 @@ const ChangePasswordForm = props => {
 };
 
 ChangePasswordForm.propTypes = {
-    user: PropTypes.object
+    user: PropTypes.object,
 };
 
 export { ChangePasswordForm };

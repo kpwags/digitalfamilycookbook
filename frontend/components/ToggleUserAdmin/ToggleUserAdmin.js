@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { TOGGLE_ADMIN_MUTATION } from '../../mutations/User';
 import { ALL_USERS_QUERY } from '../../queries/User';
 
-const UserToggleAdmin = (props) => {
+const ToggleUserAdmin = (props) => {
     const [error, setError] = useState(null);
 
     const { addToast } = useToasts();
@@ -58,11 +58,11 @@ const UserToggleAdmin = (props) => {
     );
 };
 
-UserToggleAdmin.propTypes = {
+ToggleUserAdmin.propTypes = {
     userId: PropTypes.string.isRequired,
     onComplete: PropTypes.func,
     onError: PropTypes.func.isRequired,
     children: PropTypes.node,
 };
 
-export { UserToggleAdmin };
+export { ToggleUserAdmin };

@@ -7,8 +7,8 @@ import { AuthGateway } from '../../components/AuthGateway/AuthGateway';
 import { Grid } from '../../components/Grid/Grid';
 import { LoadingBox } from '../../components/LoadingBox/LoadingBox';
 import { PageError } from '../../components/PageError/PageError';
-import { UserToggleAdmin } from '../../components/UserToggleAdmin/UserToggleAdmin';
-import { UserDelete } from '../../components/UserDelete/UserDelete';
+import { ToggleUserAdmin } from '../../components/ToggleUserAdmin/ToggleUserAdmin';
+import { DeleteUser } from '../../components/DeleteUser/DeleteUser';
 import { ErrorMessage } from '../../components/ErrorMessage/ErrorMessage';
 import { AppContext } from '../../components/AppContext/AppContext';
 
@@ -71,17 +71,17 @@ const AdminUsers = () => {
                                                     ) : (
                                                         <>
                                                             <td align="center">
-                                                                <UserToggleAdmin
+                                                                <ToggleUserAdmin
                                                                     userId={user.id}
                                                                     onError={(err) => {
                                                                         setError(err);
                                                                     }}
                                                                 >
                                                                     {user.permissions.includes('ADMIN') ? 'Remove Admin' : 'Make Admin'}
-                                                                </UserToggleAdmin>
+                                                                </ToggleUserAdmin>
                                                             </td>
                                                             <td align="center">
-                                                                <UserDelete
+                                                                <DeleteUser
                                                                     id={user.id}
                                                                     name={user.name}
                                                                     onComplete={() => {
@@ -95,7 +95,7 @@ const AdminUsers = () => {
                                                                     }}
                                                                 >
                                                                     Delete
-                                                                </UserDelete>
+                                                                </DeleteUser>
                                                             </td>
                                                         </>
                                                     )}
