@@ -14,7 +14,6 @@ import { Utilities } from '../../lib/Utilities';
 import { DeleteMeat } from '../../components/DeleteMeat/DeleteMeat';
 import { EditMeat } from '../../components/EditMeat/EditMeat';
 import { ErrorMessage } from '../../components/ErrorMessage/ErrorMessage';
-import { SuccessMessage } from '../../components/SuccessMessage/SuccessMessage';
 import { AdminLayout } from '../../components/AdminLayout/AdminLayout';
 
 const AdminMeats = () => {
@@ -22,7 +21,6 @@ const AdminMeats = () => {
     const [error, setError] = useState(null);
     const [addFormOpen, setAddFormOpen] = useState(false);
     const [editFormOpen, setEditFormOpen] = useState(false);
-    const [successMessage, setSuccessMessage] = useState('');
 
     const { data, error: queryError, loading } = useQuery(ALL_MEATS_QUERY);
 
@@ -35,7 +33,7 @@ const AdminMeats = () => {
                     <AdminHeader title="Meats">
                         <AddButton>
                             <button
-                                onClick={e => {
+                                onClick={(e) => {
                                     e.preventDefault();
                                     setAddFormOpen(true);
                                 }}
@@ -45,26 +43,24 @@ const AdminMeats = () => {
                             </button>
                         </AddButton>
                     </AdminHeader>
-                    <HeaderForm
-                        id="create-meat-header-form"
-                        width="500"
-                        style={addFormOpen ? { display: 'block' } : { display: 'none' }}
-                    >
+                    <HeaderForm id="create-meat-header-form" width="500" style={addFormOpen ? { display: 'block' } : { display: 'none' }}>
                         <AddMeat
-                            onDone={() => {
+                            onComplete={() => {
+                                setAddFormOpen(false);
+                            }}
+                            onCancel={() => {
                                 setAddFormOpen(false);
                             }}
                         />
                     </HeaderForm>
-                    <HeaderForm
-                        id="edit-meat-header-form"
-                        width="500"
-                        style={editFormOpen ? { display: 'block' } : { display: 'none' }}
-                    >
+                    <HeaderForm id="edit-meat-header-form" width="500" style={editFormOpen ? { display: 'block' } : { display: 'none' }}>
                         <EditMeat
                             id={selected.id}
                             name={selected.name}
-                            onDone={() => {
+                            onComplete={() => {
+                                setEditFormOpen(false);
+                            }}
+                            onCancel={() => {
                                 setEditFormOpen(false);
                             }}
                         />
@@ -78,13 +74,12 @@ const AdminMeats = () => {
                         <PageError
                             error={{
                                 Title: 'Error Loading Meats',
-                                Message: error || queryError
+                                Message: error || queryError,
                             }}
                         />
                     )}
                     {!loading && (
                         <>
-                            <SuccessMessage message={successMessage} />
                             <ErrorMessage message={error} />
                             <Grid>
                                 <table cellPadding="0" cellSpacing="0" id="meats_admin_grid">
@@ -104,7 +99,7 @@ const AdminMeats = () => {
                                     </thead>
                                     <tbody>
                                         {data.meats.length > 0 ? (
-                                            data.meats.map(meat => (
+                                            data.meats.map((meat) => (
                                                 <tr key={meat.id} id={`row_${meat.id}`}>
                                                     <td>{meat.name}</td>
                                                     <td>{Utilities.formatDate(meat.createdAt)}</td>
@@ -112,7 +107,7 @@ const AdminMeats = () => {
                                                         <button
                                                             type="button"
                                                             data-id={meat.id}
-                                                            onClick={e => {
+                                                            onClick={(e) => {
                                                                 e.preventDefault();
                                                                 setSelected(meat);
                                                                 setEditFormOpen(true);
@@ -125,16 +120,14 @@ const AdminMeats = () => {
                                                         <DeleteMeat
                                                             id={meat.id}
                                                             name={meat.name}
-                                                            continue={async err => {
+                                                            onComplete={() => {
                                                                 toggleOverlay();
-                                                                if (err !== null) {
-                                                                    setError(err);
-                                                                } else {
-                                                                    setSuccessMessage('Meat successfully deleted');
-                                                                }
                                                             }}
-                                                            cancel={() => {
+                                                            onCancel={() => {
                                                                 toggleOverlay();
+                                                            }}
+                                                            onError={(err) => {
+                                                                setError(err);
                                                             }}
                                                         >
                                                             Delete

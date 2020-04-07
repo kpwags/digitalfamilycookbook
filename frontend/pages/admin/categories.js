@@ -14,7 +14,6 @@ import { DeleteCategory } from '../../components/DeleteCategory/DeleteCategory';
 import { EditCategory } from '../../components/EditCategory/EditCategory';
 import { AdminLayout } from '../../components/AdminLayout/AdminLayout';
 import { ErrorMessage } from '../../components/ErrorMessage/ErrorMessage';
-import { SuccessMessage } from '../../components/SuccessMessage/SuccessMessage';
 import { AppContext } from '../../components/AppContext/AppContext';
 
 const AdminCategories = () => {
@@ -22,7 +21,6 @@ const AdminCategories = () => {
     const [error, setError] = useState(null);
     const [addFormOpen, setAddFormOpen] = useState(false);
     const [editFormOpen, setEditFormOpen] = useState(false);
-    const [successMessage, setSuccessMessage] = useState('');
 
     const { data, error: queryError, loading } = useQuery(ALL_CATEGORIES_QUERY);
 
@@ -35,7 +33,7 @@ const AdminCategories = () => {
                     <AdminHeader title="Categories">
                         <AddButton>
                             <button
-                                onClick={e => {
+                                onClick={(e) => {
                                     e.preventDefault();
                                     setAddFormOpen(true);
                                 }}
@@ -45,26 +43,24 @@ const AdminCategories = () => {
                             </button>
                         </AddButton>
                     </AdminHeader>
-                    <HeaderForm
-                        id="create-category-header-form"
-                        width="500"
-                        style={addFormOpen ? { display: 'block' } : { display: 'none' }}
-                    >
+                    <HeaderForm id="create-category-header-form" width="500" style={addFormOpen ? { display: 'block' } : { display: 'none' }}>
                         <AddCategory
-                            onDone={() => {
+                            onComplete={() => {
+                                setAddFormOpen(false);
+                            }}
+                            onCancel={() => {
                                 setAddFormOpen(false);
                             }}
                         />
                     </HeaderForm>
-                    <HeaderForm
-                        id="edit-category-header-form"
-                        width="500"
-                        style={editFormOpen ? { display: 'block' } : { display: 'none' }}
-                    >
+                    <HeaderForm id="edit-category-header-form" width="500" style={editFormOpen ? { display: 'block' } : { display: 'none' }}>
                         <EditCategory
                             id={selected.id}
                             name={selected.name}
-                            onDone={() => {
+                            onComplete={() => {
+                                setEditFormOpen(false);
+                            }}
+                            onCancel={() => {
                                 setEditFormOpen(false);
                             }}
                         />
@@ -78,13 +74,12 @@ const AdminCategories = () => {
                         <PageError
                             error={{
                                 Title: 'Error Loading Categories',
-                                Message: error || queryError
+                                Message: error || queryError,
                             }}
                         />
                     )}
                     {!loading && (
                         <>
-                            <SuccessMessage message={successMessage} />
                             <ErrorMessage message={error} />
                             <Grid>
                                 <table cellPadding="0" cellSpacing="0" id="categories_admin_grid">
@@ -104,7 +99,7 @@ const AdminCategories = () => {
                                     </thead>
                                     <tbody>
                                         {data.categories.length > 0 ? (
-                                            data.categories.map(category => (
+                                            data.categories.map((category) => (
                                                 <tr key={category.id} id={`row_${category.id}`}>
                                                     <td>{category.name}</td>
                                                     <td>{Utilities.formatDate(category.createdAt)}</td>
@@ -112,7 +107,7 @@ const AdminCategories = () => {
                                                         <button
                                                             type="button"
                                                             data-id={category.id}
-                                                            onClick={e => {
+                                                            onClick={(e) => {
                                                                 e.preventDefault();
                                                                 setSelected(category);
                                                                 setEditFormOpen(true);
@@ -125,16 +120,14 @@ const AdminCategories = () => {
                                                         <DeleteCategory
                                                             id={category.id}
                                                             name={category.name}
-                                                            continue={async err => {
+                                                            onComplete={() => {
                                                                 toggleOverlay();
-                                                                if (err !== null) {
-                                                                    setError(err);
-                                                                } else {
-                                                                    setSuccessMessage('Category successfully deleted');
-                                                                }
                                                             }}
-                                                            cancel={() => {
+                                                            onCancel={() => {
                                                                 toggleOverlay();
+                                                            }}
+                                                            onError={(err) => {
+                                                                setError(err);
                                                             }}
                                                         >
                                                             Delete

@@ -1,16 +1,8 @@
 import gql from 'graphql-tag';
 
 const CHANGE_PASSWORD_MUTATION = gql`
-    mutation CHANGE_PASSWORD_MUTATION(
-        $id: ID!
-        $currentPassword: String!
-        $password: String!
-    ) {
-        changePassword(
-            id: $id
-            currentPassword: $currentPassword
-            password: $password
-        ) {
+    mutation CHANGE_PASSWORD_MUTATION($id: ID!, $currentPassword: String!, $password: String!) {
+        changePassword(id: $id, currentPassword: $currentPassword, password: $password) {
             id
             name
             email
@@ -112,29 +104,14 @@ const TOGGLE_ADMIN_MUTATION = gql`
             bio
             image
             largeImage
+            permissions
         }
     }
 `;
 
 const UPDATE_PROFILE_MUTATION = gql`
-    mutation UPDATE_PROFILE_MUTATION(
-        $id: ID!
-        $name: String!
-        $username: String!
-        $email: String!
-        $bio: String
-        $image: String
-        $largeImage: String
-    ) {
-        updateUser(
-            id: $id
-            name: $name
-            username: $username
-            email: $email
-            bio: $bio
-            image: $image
-            largeImage: $largeImage
-        ) {
+    mutation UPDATE_PROFILE_MUTATION($id: ID!, $name: String!, $username: String!, $email: String!, $bio: String, $image: String, $largeImage: String) {
+        updateUser(id: $id, name: $name, username: $username, email: $email, bio: $bio, image: $image, largeImage: $largeImage) {
             id
             name
             username

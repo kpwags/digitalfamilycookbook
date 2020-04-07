@@ -1,33 +1,40 @@
 import React, { useState, useContext } from 'react';
 import { useMutation } from '@apollo/react-hooks';
+import { useToasts } from 'react-toast-notifications';
 import PropTypes from 'prop-types';
 import { DELETE_CATEGORY_MUTATION } from '../../mutations/Category';
 import { ALL_CATEGORIES_QUERY } from '../../queries/Category';
 import { ConfirmDialog } from '../ConfirmDialog/ConfirmDialog';
-import { ErrorAlert } from '../ErrorAlert/ErrorAlert';
 import { AppContext } from '../AppContext/AppContext';
 
-const DeleteCategory = props => {
-    const [error, setError] = useState(null);
+const DeleteCategory = (props) => {
     const [confirmOpen, setConfirmOpen] = useState(false);
 
     const { id, name, children } = props;
 
+    const { addToast } = useToasts();
     const { toggleOverlay } = useContext(AppContext);
 
     const updateCache = (cache, { data: result }) => {
         const categoryData = cache.readQuery({ query: ALL_CATEGORIES_QUERY });
 
-        categoryData.categories = categoryData.categories.filter(category => category.id !== result.deleteCategory.id);
+        categoryData.categories = categoryData.categories.filter((category) => category.id !== result.deleteCategory.id);
 
         cache.writeQuery({ query: ALL_CATEGORIES_QUERY, data: categoryData });
     };
 
-    const [deleteCategory, { error: deleteError }] = useMutation(DELETE_CATEGORY_MUTATION, {
-        update: updateCache
+    const [deleteCategory] = useMutation(DELETE_CATEGORY_MUTATION, {
+        update: updateCache,
+        onCompleted: () => {
+            addToast('Category Deleted Successfully', { appearance: 'success' });
+            props.onComplete();
+        },
+        onError: (err) => {
+            props.onError(err);
+        },
     });
 
-    const confirmDelete = e => {
+    const confirmDelete = (e) => {
         e.preventDefault();
 
         toggleOverlay();
@@ -36,22 +43,19 @@ const DeleteCategory = props => {
 
     return (
         <>
-            <ErrorAlert error={error || deleteError} />
             <ConfirmDialog
                 open={confirmOpen}
                 message={`Are you sure you want to delete ${name}?`}
                 continue={async () => {
                     await deleteCategory({
-                        variables: { id }
-                    }).catch(err => {
-                        setError(err);
+                        variables: { id },
+                    }).catch((err) => {
+                        props.onError(err);
                     });
-
-                    props.continue(error);
                 }}
                 cancel={() => {
                     setConfirmOpen(false);
-                    props.cancel();
+                    props.onCancel();
                 }}
             />
             <button type="button" onClick={confirmDelete} className="delete">
@@ -64,9 +68,10 @@ const DeleteCategory = props => {
 DeleteCategory.propTypes = {
     id: PropTypes.string,
     name: PropTypes.string,
-    continue: PropTypes.func.isRequired,
-    cancel: PropTypes.func.isRequired,
-    children: PropTypes.node
+    onComplete: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    onError: PropTypes.func.isRequired,
+    children: PropTypes.node,
 };
 
 export { DeleteCategory };

@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useMutation } from '@apollo/react-hooks';
+import { useToasts } from 'react-toast-notifications';
 import PropTypes from 'prop-types';
 import { DELETE_RECIPE_MUTATION } from '../../mutations/Recipe';
 import { ADMIN_ALL_RECIPES_QUERY } from '../../queries/Recipe';
@@ -15,6 +16,8 @@ const DeleteRecipe = (props) => {
 
     const { toggleOverlay } = useContext(AppContext);
 
+    const { addToast } = useToasts();
+
     const updateCache = (cache, { data: result }) => {
         const recipeData = cache.readQuery({ query: ADMIN_ALL_RECIPES_QUERY });
 
@@ -26,6 +29,7 @@ const DeleteRecipe = (props) => {
     const [deleteRecipe, { error: deleteError }] = useMutation(DELETE_RECIPE_MUTATION, {
         update: updateCache,
         onCompleted: () => {
+            addToast('Recipe Deleted Successfully', { appearance: 'success' });
             props.continue(error);
         },
     });

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useApolloClient } from '@apollo/react-hooks';
+import { useToasts } from 'react-toast-notifications';
 import debounce from 'lodash.debounce';
 import PropTypes from 'prop-types';
 import { Form } from '../Form/Form';
@@ -9,37 +10,48 @@ import { CREATE_INVITATION_CODE_MUTATION } from '../../mutations/InvitationCode'
 import { ALL_INVITATION_CODES_QUERY, SINGLE_INVITATION_CODE_CODE_QUERY } from '../../queries/InvitationCode';
 import { FormValidator } from '../../lib/FormValidator';
 
-const AddInvitationCode = props => {
+const AddInvitationCode = (props) => {
     const [code, setCode] = useState('');
     const [error, setError] = useState(null);
     const [codeError, setCodeError] = useState('');
     const [saveEnabled, setSaveEnabled] = useState(true);
 
+    const { addToast } = useToasts();
+
     const client = useApolloClient();
-    const [createInvitationCode, { loading: addLoading, error: addError }] = useMutation(
-        CREATE_INVITATION_CODE_MUTATION,
-        {
-            refetchQueries: [{ query: ALL_INVITATION_CODES_QUERY }],
-            onCompleted: data => {
+    const [createInvitationCode, { loading: addLoading, error: addError }] = useMutation(CREATE_INVITATION_CODE_MUTATION, {
+        refetchQueries: [{ query: ALL_INVITATION_CODES_QUERY }],
+        onCompleted: (data) => {
+            if (error) {
+                if (props.onError) {
+                    props.onError(error);
+                }
+            } else {
                 setCode('');
                 setCodeError('');
 
-                if (typeof props.onDone === 'function') {
-                    props.onDone({
-                        result: true,
-                        message: `Invitation Code '${data.createInvitationCode.code}' has been added successfully.`
-                    });
+                addToast(`Invitation Code '${data.createInvitationCode.code}' has been added successfully.`, { appearance: 'success' });
+
+                if (props.onComplete) {
+                    props.onComplete();
                 }
             }
-        }
-    );
+        },
+        onError: (err) => {
+            if (props.onError) {
+                props.onError(err);
+            } else {
+                setError(err);
+            }
+        },
+    });
 
     const validate = debounce(async () => {
         setSaveEnabled(false);
 
         const res = await client.query({
             query: SINGLE_INVITATION_CODE_CODE_QUERY,
-            variables: { code }
+            variables: { code },
         });
 
         const { valid, message } = FormValidator.validateInvitationCode(code);
@@ -56,13 +68,13 @@ const AddInvitationCode = props => {
         }
     }, 350);
 
-    const cancelAdd = e => {
+    const cancelAdd = (e) => {
         e.preventDefault();
         setCode('');
         setCodeError('');
 
-        if (typeof props.onDone === 'function') {
-            props.onDone(true, null);
+        if (props.onCancel) {
+            props.onCancel();
         }
     };
 
@@ -71,7 +83,7 @@ const AddInvitationCode = props => {
 
         const res = await client.query({
             query: SINGLE_INVITATION_CODE_CODE_QUERY,
-            variables: { code }
+            variables: { code },
         });
 
         const { valid, message } = FormValidator.validateInvitationCode(code);
@@ -93,15 +105,19 @@ const AddInvitationCode = props => {
         <Form
             data-test="form"
             id="create-invitation-code-form"
-            onSubmit={async e => {
+            onSubmit={async (e) => {
                 e.preventDefault();
 
                 setError(null);
 
                 const isValid = await validateForm();
                 if (isValid) {
-                    await createInvitationCode({ variables: { code } }).catch(err => {
-                        setError(err);
+                    await createInvitationCode({ variables: { code } }).catch((err) => {
+                        if (props.onError) {
+                            props.onError(err);
+                        } else {
+                            setError(err);
+                        }
                     });
                 }
             }}
@@ -113,7 +129,7 @@ const AddInvitationCode = props => {
                     name="code"
                     label="Code"
                     value={code}
-                    onChange={e => {
+                    onChange={(e) => {
                         setCode(e.target.value);
                     }}
                     validate={() => {
@@ -134,7 +150,9 @@ const AddInvitationCode = props => {
 };
 
 AddInvitationCode.propTypes = {
-    onDone: PropTypes.func
+    onComplete: PropTypes.func,
+    onCancel: PropTypes.func,
+    onError: PropTypes.func,
 };
 
 export { AddInvitationCode };
