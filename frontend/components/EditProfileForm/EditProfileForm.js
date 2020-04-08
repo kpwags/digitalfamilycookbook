@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
-import { useToasts } from 'react-toast-notifications';
+import { toast } from 'react-toastify';
 import debounce from 'lodash.debounce';
 import { CURRENT_USER_QUERY, SINGLE_USER_USERNAME_QUERY } from '../../queries/User';
 import { UPDATE_PROFILE_MUTATION } from '../../mutations/User';
@@ -24,15 +24,13 @@ const EditProfileForm = () => {
     const [error, setError] = useState(null);
     const [saveEnabled, setSaveEnabled] = useState(true);
 
-    const { addToast } = useToasts();
-
     const client = useApolloClient();
 
     const [updateUser, { loading: updateLoading, error: updateError }] = useMutation(UPDATE_PROFILE_MUTATION, {
         refetchQueries: [{ query: CURRENT_USER_QUERY }],
         onCompleted: () => {
             if (!updateError) {
-                addToast('Profile updated successfully', { appearance: 'success' });
+                toast('Profile updated successfully');
             }
         },
     });

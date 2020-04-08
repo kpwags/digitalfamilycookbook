@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/react-hooks';
-import { useToasts } from 'react-toast-notifications';
+import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { Form } from '../Form/Form';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
@@ -14,8 +14,6 @@ const EditCategory = (props) => {
     const [error, setError] = useState(null);
     const [name, setName] = useState(props.name);
     const [nameError, setNameError] = useState('');
-
-    const { addToast } = useToasts();
 
     useEffect(() => {
         setId(props.id);
@@ -33,7 +31,7 @@ const EditCategory = (props) => {
                 setName('');
                 setNameError('');
 
-                addToast(`${data.updateCategory.name} Updated Successfully`, { appearance: 'success' });
+                toast(`${data.updateCategory.name} updated successfully`);
 
                 if (props.onComplete) {
                     props.onComplete();

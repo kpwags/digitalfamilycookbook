@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/react-hooks';
-import { useToasts } from 'react-toast-notifications';
+// import { notify } from 'react-notify-toast';
+import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { Form } from '../Form/Form';
 import { TextInput } from '../TextInput/TextInput';
@@ -14,8 +15,6 @@ const AddCategory = (props) => {
     const [error, setError] = useState(null);
     const [nameError, setNameError] = useState('');
 
-    const { addToast } = useToasts();
-
     const [createCategory, { loading: createCategoryLoading, error: createCategoryError }] = useMutation(CREATE_CATEGORY_MUTATION, {
         refetchQueries: [{ query: ALL_CATEGORIES_QUERY }],
         onCompleted: (data) => {
@@ -27,7 +26,7 @@ const AddCategory = (props) => {
                 setName('');
                 setNameError('');
 
-                addToast(`${data.createCategory.name} Added Successfully`, { appearance: 'success' });
+                toast(`${data.createCategory.name} added successfully`);
 
                 if (props.onComplete) {
                     props.onComplete();

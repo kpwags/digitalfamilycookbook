@@ -10,7 +10,7 @@ import { Theme } from '../../lib/Theme';
 
 const StyledPage = styled.div`
     background: hsl(0, 0%, 100%);
-    color: ${props => props.theme.black};
+    color: ${(props) => props.theme.black};
 `;
 
 const Inner = styled.div`
@@ -37,7 +37,7 @@ const GlobalStyle = createGlobalStyle`
     }
     h1 {
         font-size:2rem;
-        color: ${props => props.theme.green};
+        color: ${(props) => props.theme.green};
     }
     h2 {
         font-size:1.75rem;
@@ -56,7 +56,7 @@ const GlobalStyle = createGlobalStyle`
     a {
     text-decoration:none;
     cursor:pointer;
-    color: ${props => props.theme.green};
+    color: ${(props) => props.theme.green};
     }
     a:hover {
         text-decoration: underline;
@@ -82,6 +82,14 @@ const GlobalStyle = createGlobalStyle`
 
     .error { color: hsl(0, 100%, 50%); }
 
+    .standard-toast {
+        font-size: 1rem;
+    }
+
+    .standard-toast-body {
+        color: ${(props) => props.theme.black};
+    }
+
     @media all and (max-width: 414px) {
         h1 { font-size: 1.6rem; }
         h2 { font-size: 1.45rem; }
@@ -90,7 +98,7 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
-const Page = props => {
+const Page = (props) => {
     return (
         <ThemeProvider theme={Theme}>
             <GlobalStyle />

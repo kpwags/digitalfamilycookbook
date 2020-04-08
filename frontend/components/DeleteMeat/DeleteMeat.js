@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useMutation } from '@apollo/react-hooks';
-import { useToasts } from 'react-toast-notifications';
+import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { DELETE_MEAT_MUTATION } from '../../mutations/Meat';
 import { ALL_MEATS_QUERY } from '../../queries/Meat';
@@ -13,7 +13,6 @@ const DeleteMeat = (props) => {
     const { id, name, children } = props;
 
     const { toggleOverlay } = useContext(AppContext);
-    const { addToast } = useToasts();
 
     const updateCache = (cache, { data: result }) => {
         const meatData = cache.readQuery({ query: ALL_MEATS_QUERY });
@@ -26,7 +25,7 @@ const DeleteMeat = (props) => {
     const [deleteMeat] = useMutation(DELETE_MEAT_MUTATION, {
         update: updateCache,
         onCompleted: () => {
-            addToast('Meat Deleted Successfully', { appearance: 'success' });
+            toast(`${name} deleted successfully`);
             props.onComplete();
         },
         onError: (err) => {

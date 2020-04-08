@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useMutation } from '@apollo/react-hooks';
-import { useToasts } from 'react-toast-notifications';
+import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { DELETE_INVITATION_CODE_MUTATION } from '../../mutations/InvitationCode';
 import { ALL_INVITATION_CODES_QUERY } from '../../queries/InvitationCode';
@@ -11,8 +11,6 @@ const DeleteInvitationCode = (props) => {
     const [confirmOpen, setConfirmOpen] = useState(false);
 
     const { id, code, children } = props;
-
-    const { addToast } = useToasts();
 
     const updateCache = (cache, { data: result }) => {
         const codeData = cache.readQuery({ query: ALL_INVITATION_CODES_QUERY });
@@ -27,7 +25,7 @@ const DeleteInvitationCode = (props) => {
     const [deleteInvitationCode] = useMutation(DELETE_INVITATION_CODE_MUTATION, {
         update: updateCache,
         onCompleted: () => {
-            addToast('Invitation Code Deleted Successfully', { appearance: 'success' });
+            toast(`${code} deleted successfully`);
             props.onComplete();
         },
         onError: (err) => {

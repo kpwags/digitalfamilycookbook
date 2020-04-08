@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import { ToastProvider } from 'react-toast-notifications';
+import { ToastContainer, toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { CURRENT_USER_QUERY } from '../../queries/User';
 import { Page } from '../Page/Page';
@@ -47,28 +47,27 @@ const MainApp = (props) => {
     }
 
     return (
-        <ToastProvider autoDismiss>
-            <AppContext.Provider
-                value={{
-                    overlayVisible,
-                    toggleOverlay,
-                    searchBarVisible,
-                    toggleSearchBar,
-                    mobileMenuVisible,
-                    toggleMobileMenu,
-                    categoriesMenuVisible,
-                    toggleCategoriesMenu,
-                    meatsMenuVisible,
-                    toggleMeatsMenu,
-                    userMenuVisible,
-                    toggleUserMenu,
-                    loggedInUser: data.me,
-                }}
-            >
-                <Overlay id="page-overlay" open={overlayVisible} />
-                <Page>{props.children}</Page>
-            </AppContext.Provider>
-        </ToastProvider>
+        <AppContext.Provider
+            value={{
+                overlayVisible,
+                toggleOverlay,
+                searchBarVisible,
+                toggleSearchBar,
+                mobileMenuVisible,
+                toggleMobileMenu,
+                categoriesMenuVisible,
+                toggleCategoriesMenu,
+                meatsMenuVisible,
+                toggleMeatsMenu,
+                userMenuVisible,
+                toggleUserMenu,
+                loggedInUser: data.me,
+            }}
+        >
+            <ToastContainer className="standard-toast" bodyClassName="standard-toast-body" position={toast.POSITION.BOTTOM_CENTER} />
+            <Overlay id="page-overlay" open={overlayVisible} />
+            <Page>{props.children}</Page>
+        </AppContext.Provider>
     );
 };
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/react-hooks';
-import { useToasts } from 'react-toast-notifications';
+import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { TOGGLE_ADMIN_MUTATION } from '../../mutations/User';
 import { ALL_USERS_QUERY } from '../../queries/User';
@@ -8,15 +8,13 @@ import { ALL_USERS_QUERY } from '../../queries/User';
 const ToggleUserAdmin = (props) => {
     const [error, setError] = useState(null);
 
-    const { addToast } = useToasts();
-
     const [toggleAdmin] = useMutation(TOGGLE_ADMIN_MUTATION, {
         refetchQueries: [{ query: ALL_USERS_QUERY }],
         onCompleted: (data) => {
             if (data.toggleAdmin.permissions.includes('ADMIN')) {
-                addToast(`${data.toggleAdmin.name} has been changed to an administrator`, { appearance: 'success' });
+                toast(`${data.toggleAdmin.name} has been changed to an administrator`);
             } else {
-                addToast(`${data.toggleAdmin.name} has been changed to a member`, { appearance: 'success' });
+                toast(`${data.toggleAdmin.name} has been changed to a member`);
             }
 
             if (error) {
