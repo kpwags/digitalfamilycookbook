@@ -430,6 +430,7 @@ const EditRecipeForm = (props) => {
                     protein,
                     fat,
                     sugar,
+                    carbohydrates,
                     cholesterol,
                     fiber,
                     image,
