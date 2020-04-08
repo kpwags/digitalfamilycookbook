@@ -1,6 +1,7 @@
 {
   "extends": "airbnb-base",
   "rules": {
-    "arrow-parens": "off"
+    "arrow-parens": "off",
+    "max-len": 0
   }
 }

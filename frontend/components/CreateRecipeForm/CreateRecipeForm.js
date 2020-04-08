@@ -398,6 +398,7 @@ const CreateRecipeForm = () => {
                     activeTime,
                     servings,
                     calories,
+                    carbohydrates,
                     protein,
                     fat,
                     sugar,

@@ -601,7 +601,10 @@ const Mutations = {
       throw new Error('You must be logged in');
     }
 
-    const recipe = await ctx.db.query.recipes({ where: { id: args.id } }, '{ id, ingredients { id }, directions { id }, user { id } }');
+    const recipe = await ctx.db.query.recipes(
+      { where: { id: args.id } },
+      '{ id, ingredients { id }, directions { id }, categories { id }, meats { id }, user { id } }',
+    );
 
     if (recipe.length !== 1) {
       throw new Error('Recipe not found');
@@ -624,6 +627,12 @@ const Mutations = {
     recipe[0].directions.forEach((d) => {
       directionsToDelete.push(d.id);
     });
+
+    const meatIdArray = [...new Set(args.meats.reduce((r, a) => r.concat(a.id), []))];
+    const catIdArray = [...new Set(args.categories.reduce((r, a) => r.concat(a.id), []))];
+
+    const meatsToDisconnect = recipe[0].meats.filter((m) => meatIdArray.indexOf(m.id) === -1);
+    const categoriesToDisconnect = recipe[0].categories.filter((c) => catIdArray.indexOf(c.id) === -1);
 
     await ctx.db.mutation.deleteManyIngredients({ where: { id_in: ingredientsToDelete } }, '{ count }').catch((e) => {
       throw new Error(e.message);
@@ -659,9 +668,11 @@ const Mutations = {
             create: args.directions,
           },
           categories: {
+            disconnect: categoriesToDisconnect,
             connect: args.categories,
           },
           meats: {
+            disconnect: meatsToDisconnect,
             connect: args.meats,
           },
         },
