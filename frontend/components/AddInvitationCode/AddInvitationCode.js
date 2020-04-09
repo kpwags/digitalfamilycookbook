@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation, useApolloClient } from '@apollo/react-hooks';
-import { useToasts } from 'react-toast-notifications';
+import { toast } from 'react-toastify';
 import debounce from 'lodash.debounce';
 import PropTypes from 'prop-types';
 import { Form } from '../Form/Form';
@@ -16,8 +16,6 @@ const AddInvitationCode = (props) => {
     const [codeError, setCodeError] = useState('');
     const [saveEnabled, setSaveEnabled] = useState(true);
 
-    const { addToast } = useToasts();
-
     const client = useApolloClient();
     const [createInvitationCode, { loading: addLoading, error: addError }] = useMutation(CREATE_INVITATION_CODE_MUTATION, {
         refetchQueries: [{ query: ALL_INVITATION_CODES_QUERY }],
@@ -30,7 +28,7 @@ const AddInvitationCode = (props) => {
                 setCode('');
                 setCodeError('');
 
-                addToast(`Invitation Code '${data.createInvitationCode.code}' has been added successfully.`, { appearance: 'success' });
+                toast(`${data.createInvitationCode.code} added successfully`);
 
                 if (props.onComplete) {
                     props.onComplete();

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/react-hooks';
-import { useToasts } from 'react-toast-notifications';
+import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { Form } from '../Form/Form';
 import { TextInput } from '../TextInput/TextInput';
@@ -14,8 +14,6 @@ const AddMeat = (props) => {
     const [error, setError] = useState(null);
     const [nameError, setNameError] = useState('');
 
-    const { addToast } = useToasts();
-
     const [createMeat, { loading: createLoading, error: createError }] = useMutation(CREATE_MEAT_MUTATION, {
         refetchQueries: [{ query: ALL_MEATS_QUERY }],
         onCompleted: (data) => {
@@ -27,7 +25,7 @@ const AddMeat = (props) => {
                 setName('');
                 setNameError('');
 
-                addToast(`${data.createMeat.name} Added Successfully`, { appearance: 'success' });
+                toast(`${data.createMeat.name} added successfully`);
 
                 if (props.onComplete) {
                     props.onComplete();

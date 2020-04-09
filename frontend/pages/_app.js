@@ -4,6 +4,7 @@ import App from 'next/app';
 import { ApolloProvider } from 'react-apollo';
 import withData from '../lib/withData';
 import { MainApp } from '../components/MainApp/MainApp';
+import 'react-toastify/dist/ReactToastify.min.css';
 
 class DigitalFamilyCookbook extends App {
     static async getInitialProps({ Component, ctx }) {

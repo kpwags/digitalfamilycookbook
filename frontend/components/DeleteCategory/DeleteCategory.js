@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useMutation } from '@apollo/react-hooks';
-import { useToasts } from 'react-toast-notifications';
+import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { DELETE_CATEGORY_MUTATION } from '../../mutations/Category';
 import { ALL_CATEGORIES_QUERY } from '../../queries/Category';
@@ -12,7 +12,6 @@ const DeleteCategory = (props) => {
 
     const { id, name, children } = props;
 
-    const { addToast } = useToasts();
     const { toggleOverlay } = useContext(AppContext);
 
     const updateCache = (cache, { data: result }) => {
@@ -26,7 +25,8 @@ const DeleteCategory = (props) => {
     const [deleteCategory] = useMutation(DELETE_CATEGORY_MUTATION, {
         update: updateCache,
         onCompleted: () => {
-            addToast('Category Deleted Successfully', { appearance: 'success' });
+            toast(`${name} deleted successfully`);
+
             props.onComplete();
         },
         onError: (err) => {

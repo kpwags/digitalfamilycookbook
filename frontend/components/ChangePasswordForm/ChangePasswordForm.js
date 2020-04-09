@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useToasts } from 'react-toast-notifications';
+import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
 import { useMutation } from '@apollo/react-hooks';
@@ -20,8 +20,6 @@ const ChangePasswordForm = (props) => {
     const [newPasswordValidationError, setNewPasswordValidationError] = useState('');
     const [confirmNewPasswordValidationError, setConfirmNewPasswordValidationError] = useState('');
 
-    const { addToast } = useToasts();
-
     const [changePassword, { loading: changePasswordLoading, error: changePasswordError }] = useMutation(CHANGE_PASSWORD_MUTATION, {
         refetchQueries: [{ query: CURRENT_USER_QUERY }],
         onCompleted: () => {
@@ -30,7 +28,7 @@ const ChangePasswordForm = (props) => {
                 setNewPassword('');
                 setConfirmNewPassword('');
 
-                addToast('Password changed successfully', { appearance: 'success' });
+                toast('Password changed successfully');
 
                 Router.push({
                     pathname: '/account',

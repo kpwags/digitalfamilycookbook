@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useMutation } from '@apollo/react-hooks';
-import { useToasts } from 'react-toast-notifications';
+import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { DELETE_USER_MUTATION } from '../../mutations/User';
 import { ALL_USERS_QUERY } from '../../queries/User';
@@ -11,8 +11,6 @@ const DeleteUser = (props) => {
     const [confirmOpen, setConfirmOpen] = useState(false);
 
     const { id, name, children } = props;
-
-    const { addToast } = useToasts();
 
     const updateCache = (cache, payload) => {
         const data = cache.readQuery({ query: ALL_USERS_QUERY });
@@ -25,7 +23,7 @@ const DeleteUser = (props) => {
     const [deleteUser] = useMutation(DELETE_USER_MUTATION, {
         update: updateCache,
         onCompleted: () => {
-            addToast('User has been deleted', { appearance: 'success' });
+            toast(`${name} deleted successfully`);
 
             props.onComplete();
         },
