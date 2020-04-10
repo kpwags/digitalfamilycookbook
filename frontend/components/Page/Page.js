@@ -3,6 +3,7 @@ import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import PropTypes from 'prop-types';
 import { Meta } from '../Meta/Meta';
 import { Header } from '../Header/Header';
+import { Footer } from '../Footer/Footer';
 import { MobileMenu } from '../MobileMenu/MobileMenu';
 import { ClearFix } from '../ClearFix/ClearFix';
 import { SearchBar } from '../SearchBar/SearchBar';
@@ -109,6 +110,7 @@ const Page = (props) => {
                 <SearchBar />
                 <MobileMenu />
                 <Inner>{props.children}</Inner>
+                <Footer />
             </StyledPage>
         </ThemeProvider>
     );
