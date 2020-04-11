@@ -7,13 +7,13 @@ import { PageError } from '../PageError/PageError';
 import { perPage } from '../../config';
 import { RecipesList } from '../RecipesList/RecipesList';
 
-const RecipesByCategory = props => {
+const RecipesByCategory = (props) => {
     const { id, page } = props;
 
     const skip = page * perPage - perPage;
 
     const { data: categoryData, error: categoryError, loading: categoryLoading } = useQuery(CATEGORY_BY_ID_QUERY, {
-        variables: { id }
+        variables: { id },
     });
 
     const { data, error, loading } = useQuery(RECIPE_BY_CATEGORY_QUERY, { variables: { categoryId: id, skip } });
@@ -24,7 +24,7 @@ const RecipesByCategory = props => {
             <PageError
                 error={{
                     Title: 'Error Loading Recipes',
-                    Message: error
+                    Message: error,
                 }}
             />
         );
@@ -33,27 +33,21 @@ const RecipesByCategory = props => {
             <PageError
                 error={{
                     Title: 'Error Loading Category',
-                    Message: categoryError
+                    Message: categoryError,
                 }}
             />
         );
 
     return (
         <>
-            <RecipesList
-                page={page}
-                recipes={data.recipes}
-                title={categoryData.category.name}
-                type="CATEGORY"
-                id={id}
-            />
+            <RecipesList page={page} recipes={data.recipes} title={categoryData.category.name} type="CATEGORY" id={id} />
         </>
     );
 };
 
 RecipesByCategory.propTypes = {
     id: PropTypes.string,
-    page: PropTypes.number
+    page: PropTypes.number,
 };
 
 export { RecipesByCategory };

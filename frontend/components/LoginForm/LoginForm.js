@@ -9,7 +9,7 @@ import { Form } from '../Form/Form';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { TextInput } from '../TextInput/TextInput';
 
-const LoginForm = props => {
+const LoginForm = (props) => {
     const [username, setUsername] = useState('');
     const [usernameError, setUsernameError] = useState('');
     const [password, setPassword] = useState('');
@@ -34,7 +34,8 @@ const LoginForm = props => {
         <Form
             data-test="login-form"
             method="post"
-            onSubmit={async e => {
+            className="extra-margin"
+            onSubmit={async (e) => {
                 e.preventDefault();
 
                 setError(null);
@@ -44,13 +45,13 @@ const LoginForm = props => {
                         email: username,
                         password,
                     },
-                }).catch(err => {
+                }).catch((err) => {
                     setError(err);
                 });
             }}
         >
             <fieldset disabled={loading} aria-busy={loading}>
-                <h2>Log In</h2>
+                <h2 className="centered">Log In</h2>
 
                 <ErrorMessage error={error || loginError} />
 
@@ -61,7 +62,7 @@ const LoginForm = props => {
                     value={username}
                     error={usernameError}
                     validationRule="notempty"
-                    onChange={e => {
+                    onChange={(e) => {
                         setUsername(e.target.value);
                     }}
                 />
@@ -74,7 +75,7 @@ const LoginForm = props => {
                     value={password}
                     error={passwordError}
                     validationRule="notempty"
-                    onChange={e => {
+                    onChange={(e) => {
                         setPassword(e.target.value);
                     }}
                 />

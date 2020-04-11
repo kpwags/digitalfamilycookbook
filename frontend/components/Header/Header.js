@@ -105,13 +105,13 @@ const Header = () => {
                 </li>
 
                 <li>
-                    <Link href="/categories">
+                    <Link href="/category">
                         <a>Categories</a>
                     </Link>
                 </li>
 
                 <li>
-                    <Link href="/meats">
+                    <Link href="/meat">
                         <a>Meats</a>
                     </Link>
                 </li>

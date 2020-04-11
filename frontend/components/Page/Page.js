@@ -42,6 +42,7 @@ const GlobalStyle = createGlobalStyle`
     }
     h2 {
         font-size:1.75rem;
+        color: ${(props) => props.theme.green};
     }
     h3 {
         font-size:1.5rem;
@@ -89,6 +90,10 @@ const GlobalStyle = createGlobalStyle`
 
     .standard-toast-body {
         color: ${(props) => props.theme.black};
+    }
+
+    .centered {
+        text-align: center;
     }
 
     @media all and (max-width: 414px) {

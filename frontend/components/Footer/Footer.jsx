@@ -5,6 +5,7 @@ import { siteTitle } from '../../config';
 const SiteFooter = styled.footer`
     font-size: 0.8rem;
     padding: 20px;
+    margin: 0 70px;
 
     div {
         display: grid;
@@ -23,6 +24,7 @@ const SiteFooter = styled.footer`
     }
 
     @media all and (max-width: 767px) {
+        margin: 0;
         div {
             grid-template-columns: 1fr 1fr;
         }

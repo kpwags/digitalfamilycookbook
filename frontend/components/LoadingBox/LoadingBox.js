@@ -31,7 +31,6 @@ const LoadingBox = () => {
     return (
         <Box>
             <LoadingSpinner />
-            Loading...
         </Box>
     );
 };

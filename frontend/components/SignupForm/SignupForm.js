@@ -55,10 +55,10 @@ const SignupForm = () => {
                 clearState();
 
                 Router.push({
-                    pathname: '/'
+                    pathname: '/',
                 });
             }
-        }
+        },
     });
 
     const validateUsername = debounce(async () => {
@@ -66,7 +66,7 @@ const SignupForm = () => {
 
         const resp = await client.query({
             query: SINGLE_USER_USERNAME_QUERY,
-            variables: { username }
+            variables: { username },
         });
 
         const { valid, message } = FormValidator.validateUsername(username);
@@ -99,7 +99,7 @@ const SignupForm = () => {
     const validateForm = async () => {
         const resp = await client.query({
             query: SINGLE_USER_USERNAME_QUERY,
-            variables: { username }
+            variables: { username },
         });
 
         let isValid = true;
@@ -142,7 +142,8 @@ const SignupForm = () => {
         <Form
             data-test="form"
             method="post"
-            onSubmit={async e => {
+            width={600}
+            onSubmit={async (e) => {
                 e.preventDefault();
 
                 const isValid = await validateForm();
@@ -163,16 +164,16 @@ const SignupForm = () => {
                             bio,
                             invitationCode,
                             image: 'images/user.jpg',
-                            largeImage: 'images/user-lg.jpg'
-                        }
-                    }).catch(err => {
+                            largeImage: 'images/user-lg.jpg',
+                        },
+                    }).catch((err) => {
                         setError(err);
                     });
                 }
             }}
         >
             <fieldset disabled={loading} aria-busy={loading}>
-                <h2>Sign Up for an Account</h2>
+                <h2 className="centered">Sign Up for an Account</h2>
 
                 <ErrorMessage error={error || signupError} />
 
@@ -183,7 +184,7 @@ const SignupForm = () => {
                     validationRule="notempty"
                     value={name}
                     error={nameError}
-                    onChange={e => {
+                    onChange={(e) => {
                         setName(e.target.value);
                     }}
                 />
@@ -194,11 +195,11 @@ const SignupForm = () => {
                     label="Username"
                     value={username}
                     error={usernameError}
-                    validate={e => {
+                    validate={(e) => {
                         e.persist();
                         validateUsername();
                     }}
-                    onChange={e => {
+                    onChange={(e) => {
                         setUsername(e.target.value);
                     }}
                 />
@@ -210,7 +211,7 @@ const SignupForm = () => {
                     validationRule="email"
                     value={email}
                     error={emailError}
-                    onChange={e => {
+                    onChange={(e) => {
                         setEmail(e.target.value);
                     }}
                 />
@@ -223,10 +224,10 @@ const SignupForm = () => {
                     value={password}
                     error={passwordError}
                     showErrorMessage={false}
-                    onChange={e => {
+                    onChange={(e) => {
                         setPassword(e.target.value);
                     }}
-                    validate={e => {
+                    validate={(e) => {
                         e.preventDefault();
                         validatePassword(e);
                     }}
@@ -239,10 +240,10 @@ const SignupForm = () => {
                     label="Re-Enter Password"
                     value={confirmPassword}
                     error={confirmPasswordError}
-                    onChange={e => {
+                    onChange={(e) => {
                         setConfirmPassword(e.target.value);
                     }}
-                    validate={e => {
+                    validate={(e) => {
                         e.preventDefault();
                         validatePassword(e);
                     }}
@@ -255,7 +256,7 @@ const SignupForm = () => {
                     required={false}
                     value={bio}
                     error=""
-                    onChange={e => {
+                    onChange={(e) => {
                         setBio(e.target.value);
                     }}
                 />
@@ -268,7 +269,7 @@ const SignupForm = () => {
                         validationRule="notempty"
                         value={invitationCode}
                         error={invitationCodeError}
-                        onChange={e => {
+                        onChange={(e) => {
                             setInvitationCode(e.target.value);
                         }}
                     />
