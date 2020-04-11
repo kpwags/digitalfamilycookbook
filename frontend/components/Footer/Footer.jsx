@@ -5,7 +5,6 @@ import { siteTitle } from '../../config';
 const SiteFooter = styled.footer`
     font-size: 0.8rem;
     padding: 20px;
-    /* margin: 0 70px; */
     display: grid;
     grid-template-columns: 1fr 1fr 3fr 1fr;
 
@@ -28,9 +27,16 @@ const SiteFooter = styled.footer`
     }
 
     @media all and (max-width: 767px) {
-        margin: 0;
-        div {
-            grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
+
+        .copyright {
+            grid-column-start: 1;
+            grid-column-end: 1;
+        }
+
+        ul {
+            grid-column-start: 2;
+            grid-column-end: 2;
         }
     }
 `;
