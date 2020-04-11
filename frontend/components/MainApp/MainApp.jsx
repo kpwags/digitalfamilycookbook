@@ -12,8 +12,6 @@ const MainApp = (props) => {
     const [overlayVisible, setOverlayVisible] = useState(false);
     const [searchBarVisible, setSearchBarVisible] = useState(false);
     const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
-    const [categoriesMenuVisible, setCategoriesMenuVisible] = useState(false);
-    const [meatsMenuVisible, setMeatsMenuVisible] = useState(false);
     const [userMenuVisible, setUserMenuVisible] = useState(false);
 
     const { data, loading } = useQuery(CURRENT_USER_QUERY);
@@ -28,14 +26,6 @@ const MainApp = (props) => {
 
     const toggleMobileMenu = () => {
         setMobileMenuVisible(!mobileMenuVisible);
-    };
-
-    const toggleCategoriesMenu = () => {
-        setCategoriesMenuVisible(!categoriesMenuVisible);
-    };
-
-    const toggleMeatsMenu = () => {
-        setMeatsMenuVisible(!meatsMenuVisible);
     };
 
     const toggleUserMenu = () => {
@@ -55,10 +45,6 @@ const MainApp = (props) => {
                 toggleSearchBar,
                 mobileMenuVisible,
                 toggleMobileMenu,
-                categoriesMenuVisible,
-                toggleCategoriesMenu,
-                meatsMenuVisible,
-                toggleMeatsMenu,
                 userMenuVisible,
                 toggleUserMenu,
                 loggedInUser: data.me,
