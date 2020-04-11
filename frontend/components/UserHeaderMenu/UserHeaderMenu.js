@@ -109,6 +109,11 @@ const UserHeaderMenu = () => {
         <UserMenu className="user">
             {loggedInUser && (
                 <>
+                    <li>
+                        <Link href="/create-recipe">
+                            <a>Add Recipe</a>
+                        </Link>
+                    </li>
                     <li ref={userNav}>
                         <a
                             role="button"
@@ -129,35 +134,25 @@ const UserHeaderMenu = () => {
                         </a>
                         <ul className="child-list" style={userMenuVisible ? { display: 'block' } : { display: 'none' }}>
                             <li>
-                                <Link href="/create-recipe">
-                                    <a
-                                        onClick={() => {
-                                            toggleUserMenu();
-                                        }}
-                                    >
-                                        Add New Recipe
-                                    </a>
-                                </Link>
-                            </li>
-                            <li>
                                 <Link href="/edit-profile">
                                     <a
                                         onClick={() => {
                                             toggleUserMenu();
                                         }}
                                     >
-                                        Profile
+                                        Account
                                     </a>
                                 </Link>
                             </li>
+
                             <li>
-                                <Link href="/account">
+                                <Link href={`/profile?username=${loggedInUser.username}`}>
                                     <a
                                         onClick={() => {
                                             toggleUserMenu();
                                         }}
                                     >
-                                        Settings
+                                        View Profile
                                     </a>
                                 </Link>
                             </li>

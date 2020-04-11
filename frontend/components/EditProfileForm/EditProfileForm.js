@@ -148,7 +148,7 @@ const EditProfileForm = () => {
             }}
         >
             <fieldset disabled={updateLoading} aria-busy={updateLoading}>
-                <h2>Edit Profile</h2>
+                <h2 className="centered">Edit Profile</h2>
 
                 <ErrorMessage error={error || updateError} />
 
