@@ -10,6 +10,7 @@ const AdminHome = styled.div`
         width: 300px;
         margin: 25px auto;
         text-align: center;
+        font-size: 1.2rem;
 
         a {
             display: block;

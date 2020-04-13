@@ -1,17 +1,18 @@
 import styled from 'styled-components';
 
 const RecipeLink = styled.div`
-    border: 1px solid hsl(0, 0%, 60%);
-    box-shadow: ${props => props.theme.bs};
+    box-shadow: ${(props) => props.theme.bs};
     cursor: pointer;
 
     h2 {
-        margin: 10px;
-        font-size: 1.3rem;
+        margin: 0;
+        padding: 5px;
+        font-size: 1.2rem;
+        text-align: center;
     }
 
     .image-block {
-        width: 1fr;
+        height: 250px;
     }
 
     img {
@@ -23,11 +24,9 @@ const RecipeLink = styled.div`
     }
 
     :hover {
-        background-color: ${props => props.theme.paleGreen};
-        border: 1px solid ${props => props.theme.green};
-
         a:hover {
             text-decoration: none;
+            color: ${(props) => props.theme.darkGreen};
         }
     }
 

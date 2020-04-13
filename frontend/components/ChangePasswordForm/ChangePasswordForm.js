@@ -109,7 +109,7 @@ const ChangePasswordForm = (props) => {
         >
             <ErrorMessage error={error || changePasswordError} />
             <fieldset disabled={changePasswordLoading} aria-busy={changePasswordLoading}>
-                <h2>Change Password</h2>
+                <h2 className="centered">Change Password</h2>
 
                 <label htmlFor="current-password" className={currentPasswordValidationError !== '' ? 'errored' : ''}>
                     Current Password

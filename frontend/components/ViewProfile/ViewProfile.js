@@ -12,7 +12,6 @@ const ProfileDetails = styled.div`
     width: 800px;
     margin: 30px auto 30px;
     box-shadow: 0 0 5px 3px hsla(0, 0%, 0%, 0.05);
-    background: hsla(0, 0%, 0%, 0.02);
     border: 5px solid hsl(0, 100%, 100%);
     padding: 20px;
     font-size: 1.8rem;
@@ -46,7 +45,7 @@ const ProfileDetails = styled.div`
                 line-height: 1;
                 margin: 0 0 5px;
                 padding: 0;
-                color: ${props => props.theme.green};
+                color: ${(props) => props.theme.green};
 
                 @media all and (max-width: 400px) {
                     text-align: center;
@@ -55,7 +54,7 @@ const ProfileDetails = styled.div`
 
             div.username {
                 font-size: 18px;
-                color: ${props => props.theme.lightGreen};
+                color: ${(props) => props.theme.lightGreen};
                 margin: 0 0 16px;
 
                 @media all and (max-width: 400px) {
@@ -70,7 +69,7 @@ const ProfileDetails = styled.div`
     }
 `;
 
-const ViewProfile = props => {
+const ViewProfile = (props) => {
     const { data, error, loading } = useQuery(SINGLE_USER_USERNAME_QUERY, { variables: { username: props.username } });
 
     if (loading) return <LoadingBox />;
@@ -79,7 +78,7 @@ const ViewProfile = props => {
             <PageError
                 error={{
                     Title: 'Error Viewing Profile',
-                    Message: error
+                    Message: error,
                 }}
             />
         );
@@ -88,7 +87,7 @@ const ViewProfile = props => {
             <PageError
                 error={{
                     Title: 'Error Viewing Profile',
-                    Message: `No User Found for ${props.username}`
+                    Message: `No User Found for ${props.username}`,
                 }}
             />
         );
@@ -117,7 +116,7 @@ const ViewProfile = props => {
 };
 
 ViewProfile.propTypes = {
-    username: PropTypes.string.isRequired
+    username: PropTypes.string.isRequired,
 };
 
 export { ViewProfile };

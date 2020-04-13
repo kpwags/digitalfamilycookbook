@@ -5,13 +5,17 @@ import { siteTitle } from '../../config';
 const SiteFooter = styled.footer`
     font-size: 0.8rem;
     padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 3fr 1fr;
 
-    div {
-        display: grid;
-        grid-template-columns: 1fr 3fr;
+    .copyright {
+        grid-column-start: 2;
+        grid-column-end: 2;
     }
 
     ul {
+        grid-column-start: 3;
+        grid-column-end: 3;
         text-align: right;
         margin: 0;
 
@@ -23,8 +27,16 @@ const SiteFooter = styled.footer`
     }
 
     @media all and (max-width: 767px) {
-        div {
-            grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
+
+        .copyright {
+            grid-column-start: 1;
+            grid-column-end: 1;
+        }
+
+        ul {
+            grid-column-start: 2;
+            grid-column-end: 2;
         }
     }
 `;
@@ -32,19 +44,19 @@ const SiteFooter = styled.footer`
 const Footer = () => {
     return (
         <SiteFooter>
-            <div>
+            <div className="copyright">
                 <em>&copy; {siteTitle}</em>
-                <ul>
-                    <li>
-                        <Link href="/">
-                            <a>Home</a>
-                        </Link>
-                    </li>
-                    <li>
-                        <a href="https://github.com/kpwags/digitalfamilycookbook">GitHub</a>
-                    </li>
-                </ul>
             </div>
+            <ul>
+                <li>
+                    <Link href="/">
+                        <a>Home</a>
+                    </Link>
+                </li>
+                <li>
+                    <a href="https://github.com/kpwags/digitalfamilycookbook">GitHub</a>
+                </li>
+            </ul>
         </SiteFooter>
     );
 };

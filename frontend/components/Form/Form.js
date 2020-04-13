@@ -1,4 +1,5 @@
 import styled, { keyframes } from 'styled-components';
+import PropTypes from 'prop-types';
 
 // eslint-disable-next-line no-unused-vars
 const loading = keyframes`
@@ -13,14 +14,17 @@ const loading = keyframes`
 
 const Form = styled.form`
     box-shadow: 0 0 5px 3px hsla(0, 0%, 0%, 0.05);
-    background: hsla(0, 0%, 0%, 0.02);
     border: 5px solid hsl(0, 0%, 100%);
     padding: 20px;
     font-size: 1rem;
     line-height: 1.5;
     font-weight: 600;
-    width: 500px;
-    margin: 30px auto 0;
+    width: ${(props) => `${props.width}px`};
+    margin: 30px auto 30px;
+
+    &.extra-margin {
+        margin: 60px auto 60px;
+    }
 
     @media all and (max-width: 800px) {
         width: 350px;
@@ -41,7 +45,7 @@ const Form = styled.form`
         border: 1px solid hsl(0, 0%, 0%);
         &:focus {
             outline: 0;
-            border-color: ${props => props.theme.green};
+            border-color: ${(props) => props.theme.green};
         }
     }
 
@@ -71,15 +75,15 @@ const Form = styled.form`
     input[type='submit'] {
         color: hsl(0, 0%, 100%);
         border-radius: 6px;
-        margin: 0 15px;
+        margin: 0 15px 0 0;
         border-radius: 6px;
         border-width: 1px;
         border-style: solid;
         padding: 5px 15px;
         cursor: pointer;
         font-size: 1rem;
-        background: ${props => props.theme.green};
-        border-color: ${props => props.theme.green};
+        background: ${(props) => props.theme.green};
+        border-color: ${(props) => props.theme.green};
     }
 
     button[type='button'] {
@@ -89,8 +93,8 @@ const Form = styled.form`
 
     button.save,
     input[type='submit'] {
-        background: ${props => props.theme.green};
-        border-color: ${props => props.theme.green};
+        background: ${(props) => props.theme.green};
+        border-color: ${(props) => props.theme.green};
     }
 
     button:disabled,
@@ -99,6 +103,13 @@ const Form = styled.form`
     input[type='submit'][disabled] {
         background: hsla(0, 0%, 40%, 1);
         border-color: hsla(0, 0%, 40%, 1);
+    }
+
+    button:hover,
+    button[hover],
+    input[type='submit']:hover,
+    input[type='submit'][hover] {
+        color: ${(props) => props.theme.paleGreen};
     }
 
     fieldset {
@@ -114,9 +125,9 @@ const Form = styled.form`
             display: block;
             background-image: linear-gradient(
                 to right,
-                ${props => props.theme.green} 0%,
-                ${props => props.theme.lightGreen} 50%,
-                ${props => props.theme.green} 100%
+                ${(props) => props.theme.green} 0%,
+                ${(props) => props.theme.lightGreen} 50%,
+                ${(props) => props.theme.green} 100%
             );
             margin-bottom: 25px;
         }
@@ -150,5 +161,13 @@ const Form = styled.form`
 `;
 
 Form.displayName = 'Form';
+
+Form.propTypes = {
+    width: PropTypes.number,
+};
+
+Form.defaultProps = {
+    width: 500,
+};
 
 export { Form };

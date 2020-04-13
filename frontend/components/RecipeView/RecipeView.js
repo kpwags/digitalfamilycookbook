@@ -6,23 +6,48 @@ const RecipeView = styled.div`
 
     h1,
     h2 {
-        color: ${props => props.theme.green};
+        color: ${(props) => props.theme.green};
+    }
+
+    h4 {
+        font-size: 1.2rem;
+        margin: 0 0 12px 0;
     }
 
     .recipe-image {
-        width: 1000px;
-        margin: 10px auto 25px;
+        width: 100%;
+        margin: 0 0 25px 0;
         text-align: center;
 
         img {
-            max-width: 1000px;
+            max-width: 100%;
         }
     }
 
-    p.details {
-        font-size: 1.1rem;
+    p.details,
+    div.tags {
+        font-size: 1.2rem;
         line-height: 1;
         margin-bottom: 10px;
+    }
+
+    div.tags {
+        margin: 16px 0 25px;
+    }
+
+    a.tag {
+        background: ${(props) => props.theme.lightGreen};
+        color: hsl(0, 0%, 100%);
+        padding: 4px 12px;
+        border-radius: 6px;
+        display: inline-block;
+        margin: 0 5px;
+        font-size: 1rem;
+
+        :hover {
+            text-decoration: none;
+            color: ${(props) => props.theme.paleGreen};
+        }
     }
 
     .main {
@@ -36,7 +61,7 @@ const RecipeView = styled.div`
             display: block;
         }
 
-        .recipe-details {
+        .left-column {
             grid-column-start: 1;
             grid-column-end: 1;
 
@@ -45,8 +70,8 @@ const RecipeView = styled.div`
                 padding: 0;
 
                 li {
-                    font-size: 1rem;
-                    margin: 0.35em 0;
+                    font-size: 1.2rem;
+                    margin: 0.75rem 0;
                 }
             }
 
@@ -55,14 +80,14 @@ const RecipeView = styled.div`
                 padding: 0;
 
                 li {
-                    font-size: 1rem;
-                    line-height: 1.75;
-                    margin: 0.25rem 0;
+                    font-size: 1.2rem;
+                    line-height: 1.5;
+                    margin: 0.75rem 0;
                 }
             }
         }
 
-        .nutrition {
+        .right-column {
             grid-column-start: 2;
             grid-column-end: 2;
 
@@ -71,7 +96,7 @@ const RecipeView = styled.div`
             }
 
             .info {
-                border: 1px solid ${props => props.theme.black};
+                border: 1px solid ${(props) => props.theme.black};
                 .content {
                     padding: 8px;
 
@@ -79,7 +104,7 @@ const RecipeView = styled.div`
                         margin: 0;
                         padding: 0;
                         font-weight: bold;
-                        border-bottom: 8px solid ${props => props.theme.black};
+                        border-bottom: 8px solid ${(props) => props.theme.black};
                     }
 
                     .nutrition-data {
@@ -89,7 +114,7 @@ const RecipeView = styled.div`
                         grid-column-gap: 10px;
                         grid-row-gap: 10px;
                         font-size: 1rem;
-                        border-bottom: 1px solid ${props => props.theme.black};
+                        border-bottom: 1px solid ${(props) => props.theme.black};
                         padding: 0.25rem 0;
 
                         .item {
@@ -111,7 +136,7 @@ const RecipeView = styled.div`
                         grid-template-rows: 1fr;
                         grid-column-gap: 10px;
                         grid-row-gap: 10px;
-                        border-bottom: 5px solid ${props => props.theme.black};
+                        border-bottom: 5px solid ${(props) => props.theme.black};
                         font-size: 1.2rem;
                         font-weight: bold;
                         padding: 0.25rem 0;
@@ -172,7 +197,7 @@ const RecipeView = styled.div`
         .nutrition {
             margin: 30px 0 0 0;
             padding: 30px 0 0 0;
-            border-top: 1px solid ${props => props.theme.black};
+            border-top: 1px solid ${(props) => props.theme.black};
         }
     }
 `;

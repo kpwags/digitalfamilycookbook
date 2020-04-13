@@ -1,95 +1,32 @@
 import { useContext } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
-import { CategoriesNav } from '../CategoriesNav/CategoriesNav';
-import { MeatsNav } from '../MeatsNav/MeatsNav';
-import { SearchIcon } from '../SearchIcon/SearchIcon';
 import { AppContext } from '../AppContext/AppContext';
 
 const StyledNavBar = styled.ul`
     float: left;
-    margin: 0 0 15px;
     list-style-type: none;
-    line-height: 50px;
-    height: 50px;
+    line-height: 70px;
+    height: 70px;
     display: block;
+    margin: 0;
+
     li {
         display: block;
-        font-size: 20px;
+        font-size: 1.1rem;
         float: left;
         position: relative;
-        :first-child {
-            a {
-                border-left: 1px solid hsl(0, 0%, 100%);
-            }
-        }
+
         a {
             display: block;
             float: left;
-            color: hsl(0, 0%, 100%);
-            font-weight: bold;
-            padding: 0 10px;
-            border-right: 1px solid hsl(0, 0%, 100%);
+            color: ${(props) => props.theme.green};
+            font-weight: normal;
+            padding: 0 20px;
+
             :hover {
-                background-image: -ms-linear-gradient(bottom, ${props => props.theme.lightGreen} 0%, ${props => props.theme.green} 100%);
-                background-image: -moz-linear-gradient(bottom, ${props => props.theme.lightGreen} 0%, ${props => props.theme.green} 100%);
-                background-image: -o-linear-gradient(bottom, ${props => props.theme.lightGreen} 0%, ${props => props.theme.green} 100%);
-                background-image: -webkit-gradient(
-                    linear,
-                    left bottom,
-                    left top,
-                    color-stop(0, ${props => props.theme.lightGreen}),
-                    color-stop(100, ${props => props.theme.green})
-                );
-                background-image: -webkit-linear-gradient(bottom, ${props => props.theme.lightGreen} 0%, ${props => props.theme.green} 100%);
-                background-image: linear-gradient(to top, ${props => props.theme.lightGreen} 0%, ${props => props.theme.green} 100%);
                 text-decoration: none;
             }
-        }
-
-        ul.child-list {
-            display: none;
-            background: ${props => props.theme.green};
-            background-image: none;
-            position: absolute;
-            z-index: 2;
-            top: 100%;
-            left: 0;
-            padding: 0;
-            width: 250px;
-
-            li {
-                display: block;
-                float: none;
-                a {
-                    float: none;
-                    border: none;
-                    padding: 0 10px;
-                    :hover {
-                        background-image: none;
-                        background: ${props => props.theme.lightGreen};
-                    }
-                }
-                em {
-                    float: none;
-                    border: none;
-                    color: hsl(0, 0%, 100%);
-                    padding: 0 10px;
-                    font-size: -2;
-                }
-            }
-        }
-
-        :hover ul.child-list {
-            display: block;
-        }
-    }
-
-    li.search-button {
-        svg {
-            vertical-align: middle;
-            cursor: pointer;
-            fill: hsl(0, 0%, 100%);
         }
     }
 
@@ -110,25 +47,35 @@ const NavBar = () => {
                 </Link>
             </li>
 
-            <CategoriesNav />
-            <MeatsNav />
-            <li className="search-button">
+            <li>
+                <Link href="/categories">
+                    <a>Categories</a>
+                </Link>
+            </li>
+
+            <li>
+                <Link href="/meats">
+                    <a>Meats</a>
+                </Link>
+            </li>
+
+            <li>
                 <a
                     role="button"
                     title="Search"
                     tabIndex="0"
-                    onClick={e => {
+                    onClick={(e) => {
                         e.preventDefault();
                         toggleSearchBar();
                     }}
-                    onKeyDown={e => {
+                    onKeyDown={(e) => {
                         e.preventDefault();
                         if (e.keyCode === 13 || e.keyCode === 32) {
                             toggleSearchBar();
                         }
                     }}
                 >
-                    <SearchIcon width="30" height="30" />
+                    Search
                 </a>
             </li>
         </StyledNavBar>

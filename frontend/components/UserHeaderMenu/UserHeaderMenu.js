@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import { useContext, useRef } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
@@ -7,16 +9,18 @@ import { useClickOutside } from '../../lib/CustomHooks/useClickOutside';
 
 const UserMenu = styled.ul`
     float: right;
-    margin: 0;
+    margin: 0 15px 0 0;
     list-style-type: none;
-    line-height: 50px;
-    height: 50px;
+    line-height: 70px;
+    height: 70px;
     display: block;
+    position: relative;
+
     li {
         margin-right: 15px;
         color: hsl(0, 0%, 100%);
         display: block;
-        font-size: 20px;
+        font-size: 1.1rem;
         float: left;
         position: relative;
 
@@ -30,10 +34,19 @@ const UserMenu = styled.ul`
             float: none;
             border: none;
             padding: 0 10px;
+
             :hover {
                 text-decoration: none;
                 background-image: none;
-                background: ${(props) => props.theme.lightGreen};
+                color: ${(props) => props.theme.paleGreen};
+
+                i.arrow {
+                    border-color: ${(props) => props.theme.paleGreen};
+                }
+            }
+
+            i.arrow {
+                border-color: hsl(0, 0%, 100%);
             }
         }
 
@@ -42,34 +55,38 @@ const UserMenu = styled.ul`
             height: 40px;
             vertical-align: middle;
             border-radius: 50%;
-            margin-right: 8px;
-            line-height: 50px;
+            margin-right: 16px;
+            line-height: 70px;
         }
 
         ul.child-list {
             display: none;
-            background: ${(props) => props.theme.green};
-            background-image: none;
+            background: hsl(240, 20%, 98%);
             position: absolute;
-            z-index: 2;
-            top: 100%;
-            right: -15px;
+            z-index: 12;
+            top: 60px;
+            right: 15px;
             padding: 0;
             width: 200px;
+            box-shadow: ${(props) => props.theme.bs};
+            height: auto;
 
             li {
                 display: block;
                 float: none;
-                margin: 0;
+                margin: 10px 0;
+                padding: 0;
+                line-height: 1;
+
                 a {
                     display: block;
-                    color: hsl(0, 0%, 100%);
+                    color: ${(props) => props.theme.green};
                     float: none;
                     border: none;
-                    padding: 0 10px;
+                    padding: 10px;
                     :hover {
-                        background-image: none;
-                        background: ${(props) => props.theme.lightGreen};
+                        background: ${(props) => props.theme.green};
+                        color: hsl(0, 0%, 100%);
                     }
                 }
             }
@@ -89,10 +106,15 @@ const UserHeaderMenu = () => {
     useClickOutside(userNav, userMenuVisible, toggleUserMenu);
 
     return (
-        <UserMenu>
+        <UserMenu className="user">
             {loggedInUser && (
                 <>
                     <li>
+                        <Link href="/create-recipe">
+                            <a>Add Recipe</a>
+                        </Link>
+                    </li>
+                    <li ref={userNav}>
                         <a
                             role="button"
                             tabIndex="0"
@@ -110,27 +132,41 @@ const UserHeaderMenu = () => {
                             <img src={loggedInUser.image} alt={loggedInUser.name} />
                             {`${loggedInUser.name} `} <i className="arrow down" />
                         </a>
-                        <ul ref={userNav} className="child-list" style={userMenuVisible ? { display: 'block' } : { display: 'none' }}>
-                            <li>
-                                <Link href="/create-recipe">
-                                    <a>Add New Recipe</a>
-                                </Link>
-                            </li>
+                        <ul className="child-list" style={userMenuVisible ? { display: 'block' } : { display: 'none' }}>
                             <li>
                                 <Link href="/edit-profile">
-                                    <a>Profile</a>
+                                    <a
+                                        onClick={() => {
+                                            toggleUserMenu();
+                                        }}
+                                    >
+                                        Account
+                                    </a>
                                 </Link>
                             </li>
+
                             <li>
-                                <Link href="/account">
-                                    <a>Settings</a>
+                                <Link href={`/profile?username=${loggedInUser.username}`}>
+                                    <a
+                                        onClick={() => {
+                                            toggleUserMenu();
+                                        }}
+                                    >
+                                        View Profile
+                                    </a>
                                 </Link>
                             </li>
 
                             {loggedInUser.permissions.includes('ADMIN') && (
                                 <li>
                                     <Link href="/admin">
-                                        <a>Administration</a>
+                                        <a
+                                            onClick={() => {
+                                                toggleUserMenu();
+                                            }}
+                                        >
+                                            Administration
+                                        </a>
                                     </Link>
                                 </li>
                             )}
@@ -139,21 +175,6 @@ const UserHeaderMenu = () => {
                                 <Logout />
                             </li>
                         </ul>
-                    </li>
-                </>
-            )}
-
-            {!loggedInUser && (
-                <>
-                    <li>
-                        <Link href="/signup">
-                            <a>Sign Up</a>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/login">
-                            <a>Sign In</a>
-                        </Link>
                     </li>
                 </>
             )}

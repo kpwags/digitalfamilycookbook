@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { siteTitle } from '../../config';
 
 const Meta = () => (
     <Head>
@@ -7,7 +8,7 @@ const Meta = () => (
         {/* <link rel="shortcut icon" href="/static/favicon.png" /> */}
         <link rel="stylesheet" type="text/css" href="/styles/master.css" />
         <link rel="stylesheet" type="text/css" href="/styles/nprogress.css" />
-        <title>Digital Family Cookbook</title>
+        <title>{siteTitle}</title>
     </Head>
 );
 
