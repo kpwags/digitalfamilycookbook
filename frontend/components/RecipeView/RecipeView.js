@@ -71,7 +71,7 @@ const RecipeView = styled.div`
 
                 li {
                     font-size: 1.2rem;
-                    margin: 0.5rem 0;
+                    margin: 0.75rem 0;
                 }
             }
 
@@ -81,8 +81,8 @@ const RecipeView = styled.div`
 
                 li {
                     font-size: 1.2rem;
-                    line-height: 1.75;
-                    margin: 0.5rem 0;
+                    line-height: 1.5;
+                    margin: 0.75rem 0;
                 }
             }
         }

@@ -19,6 +19,12 @@ const Sidebar = styled.div`
     grid-column-start: 1;
     grid-column-end: 1;
 
+    h3 {
+        color: ${(props) => props.theme.darkGreen};
+        margin-top: 0;
+        padding-top: 0;
+    }
+
     ul {
         margin: 0;
         padding: 0;
@@ -27,16 +33,16 @@ const Sidebar = styled.div`
     li {
         list-style-type: none;
         margin: 0 0 2rem 0;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
 
         a {
-            color: ${props => props.theme.green};
+            color: ${(props) => props.theme.green};
         }
     }
 
-    li.active a {
+    li.active {
         font-weight: bold;
-        color: ${props => props.theme.darkGreen};
+        color: ${(props) => props.theme.darkGreen};
     }
 
     @media all and (max-width: 800px) {
@@ -49,35 +55,56 @@ const Main = styled.div`
     grid-column-end: 2;
 `;
 
-const AdminLayout = props => {
+const AdminLayout = (props) => {
     return (
         <Layout data-test="admin-layout">
             <Sidebar>
+                <h3>Site Administration</h3>
                 <ul>
                     <li className={props.activePage === 'invitationcodes' ? 'active' : ''}>
-                        <Link href="/admin/invitation-codes">
-                            <a className="gray">Manage Invitation Codes</a>
-                        </Link>
+                        {props.activePage === 'invitationcodes' ? (
+                            <>Invitation Codes</>
+                        ) : (
+                            <Link href="/admin/invitation-codes">
+                                <a className="gray">Invitation Codes</a>
+                            </Link>
+                        )}
                     </li>
                     <li className={props.activePage === 'familymembers' ? 'active' : ''}>
-                        <Link href="/admin/users">
-                            <a className="orange">Manage Family Members</a>
-                        </Link>
+                        {props.activePage === 'familymembers' ? (
+                            <>Family Members</>
+                        ) : (
+                            <Link href="/admin/users">
+                                <a>Family Members</a>
+                            </Link>
+                        )}
                     </li>
                     <li className={props.activePage === 'categories' ? 'active' : ''}>
-                        <Link href="/admin/categories">
-                            <a className="green">Manage Categories</a>
-                        </Link>
+                        {props.activePage === 'categories' ? (
+                            <>Categories</>
+                        ) : (
+                            <Link href="/admin/categories">
+                                <a>Categories</a>
+                            </Link>
+                        )}
                     </li>
                     <li className={props.activePage === 'meats' ? 'active' : ''}>
-                        <Link href="/admin/meats">
-                            <a className="blue">Manage Meats</a>
-                        </Link>
+                        {props.activePage === 'meats' ? (
+                            <>Meats</>
+                        ) : (
+                            <Link href="/admin/meats">
+                                <a>Meats</a>
+                            </Link>
+                        )}
                     </li>
                     <li className={props.activePage === 'recipes' ? 'active' : ''}>
-                        <Link href="/admin/recipes">
-                            <a className="purple">Manage Recipes</a>
-                        </Link>
+                        {props.activePage === 'recipes' ? (
+                            <>Recipes</>
+                        ) : (
+                            <Link href="/admin/recipes">
+                                <a>Recipes</a>
+                            </Link>
+                        )}
                     </li>
                 </ul>
             </Sidebar>
@@ -91,7 +118,7 @@ const AdminLayout = props => {
 
 AdminLayout.propTypes = {
     activePage: PropTypes.string,
-    children: PropTypes.node.isRequired
+    children: PropTypes.node.isRequired,
 };
 
 export { AdminLayout };

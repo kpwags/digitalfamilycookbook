@@ -5,6 +5,7 @@ import { siteTitle } from '../../config';
 import { UserHeaderMenu } from '../UserHeaderMenu/UserHeaderMenu';
 import { HamburgerMenu } from '../HamburgerMenu/HamburgerMenu';
 import { AppContext } from '../AppContext/AppContext';
+import { HeaderSearch } from '../HeaderSearch/HeaderSearch';
 
 const StyledHeader = styled.header`
     margin: 0px;
@@ -45,6 +46,22 @@ const StyledHeader = styled.header`
             }
         }
 
+        li.search {
+            display: none;
+        }
+
+        @media all and (max-width: 1300px) {
+            li.search {
+                display: block;
+            }
+
+            li {
+                a {
+                    padding: 0 10px;
+                }
+            }
+        }
+
         @media all and (max-width: 800px) {
             float: none;
             display: none;
@@ -80,8 +97,14 @@ const Logo = styled.h1`
         text-decoration: none;
     }
 
+    @media all and (max-width: 1400px) {
+        margin-right: 20px;
+    }
+
     @media all and (max-width: 800px) {
         float: none;
+        line-height: 50px;
+        margin-left: 56px;
     }
 `;
 
@@ -116,7 +139,7 @@ const Header = () => {
                     </Link>
                 </li>
 
-                <li>
+                <li className="search">
                     <a
                         role="button"
                         title="Search"
@@ -136,6 +159,8 @@ const Header = () => {
                     </a>
                 </li>
             </ul>
+
+            <HeaderSearch />
 
             {loggedInUser && <UserHeaderMenu />}
 

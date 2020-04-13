@@ -7,7 +7,7 @@ const SidebarList = styled.ul`
 
     li {
         margin: 12px 0;
-        font-size: 1.09rem;
+        font-size: 1.1rem;
 
         &.active {
             font-weight: bold;

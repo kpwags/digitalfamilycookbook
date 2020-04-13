@@ -4,14 +4,15 @@ import Router from 'next/router';
 import { AppContext } from '../AppContext/AppContext';
 
 const SearchForm = styled.form`
-    border-bottom: 2px solid ${props => props.theme.darkGreen};
+    border-bottom: 1px solid ${(props) => props.theme.green};
     padding: 15px 50px;
     text-align: center;
 
     label {
         display: inline;
-        color: ${props => props.theme.green};
+        color: ${(props) => props.theme.green};
         vertical-align: middle;
+        font-size: 1rem;
 
         input[type='search'] {
             display: inline-block;
@@ -23,12 +24,12 @@ const SearchForm = styled.form`
             border-radius: 6px;
             &:focus {
                 outline: 0;
-                border-color: ${props => props.theme.green};
+                border-color: ${(props) => props.theme.green};
             }
         }
 
         button {
-            background: ${props => props.theme.green};
+            background: ${(props) => props.theme.green};
             border: none;
             cursor: pointer;
             color: hsl(0, 0%, 100%);
@@ -45,7 +46,7 @@ const SearchBar = () => {
 
     const { searchBarVisible, toggleSearchBar } = useContext(AppContext);
 
-    const search = e => {
+    const search = (e) => {
         e.preventDefault();
         toggleSearchBar();
         Router.push({
@@ -58,7 +59,7 @@ const SearchBar = () => {
         <SearchForm
             id="search-main"
             method="POST"
-            onSubmit={e => {
+            onSubmit={(e) => {
                 search(e);
             }}
             style={searchBarVisible ? { display: 'block' } : { display: 'none' }}
@@ -69,7 +70,7 @@ const SearchBar = () => {
                     type="search"
                     name="keywords"
                     id="keywords"
-                    onChange={e => {
+                    onChange={(e) => {
                         setKeywords(e.target.value);
                     }}
                 />
