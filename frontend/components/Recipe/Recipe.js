@@ -41,6 +41,8 @@ const Recipe = (props) => {
         <RecipeView>
             <h1>{data.recipe.name}</h1>
 
+            {data.recipe.description !== null && data.recipe.description !== '' && <p>{data.recipe.description}</p>}
+
             <div className="main">
                 <div className="left-column">
                     <p className="details">

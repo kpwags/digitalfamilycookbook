@@ -13,6 +13,7 @@ import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { Utilities } from '../../lib/Utilities';
 import { FormValidator } from '../../lib/FormValidator';
 import { TextInput } from '../TextInput/TextInput';
+import { TextArea } from '../TextArea/TextArea';
 
 const EditRecipeForm = (props) => {
     const { recipe } = props;
@@ -21,6 +22,7 @@ const EditRecipeForm = (props) => {
     const [id] = useState(recipe.id);
     const [name, setName] = useState(recipe.name);
     const [nameError, setNameError] = useState('');
+    const [description, setDescription] = useState(recipe.description === null ? '' : recipe.description);
     const [isPublic] = useState(false);
     const [source, setSource] = useState(recipe.source === null ? '' : recipe.source);
     const [sourceUrl, setSourceUrl] = useState(recipe.sourceUrl === null ? '' : recipe.sourceUrl);
@@ -418,6 +420,7 @@ const EditRecipeForm = (props) => {
                 variables: {
                     id,
                     name,
+                    description,
                     public: isPublic,
                     source,
                     sourceUrl,
@@ -468,6 +471,17 @@ const EditRecipeForm = (props) => {
                     validationRule="notempty"
                     onChange={(e) => {
                         setName(e.target.value);
+                    }}
+                />
+
+                <TextArea
+                    name="description"
+                    id="description"
+                    label="Description"
+                    value={description}
+                    error=""
+                    onChange={(e) => {
+                        setDescription(e.target.value);
                     }}
                 />
 

@@ -54,7 +54,6 @@ const HeaderSearch = () => {
             <input
                 type="search"
                 name="keywords"
-                id="keywords"
                 placeholder="Search Recipes"
                 onChange={(e) => {
                     setKeywords(e.target.value);

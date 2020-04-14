@@ -10,11 +10,13 @@ import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { Utilities } from '../../lib/Utilities';
 import { FormValidator } from '../../lib/FormValidator';
 import { TextInput } from '../TextInput/TextInput';
+import { TextArea } from '../TextArea/TextArea';
 
 const CreateRecipeForm = () => {
     const [error, setError] = useState(null);
     const [name, setName] = useState('');
     const [nameError, setNameError] = useState('');
+    const [description, setDescription] = useState('');
     const [isPublic] = useState(false);
     const [source, setSource] = useState('');
     const [sourceUrl, setSourceUrl] = useState('');
@@ -391,6 +393,7 @@ const CreateRecipeForm = () => {
             await createRecipe({
                 variables: {
                     name,
+                    description,
                     public: isPublic,
                     source,
                     sourceUrl,
@@ -440,6 +443,17 @@ const CreateRecipeForm = () => {
                     validationRule="notempty"
                     onChange={(e) => {
                         setName(e.target.value);
+                    }}
+                />
+
+                <TextArea
+                    name="description"
+                    id="description"
+                    label="Description"
+                    value={description}
+                    error=""
+                    onChange={(e) => {
+                        setDescription(e.target.value);
                     }}
                 />
 

@@ -59,6 +59,7 @@ type Direction {
 type Recipe {
   id: ID! @id @unique
   name: String!
+  description: String
   public: Boolean!
   source: String
   sourceUrl: String

@@ -82,6 +82,7 @@ const RECIPE_BY_ID_QUERY = gql`
         recipe(where: { id: $id }) {
             id
             name
+            description
             public
             source
             sourceUrl

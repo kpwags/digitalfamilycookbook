@@ -69,7 +69,6 @@ const SearchBar = () => {
                 <input
                     type="search"
                     name="keywords"
-                    id="keywords"
                     onChange={(e) => {
                         setKeywords(e.target.value);
                     }}
