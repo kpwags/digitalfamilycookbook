@@ -104,16 +104,14 @@ const AdminRecipes = () => {
                                                         <DeleteRecipe
                                                             id={recipe.id}
                                                             name={recipe.name}
-                                                            continue={async (err) => {
+                                                            onComplete={() => {
                                                                 toggleOverlay();
-                                                                if (err !== null) {
-                                                                    setError(err);
-                                                                } else {
-                                                                    setSuccessMessage('Recipe successfully deleted');
-                                                                }
                                                             }}
-                                                            cancel={() => {
+                                                            onCancel={() => {
                                                                 toggleOverlay();
+                                                            }}
+                                                            onError={(err) => {
+                                                                setError(err);
                                                             }}
                                                         >
                                                             Delete

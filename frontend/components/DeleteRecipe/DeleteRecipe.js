@@ -24,11 +24,15 @@ const DeleteRecipe = (props) => {
         cache.writeQuery({ query: ADMIN_ALL_RECIPES_QUERY, data: recipeData });
     };
 
-    const [deleteRecipe, { error: deleteError }] = useMutation(DELETE_RECIPE_MUTATION, {
+    const [deleteRecipe] = useMutation(DELETE_RECIPE_MUTATION, {
         update: updateCache,
         onCompleted: () => {
             toast(`${name} deleted successfully`);
-            props.continue(error);
+
+            props.onComplete();
+        },
+        onError: (err) => {
+            props.onError(err);
         },
     });
 
@@ -41,8 +45,6 @@ const DeleteRecipe = (props) => {
 
     return (
         <>
-            <ErrorAlert error={error || deleteError} />
-
             <ConfirmDialog
                 open={confirmOpen}
                 message={`Are you sure you want to delete ${name}?`}
@@ -56,7 +58,7 @@ const DeleteRecipe = (props) => {
                 }}
                 cancel={() => {
                     setConfirmOpen(false);
-                    props.cancel();
+                    props.onCancel();
                 }}
             />
             <button type="button" onClick={confirmDelete} className="delete">
@@ -69,8 +71,9 @@ const DeleteRecipe = (props) => {
 DeleteRecipe.propTypes = {
     id: PropTypes.string,
     name: PropTypes.string,
-    continue: PropTypes.func.isRequired,
-    cancel: PropTypes.func.isRequired,
+    onComplete: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    onError: PropTypes.func.isRequired,
     children: PropTypes.node,
 };
 
