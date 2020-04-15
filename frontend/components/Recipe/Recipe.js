@@ -89,7 +89,7 @@ const Recipe = (props) => {
                     {data.recipe.categories.length > 0 && (
                         <div className="tags hide-print">
                             <h4>Categories:</h4>
-                            {data.recipe.categories.map((category, idx) => (
+                            {data.recipe.categories.map((category) => (
                                 <Link href={`/category?id=${category.id}`} key={category.id}>
                                     <a className="tag">{category.name}</a>
                                 </Link>
@@ -100,7 +100,7 @@ const Recipe = (props) => {
                     {data.recipe.meats.length > 0 && (
                         <div className="tags hide-print">
                             <h4>Meats:</h4>
-                            {data.recipe.meats.map((meat, idx) => (
+                            {data.recipe.meats.map((meat) => (
                                 <Link href={`/meat?id=${meat.id}`} key={meat.id}>
                                     <a className="tag">{meat.name}</a>
                                 </Link>
