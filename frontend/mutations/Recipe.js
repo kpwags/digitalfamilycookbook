@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 const CREATE_RECIPE_MUTATION = gql`
     mutation CREATE_RECIPE_MUTATION(
         $name: String!
+        $description: String
         $public: Boolean!
         $source: String
         $sourceUrl: String
@@ -25,6 +26,7 @@ const CREATE_RECIPE_MUTATION = gql`
     ) {
         createRecipe(
             name: $name
+            description: $description
             public: $public
             source: $source
             sourceUrl: $sourceUrl
@@ -63,6 +65,7 @@ const UPDATE_RECIPE_MUTATION = gql`
     mutation UPDATE_RECIPE_MUTATION(
         $id: ID!
         $name: String!
+        $description: String
         $public: Boolean!
         $source: String
         $sourceUrl: String
@@ -86,6 +89,7 @@ const UPDATE_RECIPE_MUTATION = gql`
         updateRecipe(
             id: $id
             name: $name
+            description: $description
             public: $public
             source: $source
             sourceUrl: $sourceUrl

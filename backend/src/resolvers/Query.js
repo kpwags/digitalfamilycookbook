@@ -21,6 +21,8 @@ const Query = {
       return null;
     }
 
+    console.log({ user_id: ctx.request.userId });
+
     return ctx.db.query.user(
       {
         where: { id: ctx.request.userId },

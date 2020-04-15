@@ -154,6 +154,7 @@ const Mutations = {
       {
         data: {
           name: args.name,
+          description: args.description,
           public: args.public,
           source: args.source !== '' ? args.source : null,
           sourceUrl: args.sourceUrl !== '' ? args.sourceUrl : null,
@@ -646,6 +647,7 @@ const Mutations = {
       {
         data: {
           name: args.name,
+          description: args.description,
           public: args.public,
           source: args.source !== '' ? args.source : null,
           sourceUrl: args.sourceUrl !== '' ? args.sourceUrl : null,

@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/digital-family-cookbook/digitalfamilycookbook/dev
-# timestamp: Sun Aug 25 2019 14:28:45 GMT-0400 (Eastern Daylight Time)
+# timestamp: Mon Apr 13 2020 19:33:02 GMT-0400 (Eastern Daylight Time)
 
 type AggregateCategory {
   count: Int!
@@ -2138,6 +2138,7 @@ type Query {
 type Recipe implements Node {
   id: ID!
   name: String!
+  description: String
   public: Boolean!
   source: String
   sourceUrl: String
@@ -2175,6 +2176,7 @@ type RecipeConnection {
 input RecipeCreateInput {
   id: ID
   name: String!
+  description: String
   public: Boolean!
   source: String
   sourceUrl: String
@@ -2211,6 +2213,8 @@ enum RecipeOrderByInput {
   id_DESC
   name_ASC
   name_DESC
+  description_ASC
+  description_DESC
   public_ASC
   public_DESC
   source_ASC
@@ -2250,6 +2254,7 @@ enum RecipeOrderByInput {
 type RecipePreviousValues {
   id: ID!
   name: String!
+  description: String
   public: Boolean!
   source: String
   sourceUrl: String
@@ -2310,6 +2315,7 @@ input RecipeSubscriptionWhereInput {
 
 input RecipeUpdateInput {
   name: String
+  description: String
   public: Boolean
   source: String
   sourceUrl: String
@@ -2334,6 +2340,7 @@ input RecipeUpdateInput {
 
 input RecipeUpdateManyMutationInput {
   name: String
+  description: String
   public: Boolean
   source: String
   sourceUrl: String
@@ -2440,6 +2447,46 @@ input RecipeWhereInput {
 
   """All values not ending with the given string."""
   name_not_ends_with: String
+  description: String
+
+  """All values that are not equal to given value."""
+  description_not: String
+
+  """All values that are contained in given list."""
+  description_in: [String!]
+
+  """All values that are not contained in given list."""
+  description_not_in: [String!]
+
+  """All values less than the given value."""
+  description_lt: String
+
+  """All values less than or equal the given value."""
+  description_lte: String
+
+  """All values greater than the given value."""
+  description_gt: String
+
+  """All values greater than or equal the given value."""
+  description_gte: String
+
+  """All values containing the given string."""
+  description_contains: String
+
+  """All values not containing the given string."""
+  description_not_contains: String
+
+  """All values starting with the given string."""
+  description_starts_with: String
+
+  """All values not starting with the given string."""
+  description_not_starts_with: String
+
+  """All values ending with the given string."""
+  description_ends_with: String
+
+  """All values not ending with the given string."""
+  description_not_ends_with: String
   public: Boolean
 
   """All values that are not equal to given value."""

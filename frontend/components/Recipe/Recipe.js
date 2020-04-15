@@ -41,6 +41,8 @@ const Recipe = (props) => {
         <RecipeView>
             <h1>{data.recipe.name}</h1>
 
+            {data.recipe.description !== null && data.recipe.description !== '' && <p>{data.recipe.description}</p>}
+
             <div className="main">
                 <div className="left-column">
                     <p className="details">
@@ -87,7 +89,7 @@ const Recipe = (props) => {
                     {data.recipe.categories.length > 0 && (
                         <div className="tags hide-print">
                             <h4>Categories:</h4>
-                            {data.recipe.categories.map((category, idx) => (
+                            {data.recipe.categories.map((category) => (
                                 <Link href={`/category?id=${category.id}`} key={category.id}>
                                     <a className="tag">{category.name}</a>
                                 </Link>
@@ -98,7 +100,7 @@ const Recipe = (props) => {
                     {data.recipe.meats.length > 0 && (
                         <div className="tags hide-print">
                             <h4>Meats:</h4>
-                            {data.recipe.meats.map((meat, idx) => (
+                            {data.recipe.meats.map((meat) => (
                                 <Link href={`/meat?id=${meat.id}`} key={meat.id}>
                                     <a className="tag">{meat.name}</a>
                                 </Link>
