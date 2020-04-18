@@ -50,6 +50,34 @@ const RecipeView = styled.div`
         }
     }
 
+    button {
+        cursor: pointer;
+        color: hsl(0, 0%, 100%);
+        padding: 5px 15px;
+        font-size: 1rem;
+        border-radius: 6px;
+        border: 1px solid hsl(0, 100%, 40%);
+        background: hsl(0, 100%, 40%);
+        margin-left: 10px;
+    }
+
+    .edit-delete-links {
+        margin-left: 15px;
+    }
+
+    .edit-delete-links a {
+        color: hsl(0, 0%, 100%);
+        padding: 5px 15px;
+        font-size: 1rem;
+        border-radius: 6px;
+        border: 1px solid ${(props) => props.theme.green};
+        background: ${(props) => props.theme.green};
+
+        :hover {
+            text-decoration: none;
+        }
+    }
+
     .main {
         display: grid;
         grid-template-columns: 3fr 1fr;
@@ -158,6 +186,15 @@ const RecipeView = styled.div`
                     }
                 }
             }
+        }
+    }
+
+    div.management {
+        margin-top: 20px;
+
+        p {
+            font-weight: bold;
+            color: ${(props) => props.theme.green};
         }
     }
 

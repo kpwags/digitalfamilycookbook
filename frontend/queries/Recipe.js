@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import { perPage } from '../config';
 
 const ADMIN_ALL_RECIPES_QUERY = gql`
-    query {
+    query ADMIN_ALL_RECIPES_QUERY {
         recipes(orderBy: name_ASC) {
             id
             name

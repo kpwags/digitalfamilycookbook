@@ -5,23 +5,20 @@ import { endpoint } from '../config';
 function createClient({ headers }) {
     return new ApolloClient({
         uri: endpoint,
-        request: operation => {
+        request: (operation) => {
             operation.setContext({
                 fetchOptions: {
-                    credentials: 'include'
+                    credentials: 'include',
                 },
-                headers
+                headers,
             });
         },
         // local data
         clientState: {
             resolvers: {
-                Mutation: {}
+                Mutation: {},
             },
-            defaults: {
-                overlayVisible: false
-            }
-        }
+        },
     });
 }
 
