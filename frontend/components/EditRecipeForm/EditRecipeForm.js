@@ -23,7 +23,6 @@ const EditRecipeForm = (props) => {
     const [name, setName] = useState(recipe.name);
     const [nameError, setNameError] = useState('');
     const [description, setDescription] = useState(recipe.description === null ? '' : recipe.description);
-    const [isPublic] = useState(false);
     const [source, setSource] = useState(recipe.source === null ? '' : recipe.source);
     const [sourceUrl, setSourceUrl] = useState(recipe.sourceUrl === null ? '' : recipe.sourceUrl);
     const [time, setTime] = useState(recipe.time === null ? '' : recipe.time);
@@ -375,71 +374,56 @@ const EditRecipeForm = (props) => {
             dbMeats.push({ id: meat });
         });
 
-        if (time === '') {
-            setTime(null);
-        }
-
-        if (activeTime === '') {
-            setActiveTime(null);
-        }
-
-        if (servings === '') {
-            setServings(null);
-        }
-
-        if (calories === '') {
-            setCalories(null);
-        }
-
-        if (protein === '') {
-            setProtein(null);
-        }
-
-        if (carbohydrates === '') {
-            setCarbohydrates(null);
-        }
-
-        if (fat === '') {
-            setFat(null);
-        }
-
-        if (cholesterol === '') {
-            setCholesterol(null);
-        }
-
-        if (fiber === '') {
-            setFiber(null);
-        }
-
-        if (sugar === '') {
-            setSugar(null);
-        }
+        const editedRecipe = {
+            id,
+            name,
+            description,
+            source,
+            sourceUrl,
+            public: false,
+            time: Utilities.nullifyBlankNumber(time),
+            activeTime: Utilities.nullifyBlankNumber(activeTime),
+            servings: Utilities.nullifyBlankNumber(servings),
+            calories: Utilities.nullifyBlankNumber(calories),
+            protein: Utilities.nullifyBlankNumber(protein),
+            carbohydrates: Utilities.nullifyBlankNumber(carbohydrates),
+            fat: Utilities.nullifyBlankNumber(fat),
+            fiber: Utilities.nullifyBlankNumber(fiber),
+            sugar: Utilities.nullifyBlankNumber(sugar),
+            cholesterol: Utilities.nullifyBlankNumber(cholesterol),
+            image,
+            largeImage,
+            ingredients: dbIngredients,
+            directions: dbDirections,
+            categories: dbCategories,
+            meats: dbMeats,
+        };
 
         if (validateForm()) {
             await updateRecipe({
                 variables: {
-                    id,
-                    name,
-                    description,
-                    public: isPublic,
-                    source,
-                    sourceUrl,
-                    time,
-                    activeTime,
-                    servings,
-                    calories,
-                    protein,
-                    fat,
-                    sugar,
-                    carbohydrates,
-                    cholesterol,
-                    fiber,
-                    image,
-                    largeImage,
-                    ingredients: dbIngredients,
-                    directions: dbDirections,
-                    categories: dbCategories,
-                    meats: dbMeats,
+                    id: editedRecipe.id,
+                    name: editedRecipe.name,
+                    description: editedRecipe.description,
+                    public: editedRecipe.public,
+                    source: editedRecipe.source,
+                    sourceUrl: editedRecipe.sourceUrl,
+                    time: editedRecipe.time,
+                    activeTime: editedRecipe.activeTime,
+                    servings: editedRecipe.servings,
+                    calories: editedRecipe.calories,
+                    protein: editedRecipe.protein,
+                    fat: editedRecipe.fat,
+                    sugar: editedRecipe.sugar,
+                    carbohydrates: editedRecipe.carbohydrates,
+                    cholesterol: editedRecipe.cholesterol,
+                    fiber: editedRecipe.fiber,
+                    image: editedRecipe.image,
+                    largeImage: editedRecipe.largeImage,
+                    ingredients: editedRecipe.dbIngredients,
+                    directions: editedRecipe.dbDirections,
+                    categories: editedRecipe.dbCategories,
+                    meats: editedRecipe.dbMeats,
                 },
             }).catch((err) => {
                 setError(err);

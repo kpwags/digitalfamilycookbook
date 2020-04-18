@@ -17,7 +17,6 @@ const CreateRecipeForm = () => {
     const [name, setName] = useState('');
     const [nameError, setNameError] = useState('');
     const [description, setDescription] = useState('');
-    const [isPublic] = useState(false);
     const [source, setSource] = useState('');
     const [sourceUrl, setSourceUrl] = useState('');
     const [time, setTime] = useState('');
@@ -349,70 +348,54 @@ const CreateRecipeForm = () => {
             dbMeats.push({ id: meat });
         });
 
-        if (time === '') {
-            setTime(null);
-        }
-
-        if (activeTime === '') {
-            setActiveTime(null);
-        }
-
-        if (servings === '') {
-            setServings(null);
-        }
-
-        if (calories === '') {
-            setCalories(null);
-        }
-
-        if (protein === '') {
-            setProtein(null);
-        }
-
-        if (carbohydrates === '') {
-            setCarbohydrates(null);
-        }
-
-        if (fat === '') {
-            setFat(null);
-        }
-
-        if (cholesterol === '') {
-            setCholesterol(null);
-        }
-
-        if (fiber === '') {
-            setFiber(null);
-        }
-
-        if (sugar === '') {
-            setSugar(null);
-        }
+        const newRecipe = {
+            name,
+            description,
+            source,
+            sourceUrl,
+            public: false,
+            time: Utilities.nullifyBlankNumber(time),
+            activeTime: Utilities.nullifyBlankNumber(activeTime),
+            servings: Utilities.nullifyBlankNumber(servings),
+            calories: Utilities.nullifyBlankNumber(calories),
+            protein: Utilities.nullifyBlankNumber(protein),
+            carbohydrates: Utilities.nullifyBlankNumber(carbohydrates),
+            fat: Utilities.nullifyBlankNumber(fat),
+            fiber: Utilities.nullifyBlankNumber(fiber),
+            sugar: Utilities.nullifyBlankNumber(sugar),
+            cholesterol: Utilities.nullifyBlankNumber(cholesterol),
+            image,
+            largeImage,
+            ingredients,
+            directions,
+            categories: dbCategories,
+            meats: dbMeats,
+        };
 
         if (validateForm()) {
             await createRecipe({
                 variables: {
-                    name,
-                    description,
-                    public: isPublic,
-                    source,
-                    sourceUrl,
-                    time,
-                    activeTime,
-                    servings,
-                    calories,
-                    carbohydrates,
-                    protein,
-                    fat,
-                    sugar,
-                    cholesterol,
-                    fiber,
-                    image,
-                    largeImage,
-                    ingredients,
-                    directions,
-                    categories: dbCategories,
-                    meats: dbMeats,
+                    name: newRecipe.name,
+                    description: newRecipe.description,
+                    public: newRecipe.public,
+                    source: newRecipe.source,
+                    sourceUrl: newRecipe.sourceUrl,
+                    time: newRecipe.time,
+                    activeTime: newRecipe.activeTime,
+                    servings: newRecipe.servings,
+                    calories: newRecipe.calories,
+                    carbohydrates: newRecipe.carbohydrates,
+                    protein: newRecipe.protein,
+                    fat: newRecipe.fat,
+                    sugar: newRecipe.sugar,
+                    cholesterol: newRecipe.cholesterol,
+                    fiber: newRecipe.fiber,
+                    image: newRecipe.image,
+                    largeImage: newRecipe.largeImage,
+                    ingredients: newRecipe.ingredients,
+                    directions: newRecipe.directions,
+                    categories: newRecipe.categories,
+                    meats: newRecipe.meats,
                 },
             }).catch((err) => {
                 setError(err);

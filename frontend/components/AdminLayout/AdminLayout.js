@@ -118,7 +118,7 @@ const AdminLayout = (props) => {
 
 AdminLayout.propTypes = {
     activePage: PropTypes.string,
-    children: PropTypes.node.isRequired,
+    children: PropTypes.node,
 };
 
 export { AdminLayout };

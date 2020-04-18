@@ -3,7 +3,7 @@ import Router from 'next/router';
 class Utilities {
     static getNextAvailableValue(arr, idx = 'key') {
         let nextValue = 0;
-        arr.forEach(item => {
+        arr.forEach((item) => {
             if (item[idx] >= nextValue) {
                 nextValue = item[idx];
             }
@@ -48,7 +48,7 @@ class Utilities {
 
     static convertIDArray(arr) {
         const newArr = [];
-        arr.forEach(i => {
+        arr.forEach((i) => {
             newArr.push(i.id);
         });
 
@@ -59,7 +59,7 @@ class Utilities {
         return str
             .toLowerCase()
             .split(' ')
-            .map(word => {
+            .map((word) => {
                 return word.replace(word[0], word[0].toUpperCase());
             })
             .join(' ');
@@ -80,6 +80,19 @@ class Utilities {
     static deleteTableRow(rowId) {
         const tr = document.querySelector(`#${rowId}`);
         tr.parentNode.removeChild(tr);
+    }
+
+    /**
+     * Takes a numeric field value and returns null if the field is blank
+     * @param {string} value The numeric value to check
+     * @returns {number} Returns a number if not blank, or null if blank
+     */
+    static nullifyBlankNumber(value) {
+        if (value === '') {
+            return null;
+        }
+
+        return parseFloat(value);
     }
 
     static boxColors = ['gray', 'blue', 'green', 'orange', 'purple'];

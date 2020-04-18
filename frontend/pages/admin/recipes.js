@@ -11,11 +11,9 @@ import { DeleteRecipe } from '../../components/DeleteRecipe/DeleteRecipe';
 import { AdminLayout } from '../../components/AdminLayout/AdminLayout';
 import { AppContext } from '../../components/AppContext/AppContext';
 import { ErrorMessage } from '../../components/ErrorMessage/ErrorMessage';
-import { SuccessMessage } from '../../components/SuccessMessage/SuccessMessage';
 
 const AdminRecipes = () => {
     const [error, setError] = useState(null);
-    const [successMessage, setSuccessMessage] = useState('');
 
     const { data, error: queryError, loading } = useQuery(ADMIN_ALL_RECIPES_QUERY);
 
@@ -42,7 +40,6 @@ const AdminRecipes = () => {
 
                     {!loading && (
                         <>
-                            <SuccessMessage message={successMessage} />
                             <ErrorMessage message={error} />
                             <Grid>
                                 <table cellPadding="0" cellSpacing="0" id="recipes_admin_grid">
@@ -104,16 +101,14 @@ const AdminRecipes = () => {
                                                         <DeleteRecipe
                                                             id={recipe.id}
                                                             name={recipe.name}
-                                                            continue={async (err) => {
+                                                            onComplete={() => {
                                                                 toggleOverlay();
-                                                                if (err !== null) {
-                                                                    setError(err);
-                                                                } else {
-                                                                    setSuccessMessage('Recipe successfully deleted');
-                                                                }
                                                             }}
-                                                            cancel={() => {
+                                                            onCancel={() => {
                                                                 toggleOverlay();
+                                                            }}
+                                                            onError={(err) => {
+                                                                setError(err);
                                                             }}
                                                         >
                                                             Delete

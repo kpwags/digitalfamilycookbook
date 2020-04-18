@@ -91,10 +91,11 @@ const Logo = styled.h1`
 
     a {
         color: hsl(0, 0%, 100%);
-    }
 
-    a:hover {
-        text-decoration: none;
+        :hover {
+            text-decoration: none;
+            color: ${(props) => props.theme.paleGreen};
+        }
     }
 
     @media all and (max-width: 1400px) {

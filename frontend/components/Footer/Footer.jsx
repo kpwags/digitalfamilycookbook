@@ -6,7 +6,7 @@ const SiteFooter = styled.footer`
     font-size: 0.8rem;
     padding: 20px;
     display: grid;
-    grid-template-columns: 1fr 1fr 3fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
 
     .copyright {
         grid-column-start: 2;
@@ -51,6 +51,11 @@ const Footer = () => {
                 <li>
                     <Link href="/">
                         <a>Home</a>
+                    </Link>
+                </li>
+                <li>
+                    <Link href="/about">
+                        <a>About</a>
                     </Link>
                 </li>
                 <li>
