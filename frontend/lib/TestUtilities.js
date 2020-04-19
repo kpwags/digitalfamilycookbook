@@ -5,7 +5,7 @@ import { MockedProvider } from '@apollo/react-testing';
 import { ThemeProvider } from 'styled-components';
 import { Theme } from './Theme';
 
-const MockedThemeProvider = props => {
+const MockedThemeProvider = (props) => {
     const { mocks = null, addTypename = false, children } = props;
     return (
         <ThemeProvider theme={Theme}>
@@ -19,7 +19,7 @@ const MockedThemeProvider = props => {
 MockedThemeProvider.propTypes = {
     children: PropTypes.node,
     mocks: PropTypes.array,
-    addTypename: PropTypes.bool
+    addTypename: PropTypes.bool,
 };
 
 const TestAdmin = () => ({
@@ -31,39 +31,41 @@ const TestAdmin = () => ({
     bio: 'I am just a test admin',
     image: 'user.jpg',
     largeImage: 'user-lg.jpg',
-    permissions: ['USER', 'ADMIN']
+    permissions: ['USER', 'ADMIN'],
 });
 
 const TestCategory = () => ({
     __typename: 'Category',
     id: casual.uuid,
-    name: casual.word
+    name: casual.word,
+    createdAt: casual.date,
 });
 
 const TestDirection = () => ({
     __typename: 'Direction',
     id: casual.uuid,
     name: casual.words(),
-    sortOrder: casual.integer
+    sortOrder: casual.integer,
 });
 
 const TestIngredient = () => ({
     __typename: 'Ingredient',
     id: casual.uuid,
     name: casual.words(),
-    sortOrder: casual.integer
+    sortOrder: casual.integer,
 });
 
 const TestInvitationCode = () => ({
     __typename: 'InvitationCode',
     id: casual.uuid,
-    code: casual.username
+    code: casual.username,
 });
 
 const TestMeat = () => ({
     __typename: 'Meat',
     id: casual.uuid,
-    name: casual.words()
+    name: casual.words(),
+    createdAt: casual.date,
 });
 
 const TestUser = () => ({
@@ -75,7 +77,7 @@ const TestUser = () => ({
     bio: 'I am just a test user',
     image: 'user.jpg',
     largeImage: 'user-lg.jpg',
-    permissions: ['USER']
+    permissions: ['USER'],
 });
 
 const TestRecipe = () => ({
@@ -100,20 +102,9 @@ const TestRecipe = () => ({
     directions: [TestDirection(), TestDirection()],
     meats: [TestMeat(), TestMeat()],
     categories: [TestCategory(), TestCategory()],
-    user: TestUser()
+    user: TestUser(),
 });
 
 const TestRecipesList = () => [TestRecipe(), TestRecipe(), TestRecipe(), TestRecipe(), TestRecipe()];
 
-export {
-    MockedThemeProvider,
-    TestAdmin,
-    TestCategory,
-    TestDirection,
-    TestIngredient,
-    TestInvitationCode,
-    TestMeat,
-    TestRecipe,
-    TestRecipesList,
-    TestUser
-};
+export { MockedThemeProvider, TestAdmin, TestCategory, TestDirection, TestIngredient, TestInvitationCode, TestMeat, TestRecipe, TestRecipesList, TestUser };

@@ -63,7 +63,7 @@ const TextInput = (props) => {
             {props.label}
             <input
                 type={props.type}
-                id={props.id}
+                id={props.name}
                 name={props.name}
                 data-testid={props.id}
                 value={value}
