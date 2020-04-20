@@ -34,13 +34,13 @@ const DialogWindow = styled.div`
             padding: 5px 15px;
             cursor: pointer;
             font-size: 1rem;
-            background: ${props => props.theme.green};
-            border-color: ${props => props.theme.green};
+            background: ${(props) => props.theme.green};
+            border-color: ${(props) => props.theme.green};
         }
     }
 `;
 
-const ConfirmDialog = props => {
+const ConfirmDialog = (props) => {
     const [visible, setVisible] = useState(props.open);
     const [initialLoad, setInitialLoad] = useState(true);
 
@@ -56,7 +56,7 @@ const ConfirmDialog = props => {
         margin: `0 0 0 ${marginLeftVal}`,
         height,
         width: `${width}px`,
-        display: visible ? 'block' : 'none'
+        display: visible ? 'block' : 'none',
     };
 
     useEffect(() => {
@@ -71,10 +71,10 @@ const ConfirmDialog = props => {
         <DialogWindow style={popupStyle}>
             <div className="message">{props.message}</div>
             <div className="buttons">
-                <button className="confirm-button" type="button" onClick={props.continue}>
+                <button className="confirm-button" type="button" onClick={props.continue} data-testid="confirm-delete">
                     {yesText}
                 </button>
-                <button className="confirm-button" type="button" onClick={props.cancel}>
+                <button className="confirm-button" type="button" onClick={props.cancel} data-testid="cancel-delete">
                     {noText}
                 </button>
             </div>
@@ -90,7 +90,7 @@ ConfirmDialog.propTypes = {
     message: PropTypes.string.isRequired,
     continue: PropTypes.func.isRequired,
     cancel: PropTypes.func.isRequired,
-    open: PropTypes.bool
+    open: PropTypes.bool,
 };
 
 export { ConfirmDialog };
