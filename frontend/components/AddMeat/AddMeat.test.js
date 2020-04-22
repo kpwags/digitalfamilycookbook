@@ -1,4 +1,4 @@
-import { render, wait, fireEvent, act, waitForElement } from '@testing-library/react';
+import { render, fireEvent, act } from '@testing-library/react';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { createMockClient } from 'mock-apollo-client';
 import { CREATE_MEAT_MUTATION } from '../../mutations/Meat';
@@ -31,13 +31,13 @@ describe('<AddMeat/>', () => {
     mockClient.setRequestHandler(ALL_MEATS_QUERY, allMeatsQueryHandler);
 
     test('it renders the input', async () => {
-        const { getByLabelText } = render(
+        const { findByLabelText } = render(
             <MockedThemeProvider>
                 <AddMeat />
             </MockedThemeProvider>
         );
 
-        await waitForElement(() => getByLabelText(/Name/));
+        await findByLabelText(/Name/);
     });
 
     test('it creates a meat when the form is submited', async () => {
@@ -54,7 +54,7 @@ describe('<AddMeat/>', () => {
                 },
             });
 
-            await wait(async () => fireEvent.click(await getByText(/Save/)));
+            fireEvent.click(await getByText(/Save/));
         });
 
         expect(createMeatMutationHandler).toBeCalledWith({
@@ -65,15 +65,15 @@ describe('<AddMeat/>', () => {
     });
 
     test('it alerts the user a meat name is required if left blank', async () => {
-        const { getByText } = render(
+        const { findByText, getByLabelText } = render(
             <ApolloProvider client={mockClient}>
                 <AddMeat />
             </ApolloProvider>
         );
 
-        await wait(async () => fireEvent.click(await getByText(/Save/)));
+        fireEvent.blur(await getByLabelText(/Name/));
 
         // Assert that the error message was displayed
-        await waitForElement(() => getByText(/Name is required/));
+        await findByText(/Name is required/);
     });
 });

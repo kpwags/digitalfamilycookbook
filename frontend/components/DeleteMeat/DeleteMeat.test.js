@@ -1,4 +1,4 @@
-import { render, wait, fireEvent, waitForElement } from '@testing-library/react';
+import { render, waitFor, fireEvent } from '@testing-library/react';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { createMockClient } from 'mock-apollo-client';
 import { DELETE_MEAT_MUTATION } from '../../mutations/Meat';
@@ -31,7 +31,7 @@ describe('<DeleteMeat/>', () => {
     mockClient.setRequestHandler(ALL_MEATS_QUERY, allMeatsQueryHandler);
 
     test('it renders the delete button', async () => {
-        const { getByText } = render(
+        const { findByText } = render(
             <MockedThemeProvider>
                 <AppContext.Provider value={{ toggleOverlay: jest.fn() }}>
                     <DeleteMeat id={meat.id} name={meat.name} onComplete={() => {}} onCancel={() => {}} onError={() => {}}>
@@ -41,11 +41,11 @@ describe('<DeleteMeat/>', () => {
             </MockedThemeProvider>
         );
 
-        await waitForElement(() => getByText(/Delete/));
+        await findByText(/Delete/);
     });
 
     test('it deletes a meat when the delete button followed by the confirm button is clicked', async () => {
-        const { findByTestId, getByText } = render(
+        const { findByTestId, findByText, getByText } = render(
             <ApolloProvider client={mockClient}>
                 <AppContext.Provider value={{ toggleOverlay: jest.fn() }}>
                     <DeleteMeat id={meat.id} name={meat.name} onComplete={() => {}} onCancel={() => {}} onError={() => {}} updateCache={false}>
@@ -55,11 +55,11 @@ describe('<DeleteMeat/>', () => {
             </ApolloProvider>
         );
 
-        await wait(async () => fireEvent.click(await getByText(/Delete/)));
+        fireEvent.click(await getByText(/Delete/));
 
-        await waitForElement(() => getByText(/Are you sure you want to delete/));
+        await findByText(/Are you sure you want to delete/);
 
-        await wait(async () => fireEvent.click(await findByTestId(/confirm-delete/)));
+        await waitFor(async () => fireEvent.click(await findByTestId(/confirm-delete/)));
 
         expect(deleteMeatMutationHandler).toBeCalledWith({
             id: meat.id,

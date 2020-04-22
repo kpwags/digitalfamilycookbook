@@ -59,6 +59,7 @@ const TestInvitationCode = () => ({
     __typename: 'InvitationCode',
     id: casual.uuid,
     code: casual.username,
+    createdAt: casual.date,
 });
 
 const TestMeat = () => ({

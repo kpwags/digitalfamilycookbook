@@ -1,4 +1,4 @@
-import { render, wait, fireEvent, waitForElement } from '@testing-library/react';
+import { render, fireEvent, act, waitFor } from '@testing-library/react';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { createMockClient } from 'mock-apollo-client';
 import { UPDATE_MEAT_MUTATION } from '../../mutations/Meat';
@@ -38,11 +38,9 @@ describe('<EditMeat/>', () => {
             </MockedThemeProvider>
         );
 
-        const categoryNameInput = getByLabelText(/Name/);
+        const meatNameInput = getByLabelText(/Name/);
 
-        await waitForElement(() => getByLabelText(/Name/));
-
-        expect(categoryNameInput.value).toBe(meat.name);
+        expect(meatNameInput.value).toBe(meat.name);
     });
 
     test('it updates a category when the form is submited', async () => {
@@ -52,13 +50,17 @@ describe('<EditMeat/>', () => {
             </ApolloProvider>
         );
 
-        fireEvent.change(await getByLabelText(/Name/), {
-            target: {
-                value: newMeat.name,
-            },
-        });
+        await act(async () => {
+            await waitFor(async () => {
+                fireEvent.change(await getByLabelText(/Name/), {
+                    target: {
+                        value: newMeat.name,
+                    },
+                });
+            });
 
-        await wait(async () => fireEvent.click(await getByText(/Save Changes/)));
+            fireEvent.click(await getByText(/Save Changes/));
+        });
 
         expect(updateMeatMutationHandler).toBeCalledWith({
             id: meat.id,
@@ -68,22 +70,28 @@ describe('<EditMeat/>', () => {
         expect(allMeatsQueryHandler).toBeCalledTimes(1);
     });
 
-    test('it alerts the user a category name is required if left blank', async () => {
+    test('it alerts the user a meat name is required if left blank', async () => {
         const { getByText, getByLabelText } = render(
             <ApolloProvider client={mockClient}>
                 <EditMeat id={meat.id} name={meat.name} />
             </ApolloProvider>
         );
 
-        fireEvent.change(await getByLabelText(/Name/), {
-            target: {
-                value: '',
-            },
+        await act(async () => {
+            await waitFor(async () => {
+                fireEvent.change(await getByLabelText(/Name/), {
+                    target: {
+                        value: '',
+                    },
+                });
+            });
+
+            await waitFor(async () => {
+                fireEvent.blur(await getByLabelText(/Name/));
+            });
         });
 
-        await wait(async () => fireEvent.click(await getByText(/Save Changes/)));
-
         // Assert that the error message was displayed
-        await waitForElement(() => getByText(/Name is required/));
+        await waitFor(() => getByText(/Name is required/));
     });
 });

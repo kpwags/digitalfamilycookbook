@@ -4,10 +4,12 @@ import { FormValidator } from '../../lib/FormValidator';
 
 const TextInput = (props) => {
     const [error, setError] = useState(props.error);
+    const [successMessage, setSuccessMessage] = useState(props.successMessage);
     const [value, setValue] = useState(props.value);
 
     useEffect(() => {
         setError(props.error);
+        setSuccessMessage(props.successMessage);
         setValue(props.value);
     }, [props]);
 
@@ -85,13 +87,19 @@ const TextInput = (props) => {
             <div className="error-text" style={props.showErrorMessage && error !== '' ? { display: 'block' } : {}}>
                 {error}
             </div>
+            <div className="success-text" style={props.showSuccessMessage && successMessage !== '' ? { display: 'block' } : {}}>
+                {successMessage}
+            </div>
         </label>
     );
 };
 
 TextInput.defaultProps = {
     showErrorMessage: true,
+    showSuccessMessage: true,
     type: 'text',
+    error: '',
+    successMessage: '',
 };
 
 TextInput.propTypes = {
@@ -101,11 +109,13 @@ TextInput.propTypes = {
     value: PropTypes.any,
     id: PropTypes.string,
     error: PropTypes.string,
+    successMessage: PropTypes.string,
     onChange: PropTypes.func,
     validationRule: PropTypes.string,
     validate: PropTypes.func,
     validationArgs: PropTypes.object,
     showErrorMessage: PropTypes.bool,
+    showSuccessMessage: PropTypes.bool,
 };
 
 export { TextInput };

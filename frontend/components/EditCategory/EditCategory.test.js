@@ -1,4 +1,4 @@
-import { render, wait, fireEvent, waitForElement } from '@testing-library/react';
+import { render, act, fireEvent, waitFor } from '@testing-library/react';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { createMockClient } from 'mock-apollo-client';
 import { UPDATE_CATEGORY_MUTATION } from '../../mutations/Category';
@@ -32,15 +32,13 @@ describe('<EditCategory/>', () => {
     mockClient.setRequestHandler(ALL_CATEGORIES_QUERY, allCategoriesQueryHandler);
 
     test('it renders the input', async () => {
-        const { getByLabelText } = render(
+        const { findByLabelText } = render(
             <MockedThemeProvider>
                 <EditCategory id={category.id} name={category.name} />
             </MockedThemeProvider>
         );
 
-        const categoryNameInput = getByLabelText(/Name/);
-
-        await waitForElement(() => getByLabelText(/Name/));
+        const categoryNameInput = await findByLabelText(/Name/);
 
         expect(categoryNameInput.value).toBe(category.name);
     });
@@ -52,13 +50,17 @@ describe('<EditCategory/>', () => {
             </ApolloProvider>
         );
 
-        fireEvent.change(await getByLabelText(/Name/), {
-            target: {
-                value: newCategory.name,
-            },
-        });
+        await act(async () => {
+            await waitFor(async () => {
+                fireEvent.change(await getByLabelText(/Name/), {
+                    target: {
+                        value: newCategory.name,
+                    },
+                });
+            });
 
-        await wait(async () => fireEvent.click(await getByText(/Save Changes/)));
+            fireEvent.click(await getByText(/Save Changes/));
+        });
 
         expect(updateCategoryMutationHandler).toBeCalledWith({
             id: category.id,
@@ -69,21 +71,27 @@ describe('<EditCategory/>', () => {
     });
 
     test('it alerts the user a category name is required if left blank', async () => {
-        const { getByText, getByLabelText } = render(
+        const { findByText, getByLabelText } = render(
             <ApolloProvider client={mockClient}>
                 <EditCategory id={category.id} name={category.name} />
             </ApolloProvider>
         );
 
-        fireEvent.change(await getByLabelText(/Name/), {
-            target: {
-                value: '',
-            },
+        await act(async () => {
+            await waitFor(async () => {
+                fireEvent.change(await getByLabelText(/Name/), {
+                    target: {
+                        value: '',
+                    },
+                });
+            });
+
+            await waitFor(async () => {
+                fireEvent.blur(await getByLabelText(/Name/));
+            });
         });
 
-        await wait(async () => fireEvent.click(await getByText(/Save Changes/)));
-
         // Assert that the error message was displayed
-        await waitForElement(() => getByText(/Name is required/));
+        await findByText(/Name is required/);
     });
 });

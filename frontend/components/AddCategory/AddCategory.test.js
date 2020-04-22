@@ -1,4 +1,4 @@
-import { render, wait, fireEvent, act, waitForElement } from '@testing-library/react';
+import { render, fireEvent, act, waitFor } from '@testing-library/react';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { createMockClient } from 'mock-apollo-client';
 import { CREATE_CATEGORY_MUTATION } from '../../mutations/Category';
@@ -31,13 +31,13 @@ describe('<AddCategory/>', () => {
     mockClient.setRequestHandler(ALL_CATEGORIES_QUERY, allCategoriesQueryHandler);
 
     test('it renders the input', async () => {
-        const { getByLabelText } = render(
+        const { findByLabelText } = render(
             <MockedThemeProvider>
                 <AddCategory />
             </MockedThemeProvider>
         );
 
-        await waitForElement(() => getByLabelText(/Name/));
+        await findByLabelText(/Name/);
     });
 
     test('it creates a category when the form is submited', async () => {
@@ -54,7 +54,7 @@ describe('<AddCategory/>', () => {
                 },
             });
 
-            await wait(async () => fireEvent.click(await getByText(/Save/)));
+            fireEvent.click(await getByText(/Save/));
         });
 
         expect(mutationHandler).toBeCalledWith({
@@ -65,15 +65,15 @@ describe('<AddCategory/>', () => {
     });
 
     test('it alerts the user a category name is required if left blank', async () => {
-        const { getByText } = render(
+        const { findByText, getByLabelText } = render(
             <ApolloProvider client={mockClient}>
                 <AddCategory />
             </ApolloProvider>
         );
 
-        await wait(async () => fireEvent.click(await getByText(/Save/)));
+        await waitFor(async () => fireEvent.blur(await getByLabelText(/Name/)));
 
         // Assert that the error message was displayed
-        await waitForElement(() => getByText(/Name is required/));
+        await findByText(/Name is required/);
     });
 });
