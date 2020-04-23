@@ -74,6 +74,7 @@ const AddInvitationCode = (props) => {
         e.preventDefault();
         setCode('');
         setCodeError('');
+        setCodeSuccess('');
 
         if (props.onCancel) {
             props.onCancel();

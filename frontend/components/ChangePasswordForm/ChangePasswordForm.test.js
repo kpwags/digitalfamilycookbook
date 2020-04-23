@@ -1,174 +1,160 @@
-import { render, waitForElement, fireEvent } from '@testing-library/react';
+import { render, waitFor, fireEvent, act } from '@testing-library/react';
+import { ApolloProvider } from '@apollo/react-hooks';
+import { createMockClient } from 'mock-apollo-client';
 import { CURRENT_USER_QUERY } from '../../queries/User';
 import { CHANGE_PASSWORD_MUTATION } from '../../mutations/User';
 import { ChangePasswordForm } from './ChangePasswordForm';
 import { TestUser, MockedThemeProvider } from '../../lib/TestUtilities';
 
 const testUser = TestUser();
-const mocks = [
-    {
-        request: {
-            query: CURRENT_USER_QUERY
+const mockClient = createMockClient();
+
+const changePasswordHandler = jest.fn().mockResolvedValue({
+    data: {
+        changePassword: {
+            id: testUser.id,
+            name: testUser.name,
+            email: testUser.email,
+            bio: testUser.bio,
+            image: testUser.image,
+            largeImage: testUser.largeImage,
         },
-        result: {
-            data: {
-                me: TestUser()
-            }
-        }
     },
-    {
-        request: {
-            query: CHANGE_PASSWORD_MUTATION,
-            variables: {
-                id: testUser.id,
-                currentPassword: 'ThisIsInsecure123',
-                password: 'ThisIsTooInsecure1234'
-            }
-        },
-        passwordChanged: jest.fn(() => ({
-            data: {
-                changePassword: {
-                    id: testUser.id,
-                    name: testUser.name,
-                    email: testUser.email,
-                    bio: testUser.bio,
-                    image: testUser.image,
-                    largeImage: testUser.largeImage
-                }
-            }
-        }))
-    }
-];
+});
+
+const currentUserQueryHandler = jest.fn().mockResolvedValue({
+    data: {
+        me: TestUser(),
+    },
+});
+
+mockClient.setRequestHandler(CHANGE_PASSWORD_MUTATION, changePasswordHandler);
+mockClient.setRequestHandler(CURRENT_USER_QUERY, currentUserQueryHandler);
 
 describe('<ChangePasswordForm />', () => {
     test('it renders the form', async () => {
-        const { getByLabelText } = render(
-            <MockedThemeProvider mocks={mocks}>
+        const { findByLabelText } = render(
+            <MockedThemeProvider>
                 <ChangePasswordForm user={testUser} />
             </MockedThemeProvider>
         );
 
-        await waitForElement(() => getByLabelText(/Current Password/));
-        await waitForElement(() => getByLabelText(/New Password/));
-        await waitForElement(() => getByLabelText(/Confirm Password/));
+        await findByLabelText(/Current Password/);
+        await findByLabelText(/New Password/);
+        await findByLabelText(/Confirm Password/);
     });
 
-    test('it captures the input of the form', async () => {
-        const { getByLabelText } = render(
-            <MockedThemeProvider mocks={mocks}>
+    test('it changes the password successfully', async () => {
+        const { getByTestId, getByLabelText } = render(
+            <ApolloProvider client={mockClient}>
                 <ChangePasswordForm user={testUser} />
-            </MockedThemeProvider>
+            </ApolloProvider>
         );
 
-        const currentPasswordInput = getByLabelText(/Current Password/);
-        const newPasswordInput = getByLabelText(/New Password/);
-        const confirmPasswordInput = getByLabelText(/Confirm Password/);
+        await act(async () => {
+            fireEvent.change(getByLabelText(/Current Password/), {
+                target: {
+                    value: 'thisisold123',
+                },
+            });
 
-        fireEvent.change(currentPasswordInput, { target: { value: 'ThisIsAnInsecurePassword' } });
-        fireEvent.change(newPasswordInput, { target: { value: 'ThisIsAlsoAnInsecurePassword' } });
-        fireEvent.change(confirmPasswordInput, { target: { value: 'ThisIsAlsoAnInsecurePassword' } });
+            fireEvent.change(getByLabelText(/New Password/), {
+                target: {
+                    value: 'thisisnew123',
+                },
+            });
 
-        expect(currentPasswordInput.value).toBe('ThisIsAnInsecurePassword');
-        expect(newPasswordInput.value).toBe('ThisIsAlsoAnInsecurePassword');
-        expect(confirmPasswordInput.value).toBe('ThisIsAlsoAnInsecurePassword');
+            fireEvent.change(getByLabelText(/Confirm Password/), {
+                target: {
+                    value: 'thisisnew123',
+                },
+            });
+
+            await waitFor(() => fireEvent.click(getByTestId(/submitbutton/)));
+        });
+
+        expect(changePasswordHandler).toBeCalledWith({
+            id: testUser.id,
+            currentPassword: 'thisisold123',
+            password: 'thisisnew123',
+        });
+
+        expect(currentUserQueryHandler).toBeCalledTimes(1);
     });
 
-    test('it alerts the user that they need to enter their current password when leaving the current password blank', () => {
-        const { getByText, getByLabelText } = render(
-            <MockedThemeProvider mocks={mocks}>
+    test('it alerts the user that they need to enter their current password when leaving the current password blank', async () => {
+        const { findByText, getByLabelText } = render(
+            <ApolloProvider client={mockClient}>
                 <ChangePasswordForm user={testUser} />
-            </MockedThemeProvider>
+            </ApolloProvider>
         );
 
-        const currentPasswordInput = getByLabelText(/Current Password/);
+        await act(async () => {
+            fireEvent.change(getByLabelText(/Current Password/), {
+                target: {
+                    value: '',
+                },
+            });
 
-        fireEvent.change(currentPasswordInput, { target: { value: '' } });
+            fireEvent.blur(getByLabelText(/Current Password/));
+        });
 
-        fireEvent.blur(currentPasswordInput);
-
-        const currentPasswordLabel = getByText(/Current Password/);
-
-        const currentPasswordErrored = currentPasswordLabel.classList.contains('errored');
-
-        expect(currentPasswordErrored).toBe(true);
+        await findByText(/Current password is required/);
     });
 
-    test('it shows an error when the new passwords do not match after leaving the confirm field', () => {
-        const { getByText, getByLabelText } = render(
-            <MockedThemeProvider mocks={mocks}>
+    test('it shows an error when the new passwords do not match or password is too short', async () => {
+        const { findAllByText, getByLabelText } = render(
+            <ApolloProvider client={mockClient}>
                 <ChangePasswordForm user={testUser} />
-            </MockedThemeProvider>
+            </ApolloProvider>
         );
 
-        const newPasswordInput = getByLabelText(/New Password/);
-        const confirmPasswordInput = getByLabelText(/Confirm Password/);
+        await act(async () => {
+            fireEvent.change(await getByLabelText(/Current Password/), {
+                target: {
+                    value: 'thisisold123',
+                },
+            });
 
-        fireEvent.change(newPasswordInput, { target: { value: 'ThisIsAlsoAnInsecurePassword1' } });
-        fireEvent.change(confirmPasswordInput, { target: { value: 'ThisIsAlsoAnInsecurePassword2' } });
+            fireEvent.change(await getByLabelText(/New Password/), {
+                target: {
+                    value: 'thisisnew123',
+                },
+            });
 
-        fireEvent.blur(confirmPasswordInput);
+            fireEvent.change(await getByLabelText(/Confirm Password/), {
+                target: {
+                    value: 'thisisnew1234',
+                },
+            });
 
-        const newPasswordLabel = getByText(/New Password/);
-        const confirmPasswordLabel = getByText(/Confirm Password/);
+            fireEvent.blur(getByLabelText(/Confirm Password/));
+        });
 
-        const newPasswordErrored = newPasswordLabel.classList.contains('errored');
-        const confirmPasswordErrored = confirmPasswordLabel.classList.contains('errored');
+        await findAllByText(/Passwords do not match/);
 
-        expect(newPasswordErrored).toBe(true);
-        expect(confirmPasswordErrored).toBe(true);
-    });
+        await act(async () => {
+            fireEvent.change(await getByLabelText(/Current Password/), {
+                target: {
+                    value: 'thisisold123',
+                },
+            });
 
-    test('it validates the form when submit is clicked', () => {
-        const { getByText, getByLabelText } = render(
-            <MockedThemeProvider mocks={mocks}>
-                <ChangePasswordForm user={testUser} />
-            </MockedThemeProvider>
-        );
+            fireEvent.change(await getByLabelText(/New Password/), {
+                target: {
+                    value: 'new',
+                },
+            });
 
-        const currentPasswordInput = getByLabelText(/Current Password/);
-        const newPasswordInput = getByLabelText(/New Password/);
-        const confirmPasswordInput = getByLabelText(/Confirm Password/);
+            fireEvent.change(await getByLabelText(/Confirm Password/), {
+                target: {
+                    value: 'new',
+                },
+            });
 
-        fireEvent.change(currentPasswordInput, { target: { value: '' } });
-        fireEvent.change(newPasswordInput, { target: { value: '' } });
-        fireEvent.change(confirmPasswordInput, { target: { value: '' } });
+            fireEvent.blur(getByLabelText(/Confirm Password/));
+        });
 
-        const submitButton = getByText(/Submit/);
-
-        fireEvent.click(submitButton);
-
-        const currentPasswordLabel = getByText(/Current Password/);
-        const newPasswordLabel = getByText(/New Password/);
-        const confirmPasswordLabel = getByText(/Confirm Password/);
-
-        const currentPasswordErrored = currentPasswordLabel.classList.contains('errored');
-        const newPasswordErrored = newPasswordLabel.classList.contains('errored');
-        const confirmPasswordErrored = confirmPasswordLabel.classList.contains('errored');
-
-        expect(currentPasswordErrored).toBe(true);
-        expect(newPasswordErrored).toBe(true);
-        expect(confirmPasswordErrored).toBe(true);
-    });
-
-    test('it successfully changes the password', async () => {
-        const { getByText, getByLabelText } = render(
-            <MockedThemeProvider mocks={mocks}>
-                <ChangePasswordForm user={testUser} />
-            </MockedThemeProvider>
-        );
-
-        const currentPasswordInput = getByLabelText(/Current Password/);
-        const newPasswordInput = getByLabelText(/New Password/);
-        const confirmPasswordInput = getByLabelText(/Confirm Password/);
-
-        fireEvent.change(currentPasswordInput, { target: { value: 'ThisIsInsecure123' } });
-        fireEvent.change(newPasswordInput, { target: { value: 'ThisIsTooInsecure1234' } });
-        fireEvent.change(confirmPasswordInput, { target: { value: 'ThisIsTooInsecure1234' } });
-
-        const submitButton = getByText(/Submit/);
-
-        fireEvent.click(submitButton);
-
-        await waitForElement(() => getByText(/Password changed successfully/));
+        await findAllByText(/Passwords must be at least 8 characters long/);
     });
 });

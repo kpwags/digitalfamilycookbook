@@ -6,31 +6,31 @@ import { ALL_CATEGORIES_QUERY } from '../../queries/Category';
 import { TestCategory, MockedThemeProvider } from '../../lib/TestUtilities';
 import { EditCategory } from './EditCategory';
 
+const category = TestCategory();
+const newCategory = TestCategory();
+
+const mockClient = createMockClient();
+
+// Mock the result of the login mutation
+const updateCategoryMutationHandler = jest.fn().mockResolvedValue({
+    data: {
+        updateCategory: {
+            id: category.id,
+            name: category.name,
+        },
+    },
+});
+
+const allCategoriesQueryHandler = jest.fn().mockResolvedValue({
+    data: {
+        categories: [TestCategory(), TestCategory(), TestCategory()],
+    },
+});
+
+mockClient.setRequestHandler(UPDATE_CATEGORY_MUTATION, updateCategoryMutationHandler);
+mockClient.setRequestHandler(ALL_CATEGORIES_QUERY, allCategoriesQueryHandler);
+
 describe('<EditCategory/>', () => {
-    const category = TestCategory();
-    const newCategory = TestCategory();
-
-    const mockClient = createMockClient();
-
-    // Mock the result of the login mutation
-    const updateCategoryMutationHandler = jest.fn().mockResolvedValue({
-        data: {
-            updateCategory: {
-                id: category.id,
-                name: category.name,
-            },
-        },
-    });
-
-    const allCategoriesQueryHandler = jest.fn().mockResolvedValue({
-        data: {
-            categories: [TestCategory(), TestCategory(), TestCategory()],
-        },
-    });
-
-    mockClient.setRequestHandler(UPDATE_CATEGORY_MUTATION, updateCategoryMutationHandler);
-    mockClient.setRequestHandler(ALL_CATEGORIES_QUERY, allCategoriesQueryHandler);
-
     test('it renders the input', async () => {
         const { findByLabelText } = render(
             <MockedThemeProvider>

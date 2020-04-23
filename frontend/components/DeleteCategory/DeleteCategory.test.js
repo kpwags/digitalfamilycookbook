@@ -7,29 +7,28 @@ import { TestCategory, MockedThemeProvider } from '../../lib/TestUtilities';
 import { DeleteCategory } from './DeleteCategory';
 import { AppContext } from '../AppContext/AppContext';
 
+const category = TestCategory();
+
+const mockClient = createMockClient();
+
+const deleteCategoryMutationHandler = jest.fn().mockResolvedValue({
+    data: {
+        deleteCategory: {
+            id: category.id,
+        },
+    },
+});
+
+const allCategoriesQueryHandler = jest.fn().mockResolvedValue({
+    data: {
+        categories: [TestCategory(), TestCategory(), TestCategory()],
+    },
+});
+
+mockClient.setRequestHandler(DELETE_CATEGORY_MUTATION, deleteCategoryMutationHandler);
+mockClient.setRequestHandler(ALL_CATEGORIES_QUERY, allCategoriesQueryHandler);
+
 describe('<DeleteCategory/>', () => {
-    const category = TestCategory();
-
-    const mockClient = createMockClient();
-
-    // Mock the result of the login mutation
-    const deleteCategoryMutationHandler = jest.fn().mockResolvedValue({
-        data: {
-            deleteCategory: {
-                id: category.id,
-            },
-        },
-    });
-
-    const allCategoriesQueryHandler = jest.fn().mockResolvedValue({
-        data: {
-            categories: [TestCategory(), TestCategory(), TestCategory()],
-        },
-    });
-
-    mockClient.setRequestHandler(DELETE_CATEGORY_MUTATION, deleteCategoryMutationHandler);
-    mockClient.setRequestHandler(ALL_CATEGORIES_QUERY, allCategoriesQueryHandler);
-
     test('it renders the delete button', async () => {
         const { findByText } = render(
             <MockedThemeProvider>

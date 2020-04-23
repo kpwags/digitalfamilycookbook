@@ -1,95 +1,47 @@
-import { render, waitForElement } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import { ApolloProvider } from '@apollo/react-hooks';
+import { createMockClient } from 'mock-apollo-client';
 import { RECIPE_BY_STARTING_LETTER_QUERY } from '../../queries/Recipe';
-import { TestRecipe, MockedThemeProvider } from '../../lib/TestUtilities';
+import { TestRecipe } from '../../lib/TestUtilities';
 import { RecipesByLetter } from './RecipesByLetter';
 
+const mockClient = createMockClient();
+const emptyMockClient = createMockClient();
+
+const recipesQueryHandler = jest.fn().mockResolvedValue({
+    data: {
+        recipes: [TestRecipe(), TestRecipe(), TestRecipe()],
+    },
+});
+
+const emptyRecipesQueryHandler = jest.fn().mockResolvedValue({
+    data: {
+        recipes: [],
+    },
+});
+
+mockClient.setRequestHandler(RECIPE_BY_STARTING_LETTER_QUERY, recipesQueryHandler);
+emptyMockClient.setRequestHandler(RECIPE_BY_STARTING_LETTER_QUERY, emptyRecipesQueryHandler);
+
 describe('<RecipesByLetter/>', () => {
-    const mocks = [
-        {
-            request: {
-                query: RECIPE_BY_STARTING_LETTER_QUERY,
-                variables: {
-                    letter: 'a'
-                }
-            },
-            result: {
-                data: {
-                    recipes: [
-                        {
-                            id: 'abc123',
-                            name: 'Most Delicious Recipe',
-                            image: 'dog.jpg',
-                            user: {
-                                id: 'abc123',
-                                name: 'Jake Smith'
-                            }
-                        }
-                    ]
-                }
-            }
-        }
-    ];
-
-    const threeMocks = [
-        {
-            request: {
-                query: RECIPE_BY_STARTING_LETTER_QUERY,
-                variables: {
-                    letter: 'a'
-                }
-            },
-            result: {
-                data: {
-                    recipes: [TestRecipe(), TestRecipe(), TestRecipe()]
-                }
-            }
-        }
-    ];
-
-    const emptyMocks = [
-        {
-            request: {
-                query: RECIPE_BY_STARTING_LETTER_QUERY,
-                variables: {
-                    letter: 'b'
-                }
-            },
-            result: {
-                data: {
-                    recipes: []
-                }
-            }
-        }
-    ];
-
     test('it renders a message about no recipes when there are not any', async () => {
-        const { getByText } = render(
-            <MockedThemeProvider mocks={emptyMocks}>
+        const { findByText } = render(
+            <ApolloProvider client={emptyMockClient}>
                 <RecipesByLetter letter="b" />
-            </MockedThemeProvider>
+            </ApolloProvider>
         );
 
-        await waitForElement(() => getByText(/No Recipes/));
-    });
-
-    test('it renders a recipe', async () => {
-        const { getByText } = render(
-            <MockedThemeProvider mocks={mocks}>
-                <RecipesByLetter letter="a" />
-            </MockedThemeProvider>
-        );
-
-        await waitForElement(() => getByText(/Most Delicious Recipe/));
+        await findByText(/No Recipes/);
     });
 
     test('it renders 3 recipes when there are 3 recipes for the given letter', async () => {
         const { findAllByTestId } = render(
-            <MockedThemeProvider mocks={threeMocks}>
-                <RecipesByLetter letter="a" />
-            </MockedThemeProvider>
+            <ApolloProvider client={mockClient}>
+                <RecipesByLetter letter="b" />
+            </ApolloProvider>
         );
 
-        const recipes = await findAllByTestId(/RecipeBox/);
+        const recipes = await findAllByTestId(/recipelink/);
         expect(recipes).toHaveLength(3);
     });
 });

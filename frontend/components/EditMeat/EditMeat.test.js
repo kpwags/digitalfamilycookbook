@@ -6,31 +6,30 @@ import { ALL_MEATS_QUERY } from '../../queries/Meat';
 import { TestMeat, MockedThemeProvider } from '../../lib/TestUtilities';
 import { EditMeat } from './EditMeat';
 
+const meat = TestMeat();
+const newMeat = TestMeat();
+
+const mockClient = createMockClient();
+
+const updateMeatMutationHandler = jest.fn().mockResolvedValue({
+    data: {
+        updateMeat: {
+            id: meat.id,
+            name: meat.name,
+        },
+    },
+});
+
+const allMeatsQueryHandler = jest.fn().mockResolvedValue({
+    data: {
+        meats: [TestMeat(), TestMeat(), TestMeat()],
+    },
+});
+
+mockClient.setRequestHandler(UPDATE_MEAT_MUTATION, updateMeatMutationHandler);
+mockClient.setRequestHandler(ALL_MEATS_QUERY, allMeatsQueryHandler);
+
 describe('<EditMeat/>', () => {
-    const meat = TestMeat();
-    const newMeat = TestMeat();
-
-    const mockClient = createMockClient();
-
-    // Mock the result of the login mutation
-    const updateMeatMutationHandler = jest.fn().mockResolvedValue({
-        data: {
-            updateMeat: {
-                id: meat.id,
-                name: meat.name,
-            },
-        },
-    });
-
-    const allMeatsQueryHandler = jest.fn().mockResolvedValue({
-        data: {
-            meats: [TestMeat(), TestMeat(), TestMeat()],
-        },
-    });
-
-    mockClient.setRequestHandler(UPDATE_MEAT_MUTATION, updateMeatMutationHandler);
-    mockClient.setRequestHandler(ALL_MEATS_QUERY, allMeatsQueryHandler);
-
     test('it renders the input', async () => {
         const { getByLabelText } = render(
             <MockedThemeProvider>
@@ -91,7 +90,6 @@ describe('<EditMeat/>', () => {
             });
         });
 
-        // Assert that the error message was displayed
         await waitFor(() => getByText(/Name is required/));
     });
 });

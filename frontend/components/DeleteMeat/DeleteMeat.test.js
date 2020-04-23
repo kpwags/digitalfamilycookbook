@@ -7,29 +7,28 @@ import { TestMeat, MockedThemeProvider } from '../../lib/TestUtilities';
 import { DeleteMeat } from './DeleteMeat';
 import { AppContext } from '../AppContext/AppContext';
 
+const meat = TestMeat();
+
+const mockClient = createMockClient();
+
+const deleteMeatMutationHandler = jest.fn().mockResolvedValue({
+    data: {
+        deleteMeat: {
+            id: meat.id,
+        },
+    },
+});
+
+const allMeatsQueryHandler = jest.fn().mockResolvedValue({
+    data: {
+        categories: [TestMeat(), TestMeat(), TestMeat()],
+    },
+});
+
+mockClient.setRequestHandler(DELETE_MEAT_MUTATION, deleteMeatMutationHandler);
+mockClient.setRequestHandler(ALL_MEATS_QUERY, allMeatsQueryHandler);
+
 describe('<DeleteMeat/>', () => {
-    const meat = TestMeat();
-
-    const mockClient = createMockClient();
-
-    // Mock the result of the login mutation
-    const deleteMeatMutationHandler = jest.fn().mockResolvedValue({
-        data: {
-            deleteMeat: {
-                id: meat.id,
-            },
-        },
-    });
-
-    const allMeatsQueryHandler = jest.fn().mockResolvedValue({
-        data: {
-            categories: [TestMeat(), TestMeat(), TestMeat()],
-        },
-    });
-
-    mockClient.setRequestHandler(DELETE_MEAT_MUTATION, deleteMeatMutationHandler);
-    mockClient.setRequestHandler(ALL_MEATS_QUERY, allMeatsQueryHandler);
-
     test('it renders the delete button', async () => {
         const { findByText } = render(
             <MockedThemeProvider>

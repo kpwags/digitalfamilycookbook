@@ -58,7 +58,7 @@ const TestIngredient = () => ({
 const TestInvitationCode = () => ({
     __typename: 'InvitationCode',
     id: casual.uuid,
-    code: casual.username,
+    code: casual.word,
     createdAt: casual.date,
 });
 

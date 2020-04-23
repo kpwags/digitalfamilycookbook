@@ -6,55 +6,55 @@ import { ALL_INVITATION_CODES_QUERY, SINGLE_INVITATION_CODE_CODE_QUERY } from '.
 import { TestInvitationCode, MockedThemeProvider } from '../../lib/TestUtilities';
 import { AddInvitationCode } from './AddInvitationCode';
 
-describe('<AddCategory/>', () => {
-    const invitationCode = {
-        id: '0987654321',
-        code: 'testcode123',
-    };
+const invitationCode = {
+    id: '0987654321',
+    code: 'testcode123',
+};
 
-    const mockClient = createMockClient();
-    const duplicateCheckMockClient = createMockClient();
+const mockClient = createMockClient();
+const duplicateCheckMockClient = createMockClient();
 
-    // Mock the result of the login mutation
-    const addInvitationCodeMutationHandler = jest.fn().mockResolvedValue({
-        data: {
-            createInvitationCode: {
-                id: invitationCode.id,
-                code: invitationCode.code,
-            },
+// Mock the result of the login mutation
+const addInvitationCodeMutationHandler = jest.fn().mockResolvedValue({
+    data: {
+        createInvitationCode: {
+            id: invitationCode.id,
+            code: invitationCode.code,
         },
-    });
+    },
+});
 
-    const allInvitationCodesQueryHandler = jest.fn().mockResolvedValue({
-        data: {
-            invitationCodes: [TestInvitationCode(), TestInvitationCode(), TestInvitationCode()],
+const allInvitationCodesQueryHandler = jest.fn().mockResolvedValue({
+    data: {
+        invitationCodes: [TestInvitationCode(), TestInvitationCode(), TestInvitationCode()],
+    },
+});
+
+const singleInvitationCodeQueryHandler = jest.fn().mockResolvedValue({
+    data: {
+        invitationCode: {
+            id: '1234567890',
+            code: 'testcode',
         },
-    });
+    },
+});
 
-    const singleInvitationCodeQueryHandler = jest.fn().mockResolvedValue({
-        data: {
-            invitationCode: {
-                id: '1234567890',
-                code: 'testcode',
-            },
-        },
-    });
+const singleInvitationCodeEmptyQueryHandler = jest.fn().mockResolvedValue({
+    data: {
+        invitationCode: null,
+    },
+});
 
-    const singleInvitationCodeEmptyQueryHandler = jest.fn().mockResolvedValue({
-        data: {
-            invitationCode: null,
-        },
-    });
+mockClient.setRequestHandler(CREATE_INVITATION_CODE_MUTATION, addInvitationCodeMutationHandler);
+duplicateCheckMockClient.setRequestHandler(CREATE_INVITATION_CODE_MUTATION, addInvitationCodeMutationHandler);
 
-    mockClient.setRequestHandler(CREATE_INVITATION_CODE_MUTATION, addInvitationCodeMutationHandler);
-    duplicateCheckMockClient.setRequestHandler(CREATE_INVITATION_CODE_MUTATION, addInvitationCodeMutationHandler);
+mockClient.setRequestHandler(ALL_INVITATION_CODES_QUERY, allInvitationCodesQueryHandler);
+duplicateCheckMockClient.setRequestHandler(ALL_INVITATION_CODES_QUERY, allInvitationCodesQueryHandler);
 
-    mockClient.setRequestHandler(ALL_INVITATION_CODES_QUERY, allInvitationCodesQueryHandler);
-    duplicateCheckMockClient.setRequestHandler(ALL_INVITATION_CODES_QUERY, allInvitationCodesQueryHandler);
+mockClient.setRequestHandler(SINGLE_INVITATION_CODE_CODE_QUERY, singleInvitationCodeEmptyQueryHandler);
+duplicateCheckMockClient.setRequestHandler(SINGLE_INVITATION_CODE_CODE_QUERY, singleInvitationCodeQueryHandler);
 
-    mockClient.setRequestHandler(SINGLE_INVITATION_CODE_CODE_QUERY, singleInvitationCodeEmptyQueryHandler);
-    duplicateCheckMockClient.setRequestHandler(SINGLE_INVITATION_CODE_CODE_QUERY, singleInvitationCodeQueryHandler);
-
+describe('<AddInvitationCode />', () => {
     test('it renders the input', async () => {
         const { getByLabelText } = render(
             <MockedThemeProvider>

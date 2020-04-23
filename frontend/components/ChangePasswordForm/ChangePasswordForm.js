@@ -31,7 +31,7 @@ const ChangePasswordForm = (props) => {
                 toast('Password changed successfully');
 
                 Router.push({
-                    pathname: '/account',
+                    pathname: '/',
                 });
             }
         },
@@ -171,7 +171,9 @@ const ChangePasswordForm = (props) => {
                     </div>
                 </label>
 
-                <button type="submit">Submit{changePasswordLoading ? 'ting' : ''}</button>
+                <button type="submit" data-testid="submitbutton">
+                    Submit{changePasswordLoading ? 'ting' : ''}
+                </button>
             </fieldset>
         </Form>
     );
