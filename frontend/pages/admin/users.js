@@ -72,13 +72,11 @@ const AdminUsers = () => {
                                                         <>
                                                             <td align="center">
                                                                 <ToggleUserAdmin
-                                                                    userId={user.id}
+                                                                    user={user}
                                                                     onError={(err) => {
                                                                         setError(err);
                                                                     }}
-                                                                >
-                                                                    {user.permissions.includes('ADMIN') ? 'Remove Admin' : 'Make Admin'}
-                                                                </ToggleUserAdmin>
+                                                                />
                                                             </td>
                                                             <td align="center">
                                                                 <DeleteUser

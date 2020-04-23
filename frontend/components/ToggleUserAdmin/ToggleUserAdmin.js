@@ -21,7 +21,7 @@ const ToggleUserAdmin = (props) => {
                 props.onError(error);
             }
 
-            if (!error && typeof props.onComplete === 'function') {
+            if (!error && props.onComplete) {
                 props.onComplete();
             }
         },
@@ -35,7 +35,7 @@ const ToggleUserAdmin = (props) => {
             <button
                 className="wide"
                 type="button"
-                data-id={props.userId}
+                data-testid={props.user.id}
                 onClick={async (e) => {
                     e.preventDefault();
 
@@ -43,24 +43,23 @@ const ToggleUserAdmin = (props) => {
 
                     await toggleAdmin({
                         variables: {
-                            id: props.userId,
+                            id: props.user.id,
                         },
                     }).catch((err) => {
                         props.onError(err);
                     });
                 }}
             >
-                {props.children}
+                {props.user.permissions.includes('ADMIN') ? 'Remove Admin' : 'Make Admin'}
             </button>
         </>
     );
 };
 
 ToggleUserAdmin.propTypes = {
-    userId: PropTypes.string.isRequired,
+    user: PropTypes.object,
     onComplete: PropTypes.func,
     onError: PropTypes.func.isRequired,
-    children: PropTypes.node,
 };
 
 export { ToggleUserAdmin };
