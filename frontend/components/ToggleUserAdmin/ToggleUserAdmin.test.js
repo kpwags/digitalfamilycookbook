@@ -1,4 +1,4 @@
-import { render, waitFor, fireEvent } from '@testing-library/react';
+import { render, waitFor, act, fireEvent } from '@testing-library/react';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { createMockClient } from 'mock-apollo-client';
 import { TOGGLE_ADMIN_MUTATION } from '../../mutations/User';
@@ -75,14 +75,15 @@ describe('<ToggleUserAdmin/>', () => {
     });
 
     test('it toggles a user to an admin', async () => {
-        const { getByText } = render(
+        const { getByText, findByText } = render(
             <ApolloProvider client={mockClientToAdmin}>
                 <ToggleUserAdmin user={user} onError={() => {}} />
             </ApolloProvider>
         );
 
-        await waitFor(async () => {
-            fireEvent.click(getByText(/Make Admin/));
+        await act(async () => {
+            await fireEvent.click(getByText(/Make Admin/));
+            await findByText(/Remove Admin/);
         });
 
         expect(toggleToAdminMutationHandler).toBeCalledWith({
@@ -91,14 +92,15 @@ describe('<ToggleUserAdmin/>', () => {
     });
 
     test('it toggles a user to a normal user', async () => {
-        const { getByText } = render(
+        const { getByText, findByText } = render(
             <ApolloProvider client={mockClientToUser}>
                 <ToggleUserAdmin user={admin} onError={() => {}} />
             </ApolloProvider>
         );
 
-        await waitFor(async () => {
-            fireEvent.click(getByText(/Remove Admin/));
+        await act(async () => {
+            await fireEvent.click(getByText(/Remove Admin/));
+            await findByText(/Make Admin/);
         });
 
         expect(toggleToAdminMutationHandler).toBeCalledWith({

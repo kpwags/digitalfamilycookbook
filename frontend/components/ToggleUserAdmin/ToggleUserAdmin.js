@@ -6,14 +6,22 @@ import { TOGGLE_ADMIN_MUTATION } from '../../mutations/User';
 import { ALL_USERS_QUERY } from '../../queries/User';
 
 const ToggleUserAdmin = (props) => {
+    let initialButtonText = 'Make Admin';
+    if (props.user.permissions.includes('ADMIN')) {
+        initialButtonText = 'Remove Admin';
+    }
+
     const [error, setError] = useState(null);
+    const [buttonText, setButtonText] = useState(initialButtonText);
 
     const [toggleAdmin] = useMutation(TOGGLE_ADMIN_MUTATION, {
         refetchQueries: [{ query: ALL_USERS_QUERY }],
         onCompleted: (data) => {
             if (data.toggleAdmin.permissions.includes('ADMIN')) {
+                setButtonText('Remove Admin');
                 toast(`${data.toggleAdmin.name} has been changed to an administrator`);
             } else {
+                setButtonText('Make Admin');
                 toast(`${data.toggleAdmin.name} has been changed to a member`);
             }
 
@@ -50,7 +58,7 @@ const ToggleUserAdmin = (props) => {
                     });
                 }}
             >
-                {props.user.permissions.includes('ADMIN') ? 'Remove Admin' : 'Make Admin'}
+                {buttonText}
             </button>
         </>
     );
