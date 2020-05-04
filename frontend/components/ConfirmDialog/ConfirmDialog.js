@@ -71,10 +71,26 @@ const ConfirmDialog = (props) => {
         <DialogWindow style={popupStyle}>
             <div className="message">{props.message}</div>
             <div className="buttons">
-                <button className="confirm-button" type="button" onClick={props.continue} data-testid="confirm-delete">
+                <button
+                    className="confirm-button"
+                    type="button"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        props.continue();
+                    }}
+                    data-testid="confirm-delete"
+                >
                     {yesText}
                 </button>
-                <button className="confirm-button" type="button" onClick={props.cancel} data-testid="cancel-delete">
+                <button
+                    className="confirm-button"
+                    type="button"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        props.cancel();
+                    }}
+                    data-testid="cancel-delete"
+                >
                     {noText}
                 </button>
             </div>

@@ -1,6 +1,12 @@
 {
-  "workbench.colorCustomizations": {
-    "titleBar.activeBackground": "#4242f7",
-    "titleBar.inactiveBackground": "#4242f7"
-  }
+    "workbench.colorCustomizations": {
+        "titleBar.activeBackground": "#4242f7",
+        "titleBar.inactiveBackground": "#4242f7"
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/*.code-search": true,
+        "**/.next": true
+    }
 }

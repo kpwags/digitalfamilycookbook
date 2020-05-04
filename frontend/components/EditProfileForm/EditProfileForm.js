@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
+import React, { useState, useContext } from 'react';
+import { useMutation, useApolloClient } from '@apollo/react-hooks';
 import { toast } from 'react-toastify';
 import debounce from 'lodash.debounce';
 import { CURRENT_USER_QUERY, SINGLE_USER_USERNAME_QUERY } from '../../queries/User';
@@ -9,18 +9,22 @@ import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { FormValidator } from '../../lib/FormValidator';
 import { TextInput } from '../TextInput/TextInput';
 import { TextArea } from '../TextArea/TextArea';
+import { AppContext } from '../AppContext/AppContext';
 
 const EditProfileForm = () => {
-    const [id, setId] = useState('');
-    const [name, setName] = useState('');
+    const { loggedInUser } = useContext(AppContext);
+
+    const [id] = useState(loggedInUser.id);
+    const [name, setName] = useState(loggedInUser.name);
     const [nameError, setNameError] = useState('');
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState(loggedInUser.username);
+    const [usernameSuccess, setUsernameSuccess] = useState('');
     const [usernameError, setUsernameError] = useState('');
-    const [email, setEmail] = useState('');
+    const [email, setEmail] = useState(loggedInUser.email);
     const [emailError, setEmailError] = useState('');
-    const [bio, setBio] = useState('');
-    const [image, setImage] = useState('');
-    const [largeImage, setLargeImage] = useState('');
+    const [bio, setBio] = useState(loggedInUser.bio);
+    const [image, setImage] = useState(loggedInUser.image);
+    const [largeImage, setLargeImage] = useState(loggedInUser.largeImage);
     const [error, setError] = useState(null);
     const [saveEnabled, setSaveEnabled] = useState(true);
 
@@ -31,22 +35,6 @@ const EditProfileForm = () => {
         onCompleted: () => {
             if (!updateError) {
                 toast('Profile updated successfully');
-            }
-        },
-    });
-
-    const {
-        data: { me },
-    } = useQuery(CURRENT_USER_QUERY, {
-        onCompleted: (data) => {
-            if (data.me !== null) {
-                setId(data.me.id);
-                setName(data.me.name);
-                setEmail(data.me.email);
-                setUsername(data.me.username);
-                setBio(data.me.bio);
-                setImage(data.me.image);
-                setLargeImage(data.me.largeImage);
             }
         },
     });
@@ -80,12 +68,15 @@ const EditProfileForm = () => {
 
         if (resp.data.user !== null && resp.data.user.id !== id) {
             setSaveEnabled(false);
+            setUsernameSuccess('');
             setUsernameError('Username already taken');
         } else if (!valid) {
             setSaveEnabled(false);
+            setUsernameSuccess('');
             setUsernameError(message);
         } else {
             setSaveEnabled(true);
+            setUsernameSuccess('OK');
             setUsernameError('');
         }
     }, 350);
@@ -107,7 +98,9 @@ const EditProfileForm = () => {
 
         if (resp.data.user !== null && resp.data.user.id !== id) {
             setUsernameError('Username already taken');
+            setUsernameSuccess('');
         } else if (!usernameValid) {
+            setUsernameSuccess('');
             setUsernameError(usernameMessage);
             isValid = false;
         }
@@ -152,9 +145,9 @@ const EditProfileForm = () => {
 
                 <ErrorMessage error={error || updateError} />
 
-                <input type="hidden" name="id" id="user_id" defaultValue={me.id} />
-                <input type="hidden" name="image" id="image" defaultValue={me.image} />
-                <input type="hidden" name="large_image" id="large_image" defaultValue={me.largeImage} />
+                <input type="hidden" name="id" id="user_id" defaultValue={id} />
+                <input type="hidden" name="image" id="image" defaultValue={image} />
+                <input type="hidden" name="large_image" id="large_image" defaultValue={largeImage} />
 
                 <label htmlFor="file">
                     Image
@@ -173,7 +166,7 @@ const EditProfileForm = () => {
                     )}
                     {!image && (
                         <div className="image-preview">
-                            <img src={me.image} alt={me.name} />
+                            <img src={image} alt={name} />
                         </div>
                     )}
                 </label>
@@ -196,6 +189,7 @@ const EditProfileForm = () => {
                     label="Username"
                     value={username}
                     error={usernameError}
+                    successMessage={usernameSuccess}
                     onChange={(e) => {
                         setUsername(e.target.value);
                     }}
@@ -221,14 +215,14 @@ const EditProfileForm = () => {
                     id="bio"
                     name="bio"
                     label="Bio"
-                    value={me.bio}
+                    value={bio}
                     error=""
                     onChange={(e) => {
                         setBio(e.target.value);
                     }}
                 />
 
-                <button type="submit" disabled={!saveEnabled} aria-disabled={!saveEnabled}>
+                <button type="submit" disabled={!saveEnabled} aria-disabled={!saveEnabled} data-testid="submitbutton">
                     Sav{updateLoading ? 'ing' : 'e'} Changes
                 </button>
             </fieldset>

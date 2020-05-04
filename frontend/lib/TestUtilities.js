@@ -73,7 +73,7 @@ const TestUser = () => ({
     __typename: 'User',
     id: casual.uuid,
     name: casual.name,
-    username: casual.username,
+    username: casual.word,
     email: casual.email,
     bio: 'I am just a test user',
     image: 'user.jpg',

@@ -67,7 +67,7 @@ describe('<DeleteMeat/>', () => {
 
     // TODO: Revisit Cancelling Delete
     // test('it cancels the delete if the user clicks no on the confirmation', async () => {
-    //     const { getByText, findByTestId } = render(
+    //     const { getByText, getByTestId } = render(
     //         <ApolloProvider client={mockClient}>
     //             <AppContext.Provider value={{ toggleOverlay: jest.fn() }}>
     //                 <DeleteMeat id={meat.id} name={meat.name} onComplete={() => {}} onCancel={() => {}} onError={() => {}} updateCache={false}>
@@ -77,11 +77,8 @@ describe('<DeleteMeat/>', () => {
     //         </ApolloProvider>
     //     );
 
-    //     await wait(async () => fireEvent.click(await getByText(/Delete/)));
-
-    //     await waitForElement(() => findByTestId(/cancel-delete/));
-
-    //     await wait(async () => fireEvent.click(await findByTestId(/cancel-delete/)));
+    //     // await fireEvent.click(getByText(/Delete/));
+    //     await fireEvent.click(getByTestId(/cancel-delete/));
 
     //     expect(deleteMeatMutationHandler).toBeCalledTimes(0);
     // });
