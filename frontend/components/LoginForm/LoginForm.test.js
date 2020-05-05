@@ -54,7 +54,6 @@ describe('<LoginForm />', () => {
         await findByLabelText(/Password/);
     });
 
-    // TODO: successful login
     test('it logs the user in', async () => {
         const { getByLabelText, getByTestId } = render(
             <ApolloProvider client={mockClient}>
@@ -63,13 +62,13 @@ describe('<LoginForm />', () => {
         );
 
         await act(async () => {
-            fireEvent.change(getByLabelText(/Email or Username/), {
+            await fireEvent.change(getByLabelText(/Email or Username/), {
                 target: {
                     value: testUser.username,
                 },
             });
 
-            fireEvent.change(getByLabelText(/Password/), {
+            await fireEvent.change(getByLabelText(/Password/), {
                 target: {
                     value: 'password',
                 },
@@ -78,8 +77,14 @@ describe('<LoginForm />', () => {
             await fireEvent.click(getByTestId(/login-button/));
         });
 
+        expect(loginMutationHandler).toBeCalledWith({
+            email: testUser.username,
+            password: 'password',
+        });
+
         expect(Router.push).toHaveBeenCalledWith({ pathname: '/recipes' });
     });
+
     test('it alerts the user of an invalid login', async () => {
         const { findByText, getByLabelText, getByTestId } = render(
             <ApolloProvider client={invalidLoginMockClient}>
@@ -88,13 +93,13 @@ describe('<LoginForm />', () => {
         );
 
         await act(async () => {
-            fireEvent.change(getByLabelText(/Email or Username/), {
+            await fireEvent.change(getByLabelText(/Email or Username/), {
                 target: {
                     value: testUser.username,
                 },
             });
 
-            fireEvent.change(getByLabelText(/Password/), {
+            await fireEvent.change(getByLabelText(/Password/), {
                 target: {
                     value: 'password',
                 },
