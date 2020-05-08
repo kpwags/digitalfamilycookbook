@@ -75,11 +75,10 @@ const TextInput = (props) => {
                     }
                 }}
                 onBlur={(e) => {
-                    e.preventDefault();
-
                     if (props.validate) {
                         props.validate(e);
                     } else if (props.validationRule) {
+                        e.preventDefault();
                         validate(e.target.value, props.validationRule, props.validationArgs);
                     }
                 }}
