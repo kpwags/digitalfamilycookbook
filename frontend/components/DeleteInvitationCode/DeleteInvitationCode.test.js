@@ -1,4 +1,4 @@
-import { render, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { createMockClient } from 'mock-apollo-client';
 import { DELETE_INVITATION_CODE_MUTATION } from '../../mutations/InvitationCode';
@@ -30,7 +30,7 @@ mockClient.setRequestHandler(ALL_INVITATION_CODES_QUERY, allQueryHandler);
 
 describe('<DeleteInvitationCode/>', () => {
     test('it renders the delete button', async () => {
-        const { findByText } = render(
+        render(
             <ApolloProvider client={mockClient}>
                 <AppContext.Provider value={{ toggleOverlay: jest.fn() }}>
                     <DeleteInvitationCode id={invitationCode.id} code={invitationCode.code} onComplete={() => {}} onCancel={() => {}} onError={() => {}}>
@@ -40,11 +40,11 @@ describe('<DeleteInvitationCode/>', () => {
             </ApolloProvider>
         );
 
-        await findByText(/Delete/);
+        await screen.findByText(/Delete/);
     });
 
     test('it deletes an invitation code', async () => {
-        const { findByTestId, findByText, getByText } = render(
+        render(
             <ApolloProvider client={mockClient}>
                 <AppContext.Provider value={{ toggleOverlay: jest.fn() }}>
                     <DeleteInvitationCode
@@ -61,44 +61,16 @@ describe('<DeleteInvitationCode/>', () => {
             </ApolloProvider>
         );
 
-        fireEvent.click(await getByText(/Delete/));
+        await act(async () => {
+            fireEvent.click(await screen.getByText(/Delete/));
 
-        await findByText(/Are you sure you want to delete/);
+            await screen.findByText(/Are you sure you want to delete/);
 
-        await waitFor(async () => fireEvent.click(await findByTestId(/confirm-delete/)));
+            await fireEvent.click(await screen.getByTestId(/confirm-delete/));
+        });
 
         expect(deleteMutationHandler).toBeCalledWith({
             id: invitationCode.id,
         });
     });
-
-    // TODO: Revisit Cancelling Delete
-    // test('it cancels deleting an invitation code', async () => {
-    //     const { findByTestId, findByText, getByText, getByTestId } = render(
-    //         <ApolloProvider client={mockClient}>
-    //             <AppContext.Provider value={{ toggleOverlay: jest.fn() }}>
-    //                 <DeleteInvitationCode
-    //                     id={invitationCode.id}
-    //                     code={invitationCode.code}
-    //                     onComplete={() => {}}
-    //                     onCancel={() => {}}
-    //                     onError={() => {}}
-    //                     updateCache={false}
-    //                 >
-    //                     Delete
-    //                 </DeleteInvitationCode>
-    //             </AppContext.Provider>
-    //         </ApolloProvider>
-    //     );
-
-    //     fireEvent.click(getByText(/Delete/));
-
-    //     await findByText(/Are you sure you want to delete/);
-
-    //     await findByTestId(/cancel-delete/);
-
-    //     await waitFor(async () => fireEvent.click(getByTestId(/cancel-delete/)));
-
-    //     expect(deleteMutationHandler).toBeCalledTimes(0);
-    // });
 });

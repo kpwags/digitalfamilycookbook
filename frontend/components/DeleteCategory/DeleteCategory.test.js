@@ -1,4 +1,4 @@
-import { render, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { createMockClient } from 'mock-apollo-client';
 import { DELETE_CATEGORY_MUTATION } from '../../mutations/Category';
@@ -30,7 +30,7 @@ mockClient.setRequestHandler(ALL_CATEGORIES_QUERY, allCategoriesQueryHandler);
 
 describe('<DeleteCategory/>', () => {
     test('it renders the delete button', async () => {
-        const { findByText } = render(
+        render(
             <MockedThemeProvider>
                 <AppContext.Provider value={{ toggleOverlay: jest.fn() }}>
                     <DeleteCategory id={category.id} name={category.name} onComplete={() => {}} onCancel={() => {}} onError={() => {}}>
@@ -40,11 +40,11 @@ describe('<DeleteCategory/>', () => {
             </MockedThemeProvider>
         );
 
-        await findByText(/Delete/);
+        await screen.findByText(/Delete/);
     });
 
     test('it deletes a category when the delete button followed by the confirm button is clicked', async () => {
-        const { findByTestId, findByText, getByText } = render(
+        render(
             <ApolloProvider client={mockClient}>
                 <AppContext.Provider value={{ toggleOverlay: jest.fn() }}>
                     <DeleteCategory id={category.id} name={category.name} onComplete={() => {}} onCancel={() => {}} onError={() => {}} updateCache={false}>
@@ -54,35 +54,16 @@ describe('<DeleteCategory/>', () => {
             </ApolloProvider>
         );
 
-        fireEvent.click(await getByText(/Delete/));
+        await act(async () => {
+            fireEvent.click(await screen.getByText(/Delete/));
 
-        await findByText(/Are you sure you want to delete/);
+            await screen.findByText(/Are you sure you want to delete/);
 
-        await waitFor(async () => fireEvent.click(await findByTestId(/confirm-delete/)));
+            await fireEvent.click(await screen.getByTestId(/confirm-delete/));
+        });
 
         expect(deleteCategoryMutationHandler).toBeCalledWith({
             id: category.id,
         });
     });
-
-    // TODO: Revisit Cancelling Delete
-    // test('it cancels the delete if the user clicks no on the confirmation', async () => {
-    //     const { getByText, findByTestId } = render(
-    //         <ApolloProvider client={mockClient}>
-    //             <AppContext.Provider value={{ toggleOverlay: jest.fn() }}>
-    //                 <DeleteCategory id={category.id} name={category.name} onComplete={() => {}} onCancel={() => {}} onError={() => {}} updateCache={false}>
-    //                     Delete
-    //                 </DeleteCategory>
-    //             </AppContext.Provider>
-    //         </ApolloProvider>
-    //     );
-
-    //     await wait(async () => fireEvent.click(await getByText(/Delete/)));
-
-    //     await waitForElement(() => findByTestId(/cancel-delete/));
-
-    //     await wait(async () => fireEvent.click(await findByTestId(/cancel-delete/)));
-
-    //     expect(deleteCategoryMutationHandler).toBeCalledTimes(0);
-    // });
 });
