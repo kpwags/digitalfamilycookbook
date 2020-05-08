@@ -14,14 +14,13 @@ const ForgotPasswordForm = () => {
     const [successMessage, setSuccessMessage] = useState(null);
 
     const [requestPasswordReset, { error: resetError, loading }] = useMutation(REQUEST_PASSWORD_RESET_MUTATION, {
-        onCompleted: () => {
-            setEmail('');
-            setEmailError('');
-
+        onCompleted: (data) => {
             if (!resetError && !error) {
-                setSuccessMessage('Success! Check your email for a reset link.');
+                setEmail('');
+                setEmailError('');
+                setSuccessMessage(data.requestPasswordReset.message);
             }
-        }
+        },
     });
 
     const validateForm = () => {
@@ -41,15 +40,15 @@ const ForgotPasswordForm = () => {
         <Form
             data-test="form"
             method="post"
-            onSubmit={async e => {
+            onSubmit={async (e) => {
                 e.preventDefault();
 
-                if (validateForm) {
+                if (validateForm()) {
                     await requestPasswordReset({
                         variables: {
-                            email
-                        }
-                    }).catch(err => {
+                            email,
+                        },
+                    }).catch((err) => {
                         setError(err);
                     });
                 }
@@ -57,7 +56,7 @@ const ForgotPasswordForm = () => {
         >
             <fieldset disabled={loading} aria-busy={loading}>
                 <h2>Reset Your Password</h2>
-                <ErrorMessage error={error || error} />
+                <ErrorMessage error={error || resetError} />
                 <SuccessMessage message={successMessage} />
 
                 <TextInput
@@ -67,7 +66,7 @@ const ForgotPasswordForm = () => {
                     value={email}
                     error={emailError}
                     validationRule="email"
-                    onChange={e => {
+                    onChange={(e) => {
                         setEmail(e.target.value);
                     }}
                 />
