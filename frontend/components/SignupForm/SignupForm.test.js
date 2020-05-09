@@ -1,6 +1,6 @@
 import { screen, render, fireEvent, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { toBeDisabled } from '@testing-library/jest-dom';
+import '@testing-library/jest-dom';
 import Router from 'next/router';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { createMockClient } from 'mock-apollo-client';

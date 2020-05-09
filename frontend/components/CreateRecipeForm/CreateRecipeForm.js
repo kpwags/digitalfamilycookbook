@@ -478,7 +478,8 @@ const CreateRecipeForm = () => {
                                             <input
                                                 type="text"
                                                 id={`ingredientname-${ingredient.sortOrder}`}
-                                                name="name"
+                                                name="ingredientname"
+                                                data-testid="ingredient"
                                                 className="ingredient"
                                                 value={ingredient.name}
                                                 onChange={(e) => {
@@ -532,6 +533,7 @@ const CreateRecipeForm = () => {
                                                 id={`directionstep-${direction.sortOrder}`}
                                                 name="direction"
                                                 className="direction"
+                                                data-testid="direction"
                                                 defaultValue={direction.direction}
                                                 onChange={(e) => {
                                                     handleDirectionChange(e, direction);
@@ -704,6 +706,7 @@ const CreateRecipeForm = () => {
                                     <input
                                         type="checkbox"
                                         name={`category_${category.id}`}
+                                        data-testid="category"
                                         id={`category_${category.id}`}
                                         onChange={onCategoryChange}
                                         checked={!!categories.includes(category.id)}
@@ -724,6 +727,7 @@ const CreateRecipeForm = () => {
                                     <input
                                         type="checkbox"
                                         name={`meat_${meat.id}`}
+                                        data-testid="meat"
                                         id={`meat_${meat.id}`}
                                         onChange={onMeatChange}
                                         checked={!!meats.includes(meat.id)}
@@ -746,7 +750,9 @@ const CreateRecipeForm = () => {
                 </label>
 
                 <div className="save-button">
-                    <button type="submit">Sav{createLoading ? 'ing' : 'e'}</button>
+                    <button type="submit" data-testid="submitbutton">
+                        Sav{createLoading ? 'ing' : 'e'}
+                    </button>
                 </div>
             </fieldset>
         </RecipeForm>
