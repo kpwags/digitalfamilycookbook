@@ -427,7 +427,7 @@ const EditRecipeForm = (props) => {
                 },
             }).catch((err) => {
                 setError(err);
-                window.scrollTo(0, 0);
+                // window.scrollTo(0, 0);
             });
         }
     };
@@ -506,7 +506,8 @@ const EditRecipeForm = (props) => {
                                             <input
                                                 type="text"
                                                 id={`ingredientname-${ingredient.sortOrder}`}
-                                                name="name"
+                                                name="ingredientname"
+                                                data-testid="ingredient"
                                                 className="ingredient"
                                                 value={ingredient.name}
                                                 onChange={(e) => {
@@ -560,7 +561,8 @@ const EditRecipeForm = (props) => {
                                                 id={`directionstep-${direction.sortOrder}`}
                                                 name="direction"
                                                 className="direction"
-                                                defaultValue={direction.direction}
+                                                data-testid="direction"
+                                                value={direction.direction}
                                                 onChange={(e) => {
                                                     handleDirectionChange(e, direction);
                                                 }}
@@ -733,6 +735,7 @@ const EditRecipeForm = (props) => {
                                         type="checkbox"
                                         name={`category_${category.id}`}
                                         id={`category_${category.id}`}
+                                        data-testid="category"
                                         onChange={onCategoryChange}
                                         checked={!!categories.includes(category.id)}
                                     />
@@ -753,6 +756,7 @@ const EditRecipeForm = (props) => {
                                         type="checkbox"
                                         name={`meat_${meat.id}`}
                                         id={`meat_${meat.id}`}
+                                        data-testid="meat"
                                         onChange={onMeatChange}
                                         checked={!!meats.includes(meat.id)}
                                     />
@@ -774,7 +778,9 @@ const EditRecipeForm = (props) => {
                 </label>
 
                 <div className="save-button">
-                    <button type="submit">Sav{updateLoading ? 'ing' : 'e'}</button>
+                    <button type="submit" data-testid="submitbutton">
+                        Sav{updateLoading ? 'ing' : 'e'}
+                    </button>
                 </div>
             </fieldset>
         </RecipeForm>

@@ -38,35 +38,35 @@ const TestCategory = () => ({
     __typename: 'Category',
     id: casual.uuid,
     name: casual.word,
-    createdAt: casual.date,
+    createdAt: casual.date(),
 });
 
 const TestDirection = () => ({
     __typename: 'Direction',
     id: casual.uuid,
-    name: casual.words(),
-    sortOrder: casual.integer(1, 10),
+    direction: casual.words(),
+    sortOrder: casual.integer(1, 1000),
 });
 
 const TestIngredient = () => ({
     __typename: 'Ingredient',
     id: casual.uuid,
     name: casual.words(),
-    sortOrder: casual.integer(1, 10),
+    sortOrder: casual.integer(1, 1000),
 });
 
 const TestInvitationCode = () => ({
     __typename: 'InvitationCode',
     id: casual.uuid,
     code: casual.word,
-    createdAt: casual.date,
+    createdAt: casual.date(),
 });
 
 const TestMeat = () => ({
     __typename: 'Meat',
     id: casual.uuid,
     name: casual.words(),
-    createdAt: casual.date,
+    createdAt: casual.date(),
 });
 
 const TestUser = () => ({

@@ -204,8 +204,8 @@ describe('<CreateRecipeForm />', () => {
             await userEvent.type(ingredients[2], testRecipe.ingredients[2].name);
 
             const directions = await screen.findAllByTestId(/direction/);
-            await userEvent.type(directions[0], testRecipe.directions[0].name);
-            await userEvent.type(directions[1], testRecipe.directions[1].name);
+            await userEvent.type(directions[0], testRecipe.directions[0].direction);
+            await userEvent.type(directions[1], testRecipe.directions[1].direction);
 
             const formMeats = await screen.findAllByTestId(/meat/);
             await userEvent.click(formMeats[0]);
@@ -215,7 +215,7 @@ describe('<CreateRecipeForm />', () => {
             await userEvent.click(formCategories[0]);
             await userEvent.click(formCategories[1]);
 
-            fireEvent.click(screen.getByTestId(/submitbutton/));
+            await userEvent.click(screen.getByTestId(/submitbutton/));
         });
 
         expect(createRecipeHandler).toBeCalledWith({
@@ -242,8 +242,8 @@ describe('<CreateRecipeForm />', () => {
                 { sortOrder: 3, name: testRecipe.ingredients[2].name },
             ],
             directions: [
-                { sortOrder: 1, direction: testRecipe.directions[0].name },
-                { sortOrder: 2, direction: testRecipe.directions[1].name },
+                { sortOrder: 1, direction: testRecipe.directions[0].direction },
+                { sortOrder: 2, direction: testRecipe.directions[1].direction },
             ],
             categories: [{ id: categories[0].id }, { id: categories[1].id }],
             meats: [{ id: meats[0].id }, { id: meats[1].id }],
