@@ -1,10 +1,9 @@
 import { render } from '@testing-library/react';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { createMockClient } from 'mock-apollo-client';
-import { RECIPE_BY_MEAT_QUERY } from '../../queries/Recipe';
-import { MEAT_BY_ID_QUERY } from '../../queries/Meat';
+import { RECIPE_BY_USER_QUERY } from '../../queries/Recipe';
 import { TestRecipe, TestMeat } from '../../lib/TestUtilities';
-import { RecipesByMeat } from './RecipesByMeat';
+import { RecipesByUser } from './RecipesByUser';
 
 const mockClient = createMockClient();
 const emptyMockClient = createMockClient();
@@ -23,32 +22,24 @@ const emptyRecipesQueryHandler = jest.fn().mockResolvedValue({
     },
 });
 
-const meatByIdQueryHandler = jest.fn().mockResolvedValue({
-    data: {
-        meat,
-    },
-});
+mockClient.setRequestHandler(RECIPE_BY_USER_QUERY, recipesQueryHandler);
+emptyMockClient.setRequestHandler(RECIPE_BY_USER_QUERY, emptyRecipesQueryHandler);
 
-mockClient.setRequestHandler(RECIPE_BY_MEAT_QUERY, recipesQueryHandler);
-mockClient.setRequestHandler(MEAT_BY_ID_QUERY, meatByIdQueryHandler);
-emptyMockClient.setRequestHandler(RECIPE_BY_MEAT_QUERY, emptyRecipesQueryHandler);
-emptyMockClient.setRequestHandler(MEAT_BY_ID_QUERY, meatByIdQueryHandler);
-
-describe('<RecipesByMeat />', () => {
+describe('<RecipesByUser />', () => {
     test('it renders a message about no recipes when there are not any', async () => {
         const { findByText } = render(
             <ApolloProvider client={emptyMockClient}>
-                <RecipesByMeat id="NONE" />
+                <RecipesByUser id="NONE" />
             </ApolloProvider>
         );
 
         await findByText(/No Recipes/);
     });
 
-    test('it renders 3 recipes when there are 3 recipes for the given meat', async () => {
+    test('it renders 3 recipes when there are 3 recipes for the given user', async () => {
         const { findAllByTestId } = render(
             <ApolloProvider client={mockClient}>
-                <RecipesByMeat id={meat.id} />
+                <RecipesByUser id={meat.id} />
             </ApolloProvider>
         );
 
