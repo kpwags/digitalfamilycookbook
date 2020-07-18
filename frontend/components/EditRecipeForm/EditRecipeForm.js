@@ -352,6 +352,7 @@ const EditRecipeForm = (props) => {
             const i = ingredient;
             // eslint-disable-next-line no-underscore-dangle
             delete i.__typename;
+            delete i.id;
             dbIngredients.push(i);
         });
 
@@ -361,6 +362,7 @@ const EditRecipeForm = (props) => {
 
             // eslint-disable-next-line no-underscore-dangle
             delete d.__typename;
+            delete d.id;
             dbDirections.push(d);
         });
 
@@ -401,30 +403,7 @@ const EditRecipeForm = (props) => {
 
         if (validateForm()) {
             await updateRecipe({
-                variables: {
-                    id: editedRecipe.id,
-                    name: editedRecipe.name,
-                    description: editedRecipe.description,
-                    public: editedRecipe.public,
-                    source: editedRecipe.source,
-                    sourceUrl: editedRecipe.sourceUrl,
-                    time: editedRecipe.time,
-                    activeTime: editedRecipe.activeTime,
-                    servings: editedRecipe.servings,
-                    calories: editedRecipe.calories,
-                    protein: editedRecipe.protein,
-                    fat: editedRecipe.fat,
-                    sugar: editedRecipe.sugar,
-                    carbohydrates: editedRecipe.carbohydrates,
-                    cholesterol: editedRecipe.cholesterol,
-                    fiber: editedRecipe.fiber,
-                    image: editedRecipe.image,
-                    largeImage: editedRecipe.largeImage,
-                    ingredients: editedRecipe.dbIngredients,
-                    directions: editedRecipe.dbDirections,
-                    categories: editedRecipe.dbCategories,
-                    meats: editedRecipe.dbMeats,
-                },
+                variables: editedRecipe,
             }).catch((err) => {
                 setError(err);
                 // window.scrollTo(0, 0);

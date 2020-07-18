@@ -60,11 +60,11 @@ const recipeQueryHandler = jest.fn().mockResolvedValue({
             ],
             directions: [
                 {
-                    direction: testRecipe.directions[0].name,
+                    direction: testRecipe.directions[0].direction,
                     sortOrder: testRecipe.directions[0].sortOrder,
                 },
                 {
-                    direction: testRecipe.directions[1].name,
+                    direction: testRecipe.directions[1].direction,
                     sortOrder: testRecipe.directions[1].sortOrder,
                 },
             ],
@@ -114,6 +114,9 @@ mockClient.setRequestHandler(UPDATE_RECIPE_MUTATION, updateRecipeHandler);
 mockClient.setRequestHandler(ALL_CATEGORIES_QUERY, categoriesHandler);
 mockClient.setRequestHandler(ALL_MEATS_QUERY, meatsHandler);
 mockClient.setRequestHandler(RECIPE_BY_ID_QUERY, recipeQueryHandler);
+
+// override router.push
+jest.mock('next/router', () => ({ push: jest.fn() }));
 
 describe('<EditRecipeForm />', () => {
     test('it renders the form', async () => {
@@ -235,6 +238,6 @@ describe('<EditRecipeForm />', () => {
             meats: [{ id: testRecipe.meats[0].id }, { id: testRecipe.meats[1].id }],
         });
 
-        expect(Router.push).toHaveBeenCalledWith({ pathname: '/recipe', query: { id: testRecipe.id } });
+        expect(Router.push).toHaveBeenCalledWith({ pathname: '/admin/recipes' });
     });
 });
