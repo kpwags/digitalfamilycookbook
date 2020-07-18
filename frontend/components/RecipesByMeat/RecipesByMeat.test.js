@@ -1,15 +1,15 @@
 import { render } from '@testing-library/react';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { createMockClient } from 'mock-apollo-client';
-import { RECIPE_BY_CATEGORY_QUERY } from '../../queries/Recipe';
-import { CATEGORY_BY_ID_QUERY } from '../../queries/Category';
-import { TestRecipe, TestCategory } from '../../lib/TestUtilities';
-import { RecipesByCategory } from './RecipesByCategory';
+import { RECIPE_BY_MEAT_QUERY } from '../../queries/Recipe';
+import { MEAT_BY_ID_QUERY } from '../../queries/Meat';
+import { TestRecipe, TestMeat } from '../../lib/TestUtilities';
+import { RecipesByMeat } from './RecipesByMeat';
 
 const mockClient = createMockClient();
 const emptyMockClient = createMockClient();
 
-const category = TestCategory();
+const meat = TestMeat();
 
 const recipesQueryHandler = jest.fn().mockResolvedValue({
     data: {
@@ -23,32 +23,32 @@ const emptyRecipesQueryHandler = jest.fn().mockResolvedValue({
     },
 });
 
-const categoryByIdQueryHandler = jest.fn().mockResolvedValue({
+const meatByIdQueryHandler = jest.fn().mockResolvedValue({
     data: {
-        category,
+        meat,
     },
 });
 
-mockClient.setRequestHandler(RECIPE_BY_CATEGORY_QUERY, recipesQueryHandler);
-mockClient.setRequestHandler(CATEGORY_BY_ID_QUERY, categoryByIdQueryHandler);
-emptyMockClient.setRequestHandler(RECIPE_BY_CATEGORY_QUERY, emptyRecipesQueryHandler);
-emptyMockClient.setRequestHandler(CATEGORY_BY_ID_QUERY, categoryByIdQueryHandler);
+mockClient.setRequestHandler(RECIPE_BY_MEAT_QUERY, recipesQueryHandler);
+mockClient.setRequestHandler(MEAT_BY_ID_QUERY, meatByIdQueryHandler);
+emptyMockClient.setRequestHandler(RECIPE_BY_MEAT_QUERY, emptyRecipesQueryHandler);
+emptyMockClient.setRequestHandler(MEAT_BY_ID_QUERY, meatByIdQueryHandler);
 
-describe('<RecipesByCategory />', () => {
+describe('<ReciepsByMeat />', () => {
     test('it renders a message about no recipes when there are not any', async () => {
         const { findByText } = render(
             <ApolloProvider client={emptyMockClient}>
-                <RecipesByCategory id="NONE" />
+                <RecipesByMeat id="NONE" />
             </ApolloProvider>
         );
 
         await findByText(/No Recipes/);
     });
 
-    test('it renders 3 recipes when there are 3 recipes for the given category', async () => {
+    test('it renders 3 recipes when there are 3 recipes for the given meat', async () => {
         const { findAllByTestId } = render(
             <ApolloProvider client={mockClient}>
-                <RecipesByCategory id={category.id} />
+                <RecipesByMeat id={meat.id} />
             </ApolloProvider>
         );
 
