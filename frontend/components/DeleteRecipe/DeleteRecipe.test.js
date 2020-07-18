@@ -28,7 +28,7 @@ const allReciepsQueryHandler = jest.fn().mockResolvedValue({
 mockClient.setRequestHandler(DELETE_RECIPE_MUTATION, deleteRecipeMutationHandler);
 mockClient.setRequestHandler(ADMIN_ALL_RECIPES_QUERY, allReciepsQueryHandler);
 
-describe('<DeleteCategory/>', () => {
+describe('<DeleteRecipe />', () => {
     test('it renders the delete button', async () => {
         render(
             <ApolloProvider client={mockClient}>
@@ -43,7 +43,7 @@ describe('<DeleteCategory/>', () => {
         await screen.findByText(/Delete/);
     });
 
-    test('it deletes a category when the delete button followed by the confirm button is clicked', async () => {
+    test('it deletes a recipe when the delete button followed by the confirm button is clicked', async () => {
         render(
             <ApolloProvider client={mockClient}>
                 <AppContext.Provider value={{ toggleOverlay: jest.fn() }}>
