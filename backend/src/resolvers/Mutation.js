@@ -403,7 +403,7 @@ const Mutations = {
       html: requestResetPasswordEmail(user.name, resetToken),
     });
 
-    return { message: 'Thanks' };
+    return { message: 'You have successfully request a password reset. Please check your email.' };
   },
 
   async resetPassword(parent, args, ctx) {

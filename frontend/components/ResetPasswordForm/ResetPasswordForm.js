@@ -9,7 +9,7 @@ import { SuccessMessage } from '../SuccessMessage/SuccessMessage';
 import { TextInput } from '../TextInput/TextInput';
 import { FormValidator } from '../../lib/FormValidator';
 
-const ResetPasswordForm = props => {
+const ResetPasswordForm = (props) => {
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -28,10 +28,10 @@ const ResetPasswordForm = props => {
                 setConfirmPasswordError('');
                 setSuccessMessage('Password changed successfully');
             }
-        }
+        },
     });
 
-    const validate = e => {
+    const validate = (e) => {
         const { valid: passwordsValid, message } = FormValidator.validatePassword(password, confirmPassword);
 
         // eslint-disable-next-line default-case
@@ -69,16 +69,16 @@ const ResetPasswordForm = props => {
         <Form
             data-test="form"
             method="post"
-            onSubmit={async e => {
+            onSubmit={async (e) => {
                 e.preventDefault();
 
                 if (validateForm()) {
                     resetPassword({
                         variables: {
                             resetToken: props.resetToken,
-                            password
-                        }
-                    }).catch(err => {
+                            password,
+                        },
+                    }).catch((err) => {
                         setError(err);
                     });
                 }
@@ -98,10 +98,10 @@ const ResetPasswordForm = props => {
                     value={password}
                     error={passwordError}
                     showErrorMessage={false}
-                    onChange={e => {
+                    onChange={(e) => {
                         setPassword(e.target.value);
                     }}
-                    validate={e => {
+                    validate={(e) => {
                         e.preventDefault();
                         validate(e);
                     }}
@@ -114,16 +114,16 @@ const ResetPasswordForm = props => {
                     label="Re-Enter Password"
                     value={confirmPassword}
                     error={confirmPasswordError}
-                    onChange={e => {
+                    onChange={(e) => {
                         setConfirmPassword(e.target.value);
                     }}
-                    validate={e => {
+                    validate={(e) => {
                         e.preventDefault();
                         validate(e);
                     }}
                 />
 
-                <button type="submit" disabled={!enableSave} aria-disabled={!enableSave}>
+                <button type="submit" disabled={!enableSave} aria-disabled={!enableSave} data-testid="submit-button">
                     Submit{resetLoading ? 'ting' : ''}
                 </button>
             </fieldset>
@@ -132,7 +132,7 @@ const ResetPasswordForm = props => {
 };
 
 ResetPasswordForm.propTypes = {
-    resetToken: PropTypes.string
+    resetToken: PropTypes.string,
 };
 
 export { ResetPasswordForm };

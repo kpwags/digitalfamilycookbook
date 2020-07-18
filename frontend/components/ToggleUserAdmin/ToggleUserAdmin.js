@@ -6,14 +6,22 @@ import { TOGGLE_ADMIN_MUTATION } from '../../mutations/User';
 import { ALL_USERS_QUERY } from '../../queries/User';
 
 const ToggleUserAdmin = (props) => {
+    let initialButtonText = 'Make Admin';
+    if (props.user.permissions.includes('ADMIN')) {
+        initialButtonText = 'Remove Admin';
+    }
+
     const [error, setError] = useState(null);
+    const [buttonText, setButtonText] = useState(initialButtonText);
 
     const [toggleAdmin] = useMutation(TOGGLE_ADMIN_MUTATION, {
         refetchQueries: [{ query: ALL_USERS_QUERY }],
         onCompleted: (data) => {
             if (data.toggleAdmin.permissions.includes('ADMIN')) {
+                setButtonText('Remove Admin');
                 toast(`${data.toggleAdmin.name} has been changed to an administrator`);
             } else {
+                setButtonText('Make Admin');
                 toast(`${data.toggleAdmin.name} has been changed to a member`);
             }
 
@@ -21,7 +29,7 @@ const ToggleUserAdmin = (props) => {
                 props.onError(error);
             }
 
-            if (!error && typeof props.onComplete === 'function') {
+            if (!error && props.onComplete) {
                 props.onComplete();
             }
         },
@@ -35,7 +43,7 @@ const ToggleUserAdmin = (props) => {
             <button
                 className="wide"
                 type="button"
-                data-id={props.userId}
+                data-testid={props.user.id}
                 onClick={async (e) => {
                     e.preventDefault();
 
@@ -43,24 +51,23 @@ const ToggleUserAdmin = (props) => {
 
                     await toggleAdmin({
                         variables: {
-                            id: props.userId,
+                            id: props.user.id,
                         },
                     }).catch((err) => {
                         props.onError(err);
                     });
                 }}
             >
-                {props.children}
+                {buttonText}
             </button>
         </>
     );
 };
 
 ToggleUserAdmin.propTypes = {
-    userId: PropTypes.string.isRequired,
+    user: PropTypes.object,
     onComplete: PropTypes.func,
     onError: PropTypes.func.isRequired,
-    children: PropTypes.node,
 };
 
 export { ToggleUserAdmin };

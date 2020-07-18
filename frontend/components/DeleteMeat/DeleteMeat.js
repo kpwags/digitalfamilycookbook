@@ -10,20 +10,20 @@ import { AppContext } from '../AppContext/AppContext';
 const DeleteMeat = (props) => {
     const [confirmOpen, setConfirmOpen] = useState(false);
 
-    const { id, name, children } = props;
+    const { id, name, children, updateCache = true } = props;
 
     const { toggleOverlay } = useContext(AppContext);
 
-    const updateCache = (cache, { data: result }) => {
-        const meatData = cache.readQuery({ query: ALL_MEATS_QUERY });
-
-        meatData.meats = meatData.meats.filter((meat) => meat.id !== result.deleteMeat.id);
-
-        cache.writeQuery({ query: ALL_MEATS_QUERY, data: meatData });
+    const update = (cache, { data: result }) => {
+        if (updateCache) {
+            const meatData = cache.readQuery({ query: ALL_MEATS_QUERY });
+            meatData.meats = meatData.meats.filter((meat) => meat.id !== result.deleteMeat.id);
+            cache.writeQuery({ query: ALL_MEATS_QUERY, data: meatData });
+        }
     };
 
     const [deleteMeat] = useMutation(DELETE_MEAT_MUTATION, {
-        update: updateCache,
+        update,
         onCompleted: () => {
             toast(`${name} deleted successfully`);
             props.onComplete();
@@ -70,6 +70,7 @@ DeleteMeat.propTypes = {
     onComplete: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
     onError: PropTypes.func.isRequired,
+    updateCache: PropTypes.bool,
     children: PropTypes.node,
 };
 

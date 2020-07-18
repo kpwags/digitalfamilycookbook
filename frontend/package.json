@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "dev": "next -p 7777",
-        "test": "NODE_ENV=test jest --watch"
+        "test": "NODE_ENV=test jest --watch --verbose"
     },
     "author": "Keith Wagner",
     "license": "GPL-3.0-or-later",
@@ -43,8 +43,9 @@
         "waait": "^1.0.5"
     },
     "devDependencies": {
-        "@testing-library/react": "^9.4.0",
-        "@testing-library/user-event": "^8.1.0",
+        "@testing-library/jest-dom": "^5.7.0",
+        "@testing-library/react": "^10.0.3",
+        "@testing-library/user-event": "^10.1.2",
         "babel-eslint": "^10.0.3",
         "babel-jest": "^25.1.0",
         "babel-plugin-module-resolver": "^3.1.1",
@@ -59,7 +60,8 @@
         "eslint-plugin-react": "^7.18.3",
         "graphql-tools": "^4.0.6",
         "jest": "^25.1.0",
-        "jest-transform-graphql": "^2.1.0"
+        "jest-transform-graphql": "^2.1.0",
+        "mock-apollo-client": "^0.3.0"
     },
     "jest": {
         "setupFilesAfterEnv": [

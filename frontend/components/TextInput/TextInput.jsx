@@ -4,10 +4,12 @@ import { FormValidator } from '../../lib/FormValidator';
 
 const TextInput = (props) => {
     const [error, setError] = useState(props.error);
+    const [successMessage, setSuccessMessage] = useState(props.successMessage);
     const [value, setValue] = useState(props.value);
 
     useEffect(() => {
         setError(props.error);
+        setSuccessMessage(props.successMessage);
         setValue(props.value);
     }, [props]);
 
@@ -63,7 +65,7 @@ const TextInput = (props) => {
             {props.label}
             <input
                 type={props.type}
-                id={props.id}
+                id={props.name}
                 name={props.name}
                 data-testid={props.id}
                 value={value}
@@ -73,11 +75,10 @@ const TextInput = (props) => {
                     }
                 }}
                 onBlur={(e) => {
-                    e.preventDefault();
-
                     if (props.validate) {
                         props.validate(e);
                     } else if (props.validationRule) {
+                        e.preventDefault();
                         validate(e.target.value, props.validationRule, props.validationArgs);
                     }
                 }}
@@ -85,13 +86,19 @@ const TextInput = (props) => {
             <div className="error-text" style={props.showErrorMessage && error !== '' ? { display: 'block' } : {}}>
                 {error}
             </div>
+            <div className="success-text" style={props.showSuccessMessage && successMessage !== '' ? { display: 'block' } : {}}>
+                {successMessage}
+            </div>
         </label>
     );
 };
 
 TextInput.defaultProps = {
     showErrorMessage: true,
+    showSuccessMessage: true,
     type: 'text',
+    error: '',
+    successMessage: '',
 };
 
 TextInput.propTypes = {
@@ -101,11 +108,13 @@ TextInput.propTypes = {
     value: PropTypes.any,
     id: PropTypes.string,
     error: PropTypes.string,
+    successMessage: PropTypes.string,
     onChange: PropTypes.func,
     validationRule: PropTypes.string,
     validate: PropTypes.func,
     validationArgs: PropTypes.object,
     showErrorMessage: PropTypes.bool,
+    showSuccessMessage: PropTypes.bool,
 };
 
 export { TextInput };

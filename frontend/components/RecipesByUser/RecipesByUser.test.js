@@ -1,12 +1,14 @@
 import { render } from '@testing-library/react';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { createMockClient } from 'mock-apollo-client';
-import { RECIPE_BY_STARTING_LETTER_QUERY } from '../../queries/Recipe';
-import { TestRecipe } from '../../lib/TestUtilities';
-import { RecipesByLetter } from './RecipesByLetter';
+import { RECIPE_BY_USER_QUERY } from '../../queries/Recipe';
+import { TestRecipe, TestMeat } from '../../lib/TestUtilities';
+import { RecipesByUser } from './RecipesByUser';
 
 const mockClient = createMockClient();
 const emptyMockClient = createMockClient();
+
+const meat = TestMeat();
 
 const recipesQueryHandler = jest.fn().mockResolvedValue({
     data: {
@@ -20,28 +22,28 @@ const emptyRecipesQueryHandler = jest.fn().mockResolvedValue({
     },
 });
 
-mockClient.setRequestHandler(RECIPE_BY_STARTING_LETTER_QUERY, recipesQueryHandler);
-emptyMockClient.setRequestHandler(RECIPE_BY_STARTING_LETTER_QUERY, emptyRecipesQueryHandler);
+mockClient.setRequestHandler(RECIPE_BY_USER_QUERY, recipesQueryHandler);
+emptyMockClient.setRequestHandler(RECIPE_BY_USER_QUERY, emptyRecipesQueryHandler);
 
-describe('<RecipesByLetter/>', () => {
+describe('<RecipesByUser />', () => {
     test('it renders a message about no recipes when there are not any', async () => {
         const { findByText } = render(
             <ApolloProvider client={emptyMockClient}>
-                <RecipesByLetter letter="b" />
+                <RecipesByUser id="NONE" />
             </ApolloProvider>
         );
 
         await findByText(/No Recipes/);
     });
 
-    test('it renders 3 recipes when there are 3 recipes for the given letter', async () => {
+    test('it renders 3 recipes when there are 3 recipes for the given user', async () => {
         const { findAllByTestId } = render(
             <ApolloProvider client={mockClient}>
-                <RecipesByLetter letter="b" />
+                <RecipesByUser id={meat.id} />
             </ApolloProvider>
         );
 
-        const recipes = await findAllByTestId(/recipelink/);
+        const recipes = await findAllByTestId(/RecipeBox/);
         expect(recipes).toHaveLength(3);
     });
 });

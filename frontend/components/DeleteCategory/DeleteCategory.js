@@ -10,20 +10,22 @@ import { AppContext } from '../AppContext/AppContext';
 const DeleteCategory = (props) => {
     const [confirmOpen, setConfirmOpen] = useState(false);
 
-    const { id, name, children } = props;
+    const { id, name, children, updateCache = true } = props;
 
     const { toggleOverlay } = useContext(AppContext);
 
-    const updateCache = (cache, { data: result }) => {
-        const categoryData = cache.readQuery({ query: ALL_CATEGORIES_QUERY });
+    const update = (cache, { data: result }) => {
+        if (updateCache) {
+            const categoryData = cache.readQuery({ query: ALL_CATEGORIES_QUERY });
 
-        categoryData.categories = categoryData.categories.filter((category) => category.id !== result.deleteCategory.id);
+            categoryData.categories = categoryData.categories.filter((category) => category.id !== result.deleteCategory.id);
 
-        cache.writeQuery({ query: ALL_CATEGORIES_QUERY, data: categoryData });
+            cache.writeQuery({ query: ALL_CATEGORIES_QUERY, data: categoryData });
+        }
     };
 
     const [deleteCategory] = useMutation(DELETE_CATEGORY_MUTATION, {
-        update: updateCache,
+        update,
         onCompleted: () => {
             toast(`${name} deleted successfully`);
 
@@ -71,6 +73,7 @@ DeleteCategory.propTypes = {
     onComplete: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
     onError: PropTypes.func.isRequired,
+    updateCache: PropTypes.bool,
     children: PropTypes.node,
 };
 

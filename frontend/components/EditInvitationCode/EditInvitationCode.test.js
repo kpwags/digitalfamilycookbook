@@ -1,71 +1,172 @@
-import { render, waitForElement } from '@testing-library/react';
-// import { render, screen, wait, fireEvent, waitForElement } from '@testing-library/react';
-// import user from '@testing-library/user-event';
+import { render, act, fireEvent, waitFor } from '@testing-library/react';
+import { ApolloProvider } from '@apollo/react-hooks';
+import { createMockClient } from 'mock-apollo-client';
 import { UPDATE_INVITATION_CODE_MUTATION } from '../../mutations/InvitationCode';
-import { SINGLE_INVITATION_CODE_CODE_QUERY } from '../../queries/InvitationCode';
+import { ALL_INVITATION_CODES_QUERY, SINGLE_INVITATION_CODE_CODE_QUERY } from '../../queries/InvitationCode';
 import { TestInvitationCode, MockedThemeProvider } from '../../lib/TestUtilities';
 import { EditInvitationCode } from './EditInvitationCode';
 
-describe('<AddInvitationCode/>', () => {
-    const code = TestInvitationCode();
-    const mocks = [
-        {
-            request: {
-                query: UPDATE_INVITATION_CODE_MUTATION,
-                variables: {
-                    id: code.id,
-                    code: code.code
-                }
+describe('<EditInvitationCode/>', () => {
+    const invitationCode = TestInvitationCode();
+    const newInvitationCode = TestInvitationCode();
+
+    const mockClient = createMockClient();
+    const duplicateCheckMockClient = createMockClient();
+
+    // Mock the result of the login mutation
+    const updateInvitationCodeHandler = jest.fn().mockResolvedValue({
+        data: {
+            updateInvitationCode: {
+                id: newInvitationCode.id,
+                code: newInvitationCode.code,
             },
-            updateInvitationCode: jest.fn(() => ({
-                data: {
-                    updateInvitationCode: {
-                        id: code.id,
-                        code: code.code
-                    }
-                }
-            }))
         },
-        {
-            request: {
-                query: SINGLE_INVITATION_CODE_CODE_QUERY,
-                variables: {
-                    code: code.code
-                }
+    });
+
+    const allInvitationCodesHandler = jest.fn().mockResolvedValue({
+        data: {
+            invitationCodes: [TestInvitationCode(), TestInvitationCode(), TestInvitationCode()],
+        },
+    });
+
+    const singleInvitationCodeHandler = jest.fn().mockResolvedValue({
+        data: {
+            invitationCode: {
+                id: '1234567890',
+                code: 'testcode',
             },
-            result: {
-                invitationCode: {
-                    id: code.id,
-                    code: code.code
-                }
-            }
-        }
-    ];
+        },
+    });
+
+    const singleInvitationCodeEmptyHandler = jest.fn().mockResolvedValue({
+        data: {
+            invitationCode: null,
+        },
+    });
+
+    mockClient.setRequestHandler(UPDATE_INVITATION_CODE_MUTATION, updateInvitationCodeHandler);
+    duplicateCheckMockClient.setRequestHandler(UPDATE_INVITATION_CODE_MUTATION, updateInvitationCodeHandler);
+
+    mockClient.setRequestHandler(ALL_INVITATION_CODES_QUERY, allInvitationCodesHandler);
+    duplicateCheckMockClient.setRequestHandler(ALL_INVITATION_CODES_QUERY, allInvitationCodesHandler);
+
+    mockClient.setRequestHandler(SINGLE_INVITATION_CODE_CODE_QUERY, singleInvitationCodeEmptyHandler);
+    duplicateCheckMockClient.setRequestHandler(SINGLE_INVITATION_CODE_CODE_QUERY, singleInvitationCodeHandler);
 
     test('it renders the input', async () => {
-        const { getByLabelText } = render(
-            <MockedThemeProvider mocks={mocks}>
-                <EditInvitationCode id={code.id} code={code.code} onDone={() => {}} />
+        const { findByLabelText } = render(
+            <MockedThemeProvider>
+                <EditInvitationCode id={invitationCode.id} code={invitationCode.code} onDone={() => {}} />
             </MockedThemeProvider>
         );
 
-        await waitForElement(() => getByLabelText(/Code/));
+        const codeInput = await findByLabelText(/Code/);
+        expect(codeInput.value).toBe(invitationCode.code);
     });
 
-    // TODO: Figure this out
-    // test('it creates a category when the form is submited', async () => {
-    //     const { getByText, getByLabelText } = render(
-    //         <MockedThemeProvider mocks={mocks}>
-    //             <EditInvitationCode id={code.id} code={code.code} onDone={() => {}} />
-    //         </MockedThemeProvider>
-    //     );
+    test('it alerts the user a code is required if left blank', async () => {
+        const { findByText, getByLabelText } = render(
+            <ApolloProvider client={mockClient}>
+                <EditInvitationCode id={invitationCode.id} code={invitationCode.code} />
+            </ApolloProvider>
+        );
 
-    //     const codeInput = getByLabelText(/Code/);
+        await act(async () => {
+            await waitFor(async () => {
+                fireEvent.change(await getByLabelText(/Code/), {
+                    target: {
+                        value: '',
+                    },
+                });
+            });
 
-    //     await user.type(codeInput, code.code);
+            await waitFor(async () => {
+                fireEvent.blur(await getByLabelText(/Code/));
+            });
+        });
 
-    //     const editButton = getByText(/Save Changes/);
+        // Assert that the error message was displayed
+        await findByText(/Invitation code is required/);
+    });
 
-    //     fireEvent.click(editButton);
-    // });
+    test('it updates a category when the form is submited', async () => {
+        const { findByText, getByLabelText, getByTestId } = render(
+            <ApolloProvider client={mockClient}>
+                <EditInvitationCode id={invitationCode.id} code={invitationCode.code} />
+            </ApolloProvider>
+        );
+
+        await act(async () => {
+            await waitFor(async () => {
+                fireEvent.change(await getByLabelText(/Code/), {
+                    target: {
+                        value: newInvitationCode.code,
+                    },
+                });
+            });
+
+            await waitFor(() => fireEvent.blur(getByLabelText(/Code/)));
+
+            await findByText(/OK/);
+
+            await waitFor(() => fireEvent.click(getByTestId(/savebutton/)));
+        });
+
+        expect(updateInvitationCodeHandler).toBeCalledWith({
+            id: invitationCode.id,
+            code: newInvitationCode.code,
+        });
+
+        expect(allInvitationCodesHandler).toBeCalledTimes(1);
+    });
+
+    test('it alerts the user a code already exists', async () => {
+        const { findByText, getByLabelText } = render(
+            <ApolloProvider client={duplicateCheckMockClient}>
+                <EditInvitationCode id="01234567890" code="testcode" />
+            </ApolloProvider>
+        );
+
+        await act(async () => {
+            await waitFor(async () => {
+                fireEvent.change(await getByLabelText(/Code/), {
+                    target: {
+                        value: 'testcode',
+                    },
+                });
+            });
+
+            await waitFor(async () => {
+                fireEvent.blur(await getByLabelText(/Code/));
+            });
+        });
+
+        // Assert that the error message was displayed
+        await findByText(/Invitation code already exists/);
+    });
+
+    test('it okays a code that already exists if it is the currently selected code', async () => {
+        const { findByText, getByLabelText } = render(
+            <ApolloProvider client={duplicateCheckMockClient}>
+                <EditInvitationCode id="1234567890" code="testcode" />
+            </ApolloProvider>
+        );
+
+        await act(async () => {
+            await waitFor(async () => {
+                fireEvent.change(await getByLabelText(/Code/), {
+                    target: {
+                        value: 'testcode',
+                    },
+                });
+            });
+
+            await waitFor(async () => {
+                fireEvent.blur(await getByLabelText(/Code/));
+            });
+        });
+
+        // Assert that the OK message was displayed
+        await findByText(/OK/);
+    });
 });

@@ -1,89 +1,77 @@
-import { mount } from 'enzyme';
-import wait from 'waait';
-import toJSON from 'enzyme-to-json';
-import { act } from 'react-dom/test-utils';
+import { render, fireEvent, act } from '@testing-library/react';
+import { ApolloProvider } from '@apollo/react-hooks';
+import { createMockClient } from 'mock-apollo-client';
 import { CREATE_MEAT_MUTATION } from '../../mutations/Meat';
+import { ALL_MEATS_QUERY } from '../../queries/Meat';
 import { TestMeat, MockedThemeProvider } from '../../lib/TestUtilities';
 import { AddMeat } from './AddMeat';
 
+const meat = TestMeat();
+
+const mockClient = createMockClient();
+
+const createMeatMutationHandler = jest.fn().mockResolvedValue({
+    data: {
+        createMeat: {
+            id: meat.id,
+            name: meat.name,
+        },
+    },
+});
+
+const allMeatsQueryHandler = jest.fn().mockResolvedValue({
+    data: {
+        meats: [TestMeat(), TestMeat(), TestMeat()],
+    },
+});
+
+mockClient.setRequestHandler(CREATE_MEAT_MUTATION, createMeatMutationHandler);
+mockClient.setRequestHandler(ALL_MEATS_QUERY, allMeatsQueryHandler);
+
 describe('<AddMeat/>', () => {
-    beforeEach(() => {
-        // Avoid `attachTo: document.body` Warning
-        const div = document.createElement('div');
-        div.setAttribute('id', 'container');
-        document.body.appendChild(div);
-    });
-
-    afterEach(() => {
-        const div = document.getElementById('container');
-        if (div) {
-            document.body.removeChild(div);
-        }
-    });
-
-    it('should match snapshot', () => {
-        const wrapper = mount(
+    test('it renders the input', async () => {
+        const { findByLabelText } = render(
             <MockedThemeProvider>
                 <AddMeat />
             </MockedThemeProvider>
         );
 
-        const form = wrapper.find('form[data-test="form"]');
-        expect(toJSON(form)).toMatchSnapshot();
+        await findByLabelText(/Name/);
     });
 
-    it('updates the state', async () => {
-        const wrapper = mount(
-            <MockedThemeProvider>
-                <AddMeat />
-            </MockedThemeProvider>,
-            { attachTo: document.getElementById('container') }
-        );
+    test('it creates a meat when the form is submited', async () => {
+        await act(async () => {
+            const { getByText, getByLabelText } = render(
+                <ApolloProvider client={mockClient}>
+                    <AddMeat />
+                </ApolloProvider>
+            );
 
-        wrapper.find('input[name="name"]').simulate('change', { target: { value: 'test meat', name: 'name' } });
-
-        expect(wrapper.find('AddMeat').instance().state).toMatchObject({
-            name: 'test meat',
-            error: null
-        });
-    });
-
-    it('creates a category when the form is submitted', async () => {
-        const meat = TestMeat();
-        const mocks = [
-            {
-                request: {
-                    query: CREATE_MEAT_MUTATION,
-                    variables: {
-                        name: meat.name
-                    }
+            fireEvent.change(await getByLabelText(/Name/), {
+                target: {
+                    value: meat.name,
                 },
-                result: {
-                    data: {
-                        createCategory: {
-                            ...TestMeat,
-                            id: 'abc123',
-                            __typename: 'Category'
-                        }
-                    }
-                }
-            }
-        ];
+            });
 
-        const wrapper = mount(
-            <MockedThemeProvider mocks={mocks}>
-                <AddMeat />
-            </MockedThemeProvider>,
-            { attachTo: document.getElementById('container') }
-        );
-
-        act(() => {
-            wrapper.find('input[name="name"]').simulate('change', { target: { value: meat.name, name: 'name' } });
-            wrapper.find('form#create-meat-form').simulate('submit');
+            fireEvent.click(await getByText(/Save/));
         });
 
-        await wait(50);
+        expect(createMeatMutationHandler).toBeCalledWith({
+            name: meat.name,
+        });
 
-        expect(wrapper.find('AddMeat').instance().state.error).toEqual(null);
+        expect(allMeatsQueryHandler).toBeCalledTimes(1);
+    });
+
+    test('it alerts the user a meat name is required if left blank', async () => {
+        const { findByText, getByLabelText } = render(
+            <ApolloProvider client={mockClient}>
+                <AddMeat />
+            </ApolloProvider>
+        );
+
+        fireEvent.blur(await getByLabelText(/Name/));
+
+        await findByText(/Name is required/);
     });
 });

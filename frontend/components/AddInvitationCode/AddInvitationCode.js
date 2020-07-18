@@ -14,6 +14,7 @@ const AddInvitationCode = (props) => {
     const [code, setCode] = useState('');
     const [error, setError] = useState(null);
     const [codeError, setCodeError] = useState('');
+    const [codeSuccess, setCodeSuccess] = useState('');
     const [saveEnabled, setSaveEnabled] = useState(true);
 
     const client = useApolloClient();
@@ -55,13 +56,16 @@ const AddInvitationCode = (props) => {
         const { valid, message } = FormValidator.validateInvitationCode(code);
 
         if (res.data.invitationCode !== null) {
-            setCodeError('Inivation code already exists');
+            setCodeError('Invitation code already exists');
+            setCodeSuccess('');
             setSaveEnabled(false);
         } else if (!valid) {
             setCodeError(message);
+            setCodeSuccess('');
             setSaveEnabled(false);
         } else {
             setCodeError('');
+            setCodeSuccess('OK');
             setSaveEnabled(true);
         }
     }, 350);
@@ -70,6 +74,7 @@ const AddInvitationCode = (props) => {
         e.preventDefault();
         setCode('');
         setCodeError('');
+        setCodeSuccess('');
 
         if (props.onCancel) {
             props.onCancel();
@@ -87,13 +92,16 @@ const AddInvitationCode = (props) => {
         const { valid, message } = FormValidator.validateInvitationCode(code);
 
         if (res.data.invitationCode !== null) {
-            setCodeError('Inivation code already exists');
+            setCodeError('Invitation code already exists');
+            setCodeSuccess('');
             isValid = false;
         } else if (!valid) {
             setCodeError(message);
+            setCodeSuccess('');
             isValid = false;
         } else {
             setCodeError('');
+            setCodeSuccess('OK');
         }
 
         return isValid;
@@ -134,9 +142,10 @@ const AddInvitationCode = (props) => {
                         validate();
                     }}
                     error={codeError}
+                    successMessage={codeSuccess}
                 />
 
-                <button type="submit" aria-disabled={!saveEnabled} disabled={!saveEnabled}>
+                <button type="submit" aria-disabled={!saveEnabled} disabled={!saveEnabled} data-testid="savebutton">
                     Sav{addLoading ? 'ing' : 'e'}
                 </button>
                 <button type="button" onClick={cancelAdd}>

@@ -49,7 +49,7 @@ const RecipesByLetter = (props) => {
                     {data.recipes.length > 0 ? (
                         <ul>
                             {data.recipes.map((recipe) => (
-                                <li key={recipe.id}>
+                                <li key={recipe.id} data-testid="recipelink">
                                     <Link href={`/recipe?id=${recipe.id}`}>
                                         <a>{recipe.name}</a>
                                     </Link>

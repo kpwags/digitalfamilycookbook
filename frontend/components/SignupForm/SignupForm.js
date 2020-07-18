@@ -15,6 +15,7 @@ const SignupForm = () => {
     const [name, setName] = useState('');
     const [nameError, setNameError] = useState('');
     const [username, setUsername] = useState('');
+    const [usernameSuccess, setUsernameSuccess] = useState('');
     const [usernameError, setUsernameError] = useState('');
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState('');
@@ -34,6 +35,7 @@ const SignupForm = () => {
         setName('');
         setNameError('');
         setUsername('');
+        setUsernameSuccess('');
         setUsernameError('');
         setEmail('');
         setEmailError('');
@@ -74,12 +76,15 @@ const SignupForm = () => {
         if (resp.data.user !== null) {
             setSaveEnabled(false);
             setUsernameError('Username already taken');
+            setUsernameSuccess('');
         } else if (!valid) {
             setSaveEnabled(false);
             setUsernameError(message);
+            setUsernameSuccess('');
         } else {
             setSaveEnabled(true);
             setUsernameError('');
+            setUsernameSuccess('OK');
         }
     }, 350);
 
@@ -112,14 +117,16 @@ const SignupForm = () => {
         }
 
         if (!FormValidator.validateEmail(email)) {
-            setEmailError('Invalid email');
+            setEmailError('Valid email address required');
             isValid = false;
         }
 
         if (resp.data.user !== null) {
             setUsernameError('Username already taken');
+            setUsernameSuccess('');
         } else if (!usernameValid) {
             setUsernameError(usernameMessage);
+            setUsernameSuccess('');
             isValid = false;
         }
 
@@ -181,11 +188,18 @@ const SignupForm = () => {
                     id="name"
                     name="name"
                     label="Name"
-                    validationRule="notempty"
                     value={name}
                     error={nameError}
                     onChange={(e) => {
                         setName(e.target.value);
+                    }}
+                    validate={(e) => {
+                        e.preventDefault();
+                        if (FormValidator.validateNotEmpty(e.target.value)) {
+                            setNameError('');
+                        } else {
+                            setNameError('Name is required');
+                        }
                     }}
                 />
 
@@ -195,12 +209,13 @@ const SignupForm = () => {
                     label="Username"
                     value={username}
                     error={usernameError}
-                    validate={(e) => {
-                        e.persist();
-                        validateUsername();
-                    }}
+                    successMessage={usernameSuccess}
                     onChange={(e) => {
                         setUsername(e.target.value);
+                    }}
+                    validate={(e) => {
+                        e.preventDefault();
+                        validateUsername();
                     }}
                 />
 
@@ -208,11 +223,18 @@ const SignupForm = () => {
                     id="email"
                     name="email"
                     label="Email"
-                    validationRule="email"
                     value={email}
                     error={emailError}
                     onChange={(e) => {
                         setEmail(e.target.value);
+                    }}
+                    validate={(e) => {
+                        e.preventDefault();
+                        if (FormValidator.validateEmail(e.target.value)) {
+                            setEmailError('');
+                        } else {
+                            setEmailError('Valid email address required');
+                        }
                     }}
                 />
 
@@ -229,7 +251,7 @@ const SignupForm = () => {
                     }}
                     validate={(e) => {
                         e.preventDefault();
-                        validatePassword(e);
+                        validatePassword();
                     }}
                 />
 
@@ -245,7 +267,7 @@ const SignupForm = () => {
                     }}
                     validate={(e) => {
                         e.preventDefault();
-                        validatePassword(e);
+                        validatePassword();
                     }}
                 />
 
@@ -266,11 +288,18 @@ const SignupForm = () => {
                         id="invitationCode"
                         name="invitationCode"
                         label="Invitation Code"
-                        validationRule="notempty"
                         value={invitationCode}
                         error={invitationCodeError}
                         onChange={(e) => {
                             setInvitationCode(e.target.value);
+                        }}
+                        validate={(e) => {
+                            e.preventDefault();
+                            if (FormValidator.validateNotEmpty(e.target.value)) {
+                                setInvitationCodeError('');
+                            } else {
+                                setInvitationCodeError('Invitation code is required');
+                            }
                         }}
                     />
                 )}

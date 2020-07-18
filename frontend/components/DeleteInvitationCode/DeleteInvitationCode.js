@@ -10,20 +10,20 @@ import { AppContext } from '../AppContext/AppContext';
 const DeleteInvitationCode = (props) => {
     const [confirmOpen, setConfirmOpen] = useState(false);
 
-    const { id, code, children } = props;
+    const { id, code, children, updateCache = true } = props;
 
-    const updateCache = (cache, { data: result }) => {
-        const codeData = cache.readQuery({ query: ALL_INVITATION_CODES_QUERY });
-
-        codeData.invitationCodes = codeData.invitationCodes.filter((inviteCode) => inviteCode.id !== result.deleteInvitationCode.id);
-
-        cache.writeQuery({ query: ALL_INVITATION_CODES_QUERY, data: codeData });
+    const update = (cache, { data: result }) => {
+        if (updateCache) {
+            const codeData = cache.readQuery({ query: ALL_INVITATION_CODES_QUERY });
+            codeData.invitationCodes = codeData.invitationCodes.filter((inviteCode) => inviteCode.id !== result.deleteInvitationCode.id);
+            cache.writeQuery({ query: ALL_INVITATION_CODES_QUERY, data: codeData });
+        }
     };
 
     const { toggleOverlay } = useContext(AppContext);
 
     const [deleteInvitationCode] = useMutation(DELETE_INVITATION_CODE_MUTATION, {
-        update: updateCache,
+        update,
         onCompleted: () => {
             toast(`${code} deleted successfully`);
             props.onComplete();
@@ -70,6 +70,7 @@ DeleteInvitationCode.propTypes = {
     onComplete: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
     onError: PropTypes.func.isRequired,
+    updateCache: PropTypes.bool,
     children: PropTypes.node,
 };
 

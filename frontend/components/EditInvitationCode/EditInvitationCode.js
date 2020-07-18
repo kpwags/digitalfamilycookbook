@@ -15,6 +15,7 @@ const EditInvitationCode = (props) => {
     const [code, setCode] = useState(props.code);
     const [error, setError] = useState(null);
     const [codeError, setCodeError] = useState('');
+    const [codeSuccess, setCodeSuccess] = useState('');
 
     useEffect(() => {
         setId(props.id);
@@ -57,12 +58,15 @@ const EditInvitationCode = (props) => {
 
         const { valid, message } = FormValidator.validateInvitationCode(code);
 
-        if (res.data.invitationCode !== null && res.invitationCode.id !== id) {
-            setCodeError('Inivation code already exists');
+        if (res.data.invitationCode !== null && res.data.invitationCode.id !== id) {
+            setCodeError('Invitation code already exists');
+            setCodeSuccess('');
         } else if (!valid) {
             setCodeError(message);
+            setCodeSuccess('');
         } else {
             setCodeError('');
+            setCodeSuccess('OK');
         }
     }, 350);
 
@@ -76,14 +80,17 @@ const EditInvitationCode = (props) => {
 
         const { valid, message } = FormValidator.validateInvitationCode(code);
 
-        if (res.data.invitationCode !== null && res.invitationCode.id !== id) {
-            setCodeError('Inivation code already exists');
+        if (res.data.invitationCode !== null && res.data.invitationCode.id !== id) {
+            setCodeError('Invitation code already exists');
+            setCodeSuccess('');
             isValid = false;
         } else if (!valid) {
             setCodeError(message);
+            setCodeSuccess('');
             isValid = false;
         } else {
             setCodeError('');
+            setCodeSuccess('OK');
         }
 
         return isValid;
@@ -92,6 +99,7 @@ const EditInvitationCode = (props) => {
     const cancelEdit = (e) => {
         e.preventDefault();
         setCodeError('');
+        setCodeSuccess('');
 
         props.onCancel();
     };
@@ -135,8 +143,11 @@ const EditInvitationCode = (props) => {
                         validate();
                     }}
                     error={codeError}
+                    successMessage={codeSuccess}
                 />
-                <button type="submit">Sav{updateLoading ? 'ing' : 'e'} Changes</button>
+                <button type="submit" data-testid="savebutton">
+                    Sav{updateLoading ? 'ing' : 'e'} Changes
+                </button>
                 <button type="button" onClick={cancelEdit}>
                     Cancel
                 </button>

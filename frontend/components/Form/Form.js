@@ -145,6 +145,14 @@ const Form = styled.form`
         margin-top: 5px;
     }
 
+    div.success-text {
+        color: hsl(120, 100%, 33%);
+        display: none;
+        font-size: 1rem;
+        font-weight: bold;
+        margin-top: 5px;
+    }
+
     div.error-text.visible {
         display: block;
     }

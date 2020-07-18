@@ -85,7 +85,9 @@ const LoginForm = (props) => {
                         <a>Forgot Password?</a>
                     </Link>
                 </p>
-                <button type="submit">{loading ? 'Logging' : 'Log'} In</button>
+                <button type="submit" data-testid="login-button">
+                    {loading ? 'Logging' : 'Log'} In
+                </button>
             </fieldset>
         </Form>
     );

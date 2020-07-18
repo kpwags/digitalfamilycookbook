@@ -10,14 +10,16 @@ import { AppContext } from '../AppContext/AppContext';
 const DeleteUser = (props) => {
     const [confirmOpen, setConfirmOpen] = useState(false);
 
-    const { id, name, children } = props;
+    const { id, name, children, doUpdate = true } = props;
 
     const updateCache = (cache, payload) => {
-        const data = cache.readQuery({ query: ALL_USERS_QUERY });
+        if (doUpdate) {
+            const data = cache.readQuery({ query: ALL_USERS_QUERY });
 
-        data.users = data.users.filter((meat) => meat.id !== payload.data.deleteUser.id);
+            data.users = data.users.filter((meat) => meat.id !== payload.data.deleteUser.id);
 
-        cache.writeQuery({ query: ALL_USERS_QUERY, data });
+            cache.writeQuery({ query: ALL_USERS_QUERY, data });
+        }
     };
 
     const [deleteUser] = useMutation(DELETE_USER_MUTATION, {
@@ -68,6 +70,7 @@ const DeleteUser = (props) => {
 DeleteUser.propTypes = {
     id: PropTypes.string,
     name: PropTypes.string,
+    doUpdate: PropTypes.bool,
     onComplete: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
     onError: PropTypes.func.isRequired,
