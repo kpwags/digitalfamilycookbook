@@ -29,6 +29,7 @@ const recipeQueryHandler = jest.fn().mockResolvedValue({
             id: testRecipe.id,
             name: testRecipe.name,
             description: testRecipe.description,
+            notes: testRecipe.notes,
             public: false,
             source: testRecipe.source,
             sourceUrl: testRecipe.sourceUrl,
@@ -118,6 +119,8 @@ mockClient.setRequestHandler(RECIPE_BY_ID_QUERY, recipeQueryHandler);
 // override router.push
 jest.mock('next/router', () => ({ push: jest.fn() }));
 
+window.scrollTo = jest.fn();
+
 describe('<EditRecipeForm />', () => {
     test('it renders the form', async () => {
         render(
@@ -137,6 +140,9 @@ describe('<EditRecipeForm />', () => {
 
         const sourceUrl = await screen.findByLabelText('Source URL');
         expect(sourceUrl.value).toBe(testRecipe.sourceUrl);
+
+        const notes = await screen.findByLabelText(/Notes/);
+        expect(notes.value).toBe(testRecipe.notes);
 
         const time = await screen.findByLabelText('Time');
         expect(time.value).toBe(testRecipe.time.toString());
@@ -210,6 +216,7 @@ describe('<EditRecipeForm />', () => {
             id: testRecipe.id,
             name: `${testRecipe.name} (updated)`,
             description: testRecipe.description,
+            notes: testRecipe.notes,
             source: testRecipe.source,
             sourceUrl: testRecipe.sourceUrl,
             public: false,

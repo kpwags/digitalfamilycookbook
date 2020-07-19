@@ -60,6 +60,7 @@ type Recipe {
   id: ID! @id @unique
   name: String!
   description: String
+  notes: String
   public: Boolean!
   source: String
   sourceUrl: String

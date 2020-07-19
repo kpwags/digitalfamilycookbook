@@ -17,6 +17,7 @@ const CreateRecipeForm = () => {
     const [name, setName] = useState('');
     const [nameError, setNameError] = useState('');
     const [description, setDescription] = useState('');
+    const [notes, setNotes] = useState('');
     const [source, setSource] = useState('');
     const [sourceUrl, setSourceUrl] = useState('');
     const [time, setTime] = useState('');
@@ -351,6 +352,7 @@ const CreateRecipeForm = () => {
         const newRecipe = {
             name,
             description,
+            notes,
             source,
             sourceUrl,
             public: false,
@@ -377,6 +379,7 @@ const CreateRecipeForm = () => {
                 variables: {
                     name: newRecipe.name,
                     description: newRecipe.description,
+                    notes: newRecipe.notes,
                     public: newRecipe.public,
                     source: newRecipe.source,
                     sourceUrl: newRecipe.sourceUrl,
@@ -459,6 +462,17 @@ const CreateRecipeForm = () => {
                     error=""
                     onChange={(e) => {
                         setSourceUrl(e.target.value);
+                    }}
+                />
+
+                <TextArea
+                    name="notes"
+                    id="notes"
+                    label="Notes"
+                    value={notes}
+                    error=""
+                    onChange={(e) => {
+                        setNotes(e.target.value);
                     }}
                 />
 

@@ -83,6 +83,7 @@ const RECIPE_BY_ID_QUERY = gql`
             id
             name
             description
+            notes
             public
             source
             sourceUrl

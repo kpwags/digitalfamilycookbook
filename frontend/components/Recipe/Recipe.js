@@ -128,6 +128,13 @@ const Recipe = (props) => {
                                 <li key={direction.sortOrder}>{direction.direction} </li>
                             ))}
                         </ol>
+
+                        {data.recipe.notes && (
+                            <>
+                                <h2>Notes</h2>
+                                <p>{data.recipe.notes}</p>
+                            </>
+                        )}
                     </div>
                     {(!noNutritionInfo || data.recipe.largeImage) && (
                         <div className="right-column">
