@@ -23,6 +23,7 @@ const EditRecipeForm = (props) => {
     const [name, setName] = useState(recipe.name);
     const [nameError, setNameError] = useState('');
     const [description, setDescription] = useState(recipe.description === null ? '' : recipe.description);
+    const [notes, setNotes] = useState(recipe.notes === null ? '' : recipe.notes);
     const [source, setSource] = useState(recipe.source === null ? '' : recipe.source);
     const [sourceUrl, setSourceUrl] = useState(recipe.sourceUrl === null ? '' : recipe.sourceUrl);
     const [time, setTime] = useState(recipe.time === null ? '' : recipe.time);
@@ -380,6 +381,7 @@ const EditRecipeForm = (props) => {
             id,
             name,
             description,
+            notes,
             source,
             sourceUrl,
             public: false,
@@ -406,7 +408,7 @@ const EditRecipeForm = (props) => {
                 variables: editedRecipe,
             }).catch((err) => {
                 setError(err);
-                // window.scrollTo(0, 0);
+                window.scrollTo(0, 0);
             });
         }
     };
@@ -469,6 +471,18 @@ const EditRecipeForm = (props) => {
                         setSourceUrl(e.target.value);
                     }}
                 />
+
+                <TextArea
+                    name="notes"
+                    id="notes"
+                    label="Notes"
+                    value={notes}
+                    error=""
+                    onChange={(e) => {
+                        setNotes(e.target.value);
+                    }}
+                />
+
                 <div className="recipe-form-grid">
                     <div className="ingredients-directions">
                         <h2>Ingredients</h2>

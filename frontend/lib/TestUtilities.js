@@ -86,6 +86,7 @@ const TestRecipe = () => ({
     id: casual.uuid,
     name: casual.name,
     description: casual.words(),
+    notes: casual.words(),
     public: casual.boolean,
     source: casual.words(),
     sourceUrl: casual.url,

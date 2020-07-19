@@ -53,6 +53,7 @@ describe('<CreateRecipeForm />', () => {
 
         await screen.findByLabelText(/Name/);
         await screen.findByLabelText(/Description/);
+        await screen.findByLabelText(/Notes/);
         await screen.findByLabelText('Source');
         await screen.findByLabelText('Source URL');
         await screen.findByLabelText('Time');
@@ -185,6 +186,7 @@ describe('<CreateRecipeForm />', () => {
         await act(async () => {
             await userEvent.type(screen.getByLabelText(/Name/), testRecipe.name);
             await userEvent.type(screen.getByLabelText(/Description/), testRecipe.description);
+            await userEvent.type(screen.getByLabelText(/Notes/), testRecipe.notes);
             await userEvent.type(screen.getByLabelText('Source'), testRecipe.source);
             await userEvent.type(screen.getByLabelText('Source URL'), testRecipe.sourceUrl);
             await userEvent.type(screen.getByLabelText('Time'), testRecipe.time.toString());
@@ -221,6 +223,7 @@ describe('<CreateRecipeForm />', () => {
         expect(createRecipeHandler).toBeCalledWith({
             name: testRecipe.name,
             description: testRecipe.description,
+            notes: testRecipe.notes,
             source: testRecipe.source,
             sourceUrl: testRecipe.sourceUrl,
             public: false,
