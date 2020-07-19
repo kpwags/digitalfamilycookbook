@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import Router from 'next/router';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { createMockClient } from 'mock-apollo-client';
-import { CURRENT_USER_QUERY, SINGLE_USER_USERNAME_QUERY } from '../../queries/User';
+import { CURRENT_USER_QUERY, SINGLE_USER_USERNAME_QUERY, SINGLE_USER_EMAIL_QUERY } from '../../queries/User';
 import { SIGNUP_MUTATION } from '../../mutations/User';
 import { TestUser } from '../../lib/TestUtilities';
 import { publicRegistration } from '../../config';
@@ -13,6 +13,7 @@ import { SignupForm } from './SignupForm';
 const testUser = TestUser();
 const mockClient = createMockClient();
 const duplicateUserMockClient = createMockClient();
+const duplicateUserEmailMockClient = createMockClient();
 
 const signupHandler = jest.fn().mockResolvedValue({
     data: {
@@ -34,7 +35,13 @@ const currentUserQueryHandler = jest.fn().mockResolvedValue({
     },
 });
 
-const singleUserQueryHandler = jest.fn().mockResolvedValue({
+const singleUserUsernameQueryHandler = jest.fn().mockResolvedValue({
+    data: {
+        user: null,
+    },
+});
+
+const singleUserEmailQueryHandler = jest.fn().mockResolvedValue({
     data: {
         user: null,
     },
@@ -45,6 +52,21 @@ const duplicateSingleUserQueryHandler = jest.fn().mockResolvedValue({
         user: {
             id: testUser.id,
             name: testUser.name,
+            email: testUser.email,
+            username: testUser.username,
+            bio: testUser.bio,
+            image: testUser.image,
+            largeImage: testUser.largeImage,
+        },
+    },
+});
+
+const duplicateSingleUserEmailQueryHandler = jest.fn().mockResolvedValue({
+    data: {
+        user: {
+            id: testUser.id,
+            name: testUser.name,
+            email: testUser.email,
             username: testUser.username,
             bio: testUser.bio,
             image: testUser.image,
@@ -55,11 +77,18 @@ const duplicateSingleUserQueryHandler = jest.fn().mockResolvedValue({
 
 mockClient.setRequestHandler(SIGNUP_MUTATION, signupHandler);
 mockClient.setRequestHandler(CURRENT_USER_QUERY, currentUserQueryHandler);
-mockClient.setRequestHandler(SINGLE_USER_USERNAME_QUERY, singleUserQueryHandler);
+mockClient.setRequestHandler(SINGLE_USER_USERNAME_QUERY, singleUserUsernameQueryHandler);
+mockClient.setRequestHandler(SINGLE_USER_EMAIL_QUERY, singleUserEmailQueryHandler);
 
 duplicateUserMockClient.setRequestHandler(SIGNUP_MUTATION, signupHandler);
 duplicateUserMockClient.setRequestHandler(CURRENT_USER_QUERY, currentUserQueryHandler);
 duplicateUserMockClient.setRequestHandler(SINGLE_USER_USERNAME_QUERY, duplicateSingleUserQueryHandler);
+duplicateUserMockClient.setRequestHandler(SINGLE_USER_EMAIL_QUERY, singleUserEmailQueryHandler);
+
+duplicateUserEmailMockClient.setRequestHandler(SIGNUP_MUTATION, signupHandler);
+duplicateUserEmailMockClient.setRequestHandler(CURRENT_USER_QUERY, currentUserQueryHandler);
+duplicateUserEmailMockClient.setRequestHandler(SINGLE_USER_USERNAME_QUERY, singleUserUsernameQueryHandler);
+duplicateUserEmailMockClient.setRequestHandler(SINGLE_USER_EMAIL_QUERY, duplicateSingleUserEmailQueryHandler);
 
 // override router.push
 jest.mock('next/router', () => ({ push: jest.fn() }));
@@ -168,6 +197,21 @@ describe('<SignupForm />', () => {
         await screen.findByText('OK');
     });
 
+    test('it checks the email is not taken', async () => {
+        render(
+            <ApolloProvider client={mockClient}>
+                <SignupForm />
+            </ApolloProvider>
+        );
+
+        await act(async () => {
+            await userEvent.type(screen.getByLabelText(/Email/), testUser.email);
+            await fireEvent.blur(screen.getByLabelText(/Email/));
+        });
+
+        await screen.findByText('OK');
+    });
+
     test('it alerts the user the username is taken', async () => {
         render(
             <ApolloProvider client={duplicateUserMockClient}>
@@ -181,6 +225,22 @@ describe('<SignupForm />', () => {
         });
 
         await screen.findByText('Username already taken');
+        expect(screen.getByRole('button', { name: /Sign Up/ })).toBeDisabled();
+    });
+
+    test('it alerts the user the email address is taken', async () => {
+        render(
+            <ApolloProvider client={duplicateUserEmailMockClient}>
+                <SignupForm />
+            </ApolloProvider>
+        );
+
+        await act(async () => {
+            await userEvent.type(screen.getByLabelText(/Email/), testUser.email);
+            await fireEvent.blur(screen.getByLabelText(/Email/));
+        });
+
+        await screen.findByTestId('email-taken');
         expect(screen.getByRole('button', { name: /Sign Up/ })).toBeDisabled();
     });
 

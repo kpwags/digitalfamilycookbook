@@ -3,7 +3,7 @@ import { useMutation, useApolloClient } from 'react-apollo';
 import Router from 'next/router';
 import debounce from 'lodash.debounce';
 import { SIGNUP_MUTATION } from '../../mutations/User';
-import { CURRENT_USER_QUERY, SINGLE_USER_USERNAME_QUERY } from '../../queries/User';
+import { CURRENT_USER_QUERY, SINGLE_USER_USERNAME_QUERY, SINGLE_USER_EMAIL_QUERY } from '../../queries/User';
 import { Form } from '../Form/Form';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 import { FormValidator } from '../../lib/FormValidator';
@@ -19,6 +19,8 @@ const SignupForm = () => {
     const [usernameError, setUsernameError] = useState('');
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState('');
+    const [emailErrorContainsHtml, setEmailErrorContainsHtml] = useState(false);
+    const [emailSuccess, setEmailSuccess] = useState('');
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -88,6 +90,32 @@ const SignupForm = () => {
         }
     }, 350);
 
+    const validateEmail = debounce(async () => {
+        setSaveEnabled(false);
+
+        const resp = await client.query({
+            query: SINGLE_USER_EMAIL_QUERY,
+            variables: { email },
+        });
+
+        if (resp.data.user !== null) {
+            setSaveEnabled(false);
+            setEmailErrorContainsHtml(true);
+            setEmailError('The email you entered is already taken. Did you <a data-testid="email-taken" href="/forgot-password">forget your password</a>?');
+            setEmailSuccess('');
+        } else if (!FormValidator.validateEmail(email)) {
+            setSaveEnabled(false);
+            setEmailErrorContainsHtml(false);
+            setEmailError('Valid email address required');
+            setEmailSuccess('');
+        } else {
+            setSaveEnabled(true);
+            setEmailErrorContainsHtml(false);
+            setEmailError('');
+            setEmailSuccess('OK');
+        }
+    }, 350);
+
     const validatePassword = () => {
         const { valid: passwordsValid, message } = FormValidator.validatePassword(password, confirmPassword);
         if (!passwordsValid) {
@@ -107,6 +135,11 @@ const SignupForm = () => {
             variables: { username },
         });
 
+        const emailResp = await client.query({
+            query: SINGLE_USER_EMAIL_QUERY,
+            variables: { email },
+        });
+
         let isValid = true;
 
         const { valid: usernameValid, message: usernameMessage } = FormValidator.validateUsername(username);
@@ -116,8 +149,16 @@ const SignupForm = () => {
             isValid = false;
         }
 
-        if (!FormValidator.validateEmail(email)) {
+        if (emailResp.data.user !== null) {
+            setEmailErrorContainsHtml(true);
+            setEmailError('The email you entered is already taken. Did you <a data-testid="email-taken" href="/forgot-password">forget your password</a>?');
+            setEmailSuccess('');
+            isValid = false;
+        } else if (!FormValidator.validateEmail(email)) {
+            setSaveEnabled(false);
+            setEmailErrorContainsHtml(false);
             setEmailError('Valid email address required');
+            setEmailSuccess('');
             isValid = false;
         }
 
@@ -225,16 +266,14 @@ const SignupForm = () => {
                     label="Email"
                     value={email}
                     error={emailError}
+                    doesErrorContainHtml={emailErrorContainsHtml}
+                    successMessage={emailSuccess}
                     onChange={(e) => {
                         setEmail(e.target.value);
                     }}
                     validate={(e) => {
                         e.preventDefault();
-                        if (FormValidator.validateEmail(e.target.value)) {
-                            setEmailError('');
-                        } else {
-                            setEmailError('Valid email address required');
-                        }
+                        validateEmail();
                     }}
                 />
 

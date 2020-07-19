@@ -1,7 +1,7 @@
 import { render, waitFor, fireEvent, act } from '@testing-library/react';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { createMockClient } from 'mock-apollo-client';
-import { CURRENT_USER_QUERY, SINGLE_USER_USERNAME_QUERY } from '../../queries/User';
+import { CURRENT_USER_QUERY, SINGLE_USER_USERNAME_QUERY, SINGLE_USER_EMAIL_QUERY } from '../../queries/User';
 import { UPDATE_PROFILE_MUTATION } from '../../mutations/User';
 import { EditProfileForm } from './EditProfileForm';
 import { TestUser } from '../../lib/TestUtilities';
@@ -10,6 +10,7 @@ import { AppContext } from '../AppContext/AppContext';
 const testUser = TestUser();
 const mockClient = createMockClient();
 const mockClientDuplicateUsername = createMockClient();
+const mockClientDuplicateEmail = createMockClient();
 
 const updateProfileHandler = jest.fn().mockResolvedValue({
     data: {
@@ -36,6 +37,7 @@ const singleUserQueryHandler = jest.fn().mockResolvedValue({
         user: {
             id: testUser.id,
             name: testUser.name,
+            email: testUser.email,
             username: testUser.username,
             bio: testUser.bio,
             image: testUser.image,
@@ -50,6 +52,7 @@ const duplicateSingleUserQueryHandler = jest.fn().mockResolvedValue({
             id: '123456',
             name: testUser.name,
             username: `${testUser.username}2`,
+            email: testUser.email,
             bio: testUser.bio,
             image: testUser.image,
             largeImage: testUser.largeImage,
@@ -60,10 +63,17 @@ const duplicateSingleUserQueryHandler = jest.fn().mockResolvedValue({
 mockClient.setRequestHandler(UPDATE_PROFILE_MUTATION, updateProfileHandler);
 mockClient.setRequestHandler(CURRENT_USER_QUERY, currentUserQueryHandler);
 mockClient.setRequestHandler(SINGLE_USER_USERNAME_QUERY, singleUserQueryHandler);
+mockClient.setRequestHandler(SINGLE_USER_EMAIL_QUERY, singleUserQueryHandler);
 
 mockClientDuplicateUsername.setRequestHandler(UPDATE_PROFILE_MUTATION, updateProfileHandler);
 mockClientDuplicateUsername.setRequestHandler(CURRENT_USER_QUERY, currentUserQueryHandler);
 mockClientDuplicateUsername.setRequestHandler(SINGLE_USER_USERNAME_QUERY, duplicateSingleUserQueryHandler);
+mockClientDuplicateUsername.setRequestHandler(SINGLE_USER_EMAIL_QUERY, singleUserQueryHandler);
+
+mockClientDuplicateEmail.setRequestHandler(UPDATE_PROFILE_MUTATION, updateProfileHandler);
+mockClientDuplicateEmail.setRequestHandler(CURRENT_USER_QUERY, currentUserQueryHandler);
+mockClientDuplicateEmail.setRequestHandler(SINGLE_USER_USERNAME_QUERY, singleUserQueryHandler);
+mockClientDuplicateEmail.setRequestHandler(SINGLE_USER_EMAIL_QUERY, duplicateSingleUserQueryHandler);
 
 describe('<EditProfileForm />', () => {
     test('it renders the form', async () => {
@@ -121,7 +131,7 @@ describe('<EditProfileForm />', () => {
         expect(updateProfileHandler).toBeCalledWith({
             id: testUser.id,
             name: `${testUser.name} new`,
-            username: `${testUser.username}new`, // `${testUser.username}new`,
+            username: `${testUser.username}new`,
             email: testUser.email,
             bio: `${testUser.bio} updated`,
             image: testUser.image,
@@ -155,5 +165,27 @@ describe('<EditProfileForm />', () => {
         });
     });
 
-    // TODO: Add Test for Duplicate Email Check
+    test('it alerts the user their email is already taken', async () => {
+        const { getByLabelText, findByText } = render(
+            <AppContext.Provider value={{ loggedInUser: testUser }}>
+                <ApolloProvider client={mockClientDuplicateEmail}>
+                    <EditProfileForm />
+                </ApolloProvider>
+            </AppContext.Provider>
+        );
+
+        await act(async () => {
+            await waitFor(async () => {
+                fireEvent.change(getByLabelText(/Email/), {
+                    target: {
+                        value: `new${testUser.email}`,
+                    },
+                });
+
+                await fireEvent.blur(getByLabelText(/Email/));
+            });
+
+            await findByText(/The email you entered is already taken/);
+        });
+    });
 });

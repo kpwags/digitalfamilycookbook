@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useMutation, useApolloClient } from '@apollo/react-hooks';
 import { toast } from 'react-toastify';
 import debounce from 'lodash.debounce';
-import { CURRENT_USER_QUERY, SINGLE_USER_USERNAME_QUERY } from '../../queries/User';
+import { CURRENT_USER_QUERY, SINGLE_USER_USERNAME_QUERY, SINGLE_USER_EMAIL_QUERY } from '../../queries/User';
 import { UPDATE_PROFILE_MUTATION } from '../../mutations/User';
 import { Form } from '../Form/Form';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
@@ -22,6 +22,7 @@ const EditProfileForm = () => {
     const [usernameError, setUsernameError] = useState('');
     const [email, setEmail] = useState(loggedInUser.email);
     const [emailError, setEmailError] = useState('');
+    const [emailSuccess, setEmailSuccess] = useState('');
     const [bio, setBio] = useState(loggedInUser.bio);
     const [image, setImage] = useState(loggedInUser.image);
     const [largeImage, setLargeImage] = useState(loggedInUser.largeImage);
@@ -81,18 +82,52 @@ const EditProfileForm = () => {
         }
     }, 350);
 
+    const validateEmail = debounce(async () => {
+        setSaveEnabled(false);
+
+        const resp = await client.query({
+            query: SINGLE_USER_EMAIL_QUERY,
+            variables: { email },
+        });
+
+        if (resp.data.user !== null && resp.data.user.id !== id) {
+            setSaveEnabled(false);
+            setEmailError('The email you entered is already taken');
+            setEmailSuccess('');
+        } else if (!FormValidator.validateEmail(email)) {
+            setSaveEnabled(false);
+            setEmailError('Valid email address required');
+            setEmailSuccess('');
+        } else {
+            setSaveEnabled(true);
+            setEmailError('');
+            setEmailSuccess('OK');
+        }
+    }, 350);
+
     const validateForm = async () => {
         const resp = await client.query({
             query: SINGLE_USER_USERNAME_QUERY,
             variables: { username },
         });
 
+        const emailResp = await client.query({
+            query: SINGLE_USER_EMAIL_QUERY,
+            variables: { email },
+        });
+
         let isValid = true;
 
         const { valid: usernameValid, message: usernameMessage } = FormValidator.validateUsername(username);
 
-        if (!FormValidator.validateEmail(email)) {
-            setEmailError('Invalid email');
+        if (emailResp.data.user !== null && emailResp.data.user.id !== id) {
+            setEmailError('The email you entered is already taken');
+            setEmailSuccess('');
+            isValid = false;
+        } else if (!FormValidator.validateEmail(email)) {
+            setSaveEnabled(false);
+            setEmailError('Valid email address required');
+            setEmailSuccess('');
             isValid = false;
         }
 
@@ -205,9 +240,13 @@ const EditProfileForm = () => {
                     label="Email"
                     value={email}
                     error={emailError}
-                    validationRule="email"
+                    successMessage={emailSuccess}
                     onChange={(e) => {
                         setEmail(e.target.value);
+                    }}
+                    validate={(e) => {
+                        e.persist();
+                        validateEmail();
                     }}
                 />
 
