@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FormValidator } from '../../lib/FormValidator';
 
-const TextArea = props => {
+const TextArea = (props) => {
     const [error, setError] = useState(props.error);
     const [value, setValue] = useState(props.value);
 
@@ -11,7 +11,7 @@ const TextArea = props => {
         setValue(props.value);
     }, [props]);
 
-    const validate = val => {
+    const validate = (val) => {
         if (FormValidator.validateNotEmpty(val)) {
             setError('');
         } else {
@@ -27,12 +27,12 @@ const TextArea = props => {
                 name={props.name}
                 data-testid={props.id}
                 value={value}
-                onChange={e => {
+                onChange={(e) => {
                     if (props.onChange) {
                         props.onChange(e);
                     }
                 }}
-                onBlur={e => {
+                onBlur={(e) => {
                     e.preventDefault();
 
                     if (props.required) {
@@ -40,16 +40,27 @@ const TextArea = props => {
                     }
                 }}
             />
-            <div className="error-text" style={props.showErrorMessage && error !== '' ? { display: 'block' } : {}}>
-                {error}
-            </div>
+
+            {props.doesErrorContainHtml ? (
+                <div
+                    className="error-text"
+                    style={props.showErrorMessage && error !== '' ? { display: 'block' } : {}}
+                    // eslint-disable-next-line react/no-danger
+                    dangerouslySetInnerHTML={{ __html: error }}
+                />
+            ) : (
+                <div className="error-text" style={props.showErrorMessage && error !== '' ? { display: 'block' } : {}}>
+                    {error}
+                </div>
+            )}
         </label>
     );
 };
 
 TextArea.defaultProps = {
     required: false,
-    showErrorMessage: true
+    showErrorMessage: true,
+    doesErrorContainHtml: false,
 };
 
 TextArea.propTypes = {
@@ -60,7 +71,8 @@ TextArea.propTypes = {
     error: PropTypes.string,
     onChange: PropTypes.func,
     required: PropTypes.bool,
-    showErrorMessage: PropTypes.bool
+    showErrorMessage: PropTypes.bool,
+    doesErrorContainHtml: PropTypes.bool,
 };
 
 export { TextArea };

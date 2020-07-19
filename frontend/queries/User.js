@@ -26,6 +26,19 @@ const SINGLE_USER_USERNAME_QUERY = gql`
     }
 `;
 
+const SINGLE_USER_EMAIL_QUERY = gql`
+    query SINGLE_USER_EMAIL_QUERY($email: String!) {
+        user(where: { email: $email }) {
+            id
+            name
+            username
+            bio
+            image
+            largeImage
+        }
+    }
+`;
+
 const CURRENT_USER_QUERY = gql`
     query {
         me {
@@ -56,7 +69,4 @@ const ALL_USERS_QUERY = gql`
     }
 `;
 
-export { SINGLE_USER_QUERY };
-export { SINGLE_USER_USERNAME_QUERY };
-export { CURRENT_USER_QUERY };
-export { ALL_USERS_QUERY };
+export { SINGLE_USER_QUERY, SINGLE_USER_USERNAME_QUERY, SINGLE_USER_EMAIL_QUERY, CURRENT_USER_QUERY, ALL_USERS_QUERY };

@@ -83,9 +83,20 @@ const TextInput = (props) => {
                     }
                 }}
             />
-            <div className="error-text" style={props.showErrorMessage && error !== '' ? { display: 'block' } : {}}>
-                {error}
-            </div>
+
+            {props.doesErrorContainHtml ? (
+                <div
+                    className="error-text"
+                    style={props.showErrorMessage && error !== '' ? { display: 'block' } : {}}
+                    // eslint-disable-next-line react/no-danger
+                    dangerouslySetInnerHTML={{ __html: error }}
+                />
+            ) : (
+                <div className="error-text" style={props.showErrorMessage && error !== '' ? { display: 'block' } : {}}>
+                    {error}
+                </div>
+            )}
+
             <div className="success-text" style={props.showSuccessMessage && successMessage !== '' ? { display: 'block' } : {}}>
                 {successMessage}
             </div>
@@ -99,6 +110,7 @@ TextInput.defaultProps = {
     type: 'text',
     error: '',
     successMessage: '',
+    doesErrorContainHtml: false,
 };
 
 TextInput.propTypes = {
@@ -114,6 +126,7 @@ TextInput.propTypes = {
     validate: PropTypes.func,
     validationArgs: PropTypes.object,
     showErrorMessage: PropTypes.bool,
+    doesErrorContainHtml: PropTypes.bool,
     showSuccessMessage: PropTypes.bool,
 };
 
