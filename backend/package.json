@@ -10,6 +10,10 @@
   },
   "author": "Keith Wagner",
   "license": "GPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kpwags/digitalfamilycookbook"
+  },
   "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.2.0",
@@ -21,7 +25,7 @@
     "cookie-parser": "^1.4.5",
     "dotenv": "6.0.0",
     "graphql": "^0.13.2",
-    "graphql-cli": "^3.0.11",
+    "graphql-cli": "^4.0.0",
     "graphql-yoga": "^1.18.3",
     "jsonwebtoken": "8.3.0",
     "nodemailer": "^4.6.8",
