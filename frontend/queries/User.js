@@ -18,6 +18,7 @@ const SINGLE_USER_USERNAME_QUERY = gql`
         user(where: { username: $username }) {
             id
             name
+            email
             username
             bio
             image
@@ -31,6 +32,7 @@ const SINGLE_USER_EMAIL_QUERY = gql`
         user(where: { email: $email }) {
             id
             name
+            email
             username
             bio
             image

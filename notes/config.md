@@ -1,5 +1,12 @@
 # BACK END
 
+## DELETE_USER_MODE
+
+This config can be set to:
+
+-   TRANSFER: Transfers all recipes of the user being deleted to the logged in user
+-   DELETE (default): Deletes all recipes attached to the user
+
 # FRONT END
 
 ## endpoint
@@ -22,8 +29,8 @@ Boolean flag indicating whether someone has to be logged in to view the site
 
 Mode indicating which users can edit recipes:
 
-- ALL: All users can edit all recipes
-- USER: Admins can edit all recipes, users can only edit their own recipes
+-   ALL: All users can edit all recipes
+-   USER: Admins can edit all recipes, users can only edit their own recipes
 
 ## publicRegistration
 
