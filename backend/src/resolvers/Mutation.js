@@ -335,7 +335,67 @@ const Mutations = {
       throw new Error('You do not have the proper permissions to delete a user');
     }
 
-    // TODO: Update all recipes that user created to the admin deleting the user
+    const userRecipes = await ctx.db.query.recipes({ where: { user: { id: args.id } } }, '{ id, ingredients { id }, directions { id }  }');
+
+    if (userRecipes.length > 0) {
+      if (process.env.DELETE_USER_MODE === 'TRANSFER') {
+        // transfer recipes to deleting user (already checked that they have admin permissions above)
+        const recipeIds = [];
+        userRecipes.forEach((r) => {
+          recipeIds.push(r.id);
+        });
+
+        // eslint-disable-next-line no-restricted-syntax
+        for (const recipe of userRecipes) {
+          // eslint-disable-next-line no-await-in-loop
+          await ctx.db.mutation.updateRecipe(
+            {
+              data: {
+                user: {
+                  connect: {
+                    id: ctx.request.user.id,
+                  },
+                },
+              },
+              where: {
+                id: recipe.id,
+              },
+            },
+            info,
+          );
+        }
+      } else {
+        // delete recipes added by user
+
+        // eslint-disable-next-line no-restricted-syntax
+        for (const recipe of userRecipes) {
+          const ingredients = [];
+          recipe.ingredients.forEach((i) => {
+            ingredients.push(i.id);
+          });
+
+          const directions = [];
+          recipe.directions.forEach((d) => {
+            directions.push(d.id);
+          });
+
+          // eslint-disable-next-line no-await-in-loop
+          await ctx.db.mutation.deleteManyIngredients({ where: { id_in: ingredients } }, '{ count }').catch((e) => {
+            throw new Error(e.message);
+          });
+
+          // eslint-disable-next-line no-await-in-loop
+          await ctx.db.mutation.deleteManyDirections({ where: { id_in: directions } }, '{ count }').catch((e) => {
+            throw new Error(e.message);
+          });
+
+          // eslint-disable-next-line no-await-in-loop
+          await ctx.db.mutation.deleteRecipe({ where: { id: recipe.id } }, info).catch((e) => {
+            throw new Error(e.message);
+          });
+        }
+      }
+    }
 
     return ctx.db.mutation.deleteUser({ where }, info);
   },
