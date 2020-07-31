@@ -83,11 +83,12 @@ const StyledHeader = styled.header`
 
 const Logo = styled.h1`
     font-size: 1.4rem;
-    margin: 0 48px 0 15px;
+    margin: 0 48px 0 10px;
     padding: 0;
     line-height: 70px;
     float: left;
     font-weight: normal;
+    vertical-align: middle;
 
     a {
         color: hsl(0, 0%, 100%);
@@ -109,12 +110,34 @@ const Logo = styled.h1`
     }
 `;
 
+const LogoImage = styled.span`
+    margin: 0 10px 0 12px;
+    float: left;
+
+    img {
+        vertical-align: middle;
+        width: 32px;
+        height: 32px;
+        border: none;
+    }
+
+    @media all and (max-width: 800px) {
+        float: none;
+        display: none;
+    }
+`;
+
 const Header = () => {
     const { loggedInUser, toggleSearchBar } = useContext(AppContext);
 
     return (
         <StyledHeader>
             <HamburgerMenu />
+            <LogoImage>
+                <Link href="/">
+                    <img src="/images/logo.png" alt={`${siteTitle} Logo`} />
+                </Link>
+            </LogoImage>
             <Logo>
                 <Link href="/">
                     <a>{siteTitle}</a>
