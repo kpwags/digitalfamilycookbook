@@ -338,7 +338,7 @@ const Mutations = {
     const userRecipes = await ctx.db.query.recipes({ where: { user: { id: args.id } } }, '{ id, ingredients { id }, directions { id }  }');
 
     if (userRecipes.length > 0) {
-      if (process.env.DELETE_USER_MODE === 'TRANSFER') {
+      if (process.env.DFC_DELETE_USER_MODE === 'TRANSFER') {
         // transfer recipes to deleting user (already checked that they have admin permissions above)
         const recipeIds = [];
         userRecipes.forEach((r) => {
@@ -419,7 +419,7 @@ const Mutations = {
       throw new Error('Invalid username or password');
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
+    const token = jwt.sign({ userId: user.id }, process.env.DFC_APP_SECRET);
     ctx.response.cookie('token', token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
@@ -494,7 +494,7 @@ const Mutations = {
     });
 
     // generate JWT and cookie
-    const token = jwt.sign({ userId: updatedUser.id }, process.env.APP_SECRET);
+    const token = jwt.sign({ userId: updatedUser.id }, process.env.DFC_APP_SECRET);
     ctx.response.cookie('token', token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
@@ -506,7 +506,7 @@ const Mutations = {
   async signup(parent, args, ctx, info) {
     const formValues = args;
 
-    if (parseInt(process.env.PUBLIC_REGISTRATION, 10) === 0) {
+    if (parseInt(process.env.DFC_PUBLIC_REGISTRATION, 10) === 0) {
       const invitationCode = await ctx.db.query.invitationCode({
         where: { code: formValues.invitationCode },
       });
@@ -535,7 +535,7 @@ const Mutations = {
     );
 
     // create JWT token
-    const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
+    const token = jwt.sign({ userId: user.id }, process.env.DFC_APP_SECRET);
     ctx.response.cookie('token', token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
@@ -672,7 +672,7 @@ const Mutations = {
       throw new Error('Recipe not found');
     }
 
-    if (process.env.EDIT_MODE === 'USER') {
+    if (process.env.DFC_EDIT_MODE === 'USER') {
       const hasPermissions = ctx.request.user.permissions.some((permission) => ['ADMIN'].includes(permission));
 
       if (!hasPermissions && recipe[0].user.id !== ctx.request.userId) {

@@ -51,7 +51,7 @@ const MainApp = (props) => {
             }}
         >
             <ToastContainer className="standard-toast" bodyClassName="standard-toast-body" position={toast.POSITION.BOTTOM_CENTER} />
-            <Overlay id="page-overlay" open={overlayVisible} />
+
             <Page>{props.children}</Page>
         </AppContext.Provider>
     );
