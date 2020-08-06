@@ -4,13 +4,13 @@ import Link from 'next/link';
 import { Utilities } from '../../lib/Utilities';
 import { RecipeLink } from '../RecipeLink/RecipeLink';
 
-const RecipeBox = props => {
+const RecipeBox = (props) => {
     const { recipe } = props;
 
     return (
         <RecipeLink
             data-testid="RecipeBox"
-            onClick={e => {
+            onClick={(e) => {
                 e.preventDefault();
                 Utilities.goToRecipe(recipe.id);
             }}
@@ -23,7 +23,7 @@ const RecipeBox = props => {
 
             {(recipe.image === '' || recipe.image === null) && (
                 <div className="image-block">
-                    <img src="images/food.jpg" alt="Cutting Board with Food" />
+                    <img src="images/recipe.jpg" alt="Bowl with spoon" />
                 </div>
             )}
 
@@ -37,7 +37,7 @@ const RecipeBox = props => {
 };
 
 RecipeBox.propTypes = {
-    recipe: PropTypes.object
+    recipe: PropTypes.object,
 };
 
 export { RecipeBox };
