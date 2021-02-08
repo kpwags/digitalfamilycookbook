@@ -32,7 +32,7 @@
     "graphql-cli": "^4.0.0",
     "graphql-yoga": "^1.18.3",
     "jsonwebtoken": "8.3.0",
-    "marked": ">=0.6.1",
+    "marked": ">=2.0.0",
     "nodemailer": "^4.6.8",
     "nodemon": "1.18.4",
     "npm-run-all": "^4.1.3",
